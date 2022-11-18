@@ -1,7 +1,4 @@
 /********************* TRICK HEADER **************************************************************
-@copyright Copyright 2019 United States Government as represented by the Administrator of the
-           National Aeronautics and Space Administration.  All Rights Reserved.
-
 PURPOSE: (This c++ enumeration is #included in the SimBus.hh header. It is used so that a thermal
          link on the simbus can be referenced by its node name instead of an array index.
             Example:   ptcs.n1.therm.mCapacitanceLinks[N1_SHELL_1].mTemperature)

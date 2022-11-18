@@ -5,6 +5,8 @@
 #
 import sys, os, string, fnmatch
 
+sys.path.append("/home/vagrant/ivm-dev/ivm-trick/packages/icd-simbus/lib")
+sys.path.append("/home/vagrant/ivm-dev/ivm-trick/packages/icd-simbus/src")
 from icdgen import icdgen
 from icdstub import icdstub
 
