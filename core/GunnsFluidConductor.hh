@@ -100,6 +100,7 @@ class GunnsFluidConductorInputData : public GunnsFluidLinkInputData
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class GunnsFluidConductor : public GunnsFluidLink
 {
+    friend class GunnSight;
         TS_MAKE_SIM_COMPATIBLE(GunnsFluidConductor);
 
     public:

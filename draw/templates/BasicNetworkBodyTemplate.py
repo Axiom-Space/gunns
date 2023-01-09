@@ -197,9 +197,16 @@ class BasicNetworkBodyTemplate:
       r = r+('    ' + link[1] + '(),\n')
     for link in self.data['links'][-1:]:
       r = r+('    ' + link[1] + '()\n')
-    r = r+('{\n'
-        '    // Nothing to do\n'
-        '}\n'
+    r = r+('{\n')
+    if self.data['gunnSight']:
+      r = r + (
+        '    /// Initialize map of link names for GunnSight.\n')
+      for link in self.data['links']:
+        r = r + ('    if(std::is_base_of<GunnsFluidConductor, ' + link[0] + '>::value) { '
+                 'linkMap["' + link[1] + '"] = dynamic_cast<GunnsFluidConductor*>(&' + link[1] + '); }\n')
+    else:
+      r = r + ('    // Nothing to do\n')
+    r = r+('}\n'
         '\n'
         '////////////////////////////////////////////////////////////////////////////////////////////////////\n'
         '/// @details Default destructs the ' + self.data['networkName'] + ' Network.\n'
