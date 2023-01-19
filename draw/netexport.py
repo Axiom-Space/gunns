@@ -556,7 +556,7 @@ cmd_parser.add_argument("-d", action="store_true", help="Look in ~/Downloads for
 cmd_parser.add_argument("-m", action="store_true", help="Only do error checks and maintenance updates to the diagram file", dest="maintenance", default="false")
 cmd_parser.add_argument("-g", action="store_true", help="Only do generation of the output network code", dest="generation", default="false")
 cmd_parser.add_argument("-p", action="store",      help="Use the provided environment variable for external paths", dest="ext_paths", default="GUNNS_EXT_PATH")
-cmd_parser.add_argument("-gunnsight", action="store_true", help="Enable GunnSight autotuner", dest="gunnsight", default="false")
+cmd_parser.add_argument("-gunnsight", action="store_true", help="Enable GunnSight autotuner", dest="gunnsight", default=False)
 options = cmd_parser.parse_args()
 
 # Use the supplied path/file name, else use a file browser to select the drawing.
