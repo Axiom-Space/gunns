@@ -126,6 +126,8 @@ class GunnsElectConverterOutput : public GunnsBasicLink
         void setLimitingState(const bool state);
         /// @brief  Sets the output conductance.
         void setOutputConductance(const double conductance);
+        /// @brief  Gets the enabled flag.
+        bool getEnabled();
         /// @brief  Returns the commanded setpoint.
         double getSetpoint() const;
         /// @brief  Returns the input power.
@@ -361,6 +363,16 @@ inline void GunnsElectConverterOutput::setLimitingState(const bool state)
 inline void GunnsElectConverterOutput::setOutputConductance(const double conductance)
 {
     mOutputConductance = conductance;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @returns  bool  (--)  The converter enabled flag value.
+///
+/// @details  Returns the value of the mEnabled attribute.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline bool GunnsElectConverterOutput::getEnabled()
+{
+    return mEnabled;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
