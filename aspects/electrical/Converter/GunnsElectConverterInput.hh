@@ -119,6 +119,8 @@ class GunnsElectConverterInput : public GunnsBasicLink
         void setInputPower(const double inputPower);
         /// @biref  Sets the reference power for efficiency calculation.
         void setReferencePower(const double referencePower);
+        /// @brief  Returns the enabled bool.
+        bool getEnabled();
         /// @brief  Returns the input voltage.
         double getInputVoltage() const;
         /// @brief  Returns the input voltage valid flag.
@@ -288,6 +290,16 @@ inline void GunnsElectConverterInput::setInputPower(const double inputPower)
 inline void GunnsElectConverterInput::setReferencePower(const double referencePower)
 {
     mReferencePower = referencePower;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @returns  double (V)  Input voltage.
+///
+/// @details  Returns the value of mInputVoltage.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline bool GunnsElectConverterInput::getEnabled()
+{
+    return mEnabled;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
