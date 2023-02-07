@@ -1,10 +1,8 @@
 #!/usr/bin/python
-# @copyright Copyright 2022 United States Government as represented by the Administrator of the
-#            National Aeronautics and Space Administration.  All Rights Reserved.
 #
 # @revs_title
 # @revs_begin
-# @rev_entry(Jason Harvey, CACI, GUNNS, February 2019, --, Initial implementation.}
+# @rev_entry(Kyle Fondon, Axiom Space, GUNNS, February 2023, --, Initial implementation.}
 # @revs_end
 #
 import os
@@ -57,6 +55,7 @@ from templates.BasicNetworkHeaderTemplate import BasicNetworkHeaderTemplate
 from templates.FluidNetworkHeaderTemplate import FluidNetworkHeaderTemplate
 from templates.BasicNetworkBodyTemplate import BasicNetworkBodyTemplate
 from templates.FluidNetworkBodyTemplate import FluidNetworkBodyTemplate
+from templates.NetworkJsonTemplate import NetworkJsonTemplate
 
 START_TIME = datetime.now()
 
@@ -556,6 +555,7 @@ cmd_parser.add_argument("-d", action="store_true", help="Look in ~/Downloads for
 cmd_parser.add_argument("-m", action="store_true", help="Only do error checks and maintenance updates to the diagram file", dest="maintenance", default="false")
 cmd_parser.add_argument("-g", action="store_true", help="Only do generation of the output network code", dest="generation", default="false")
 cmd_parser.add_argument("-p", action="store",      help="Use the provided environment variable for external paths", dest="ext_paths", default="GUNNS_EXT_PATH")
+cmd_parser.add_argument("-gunnsight", action="store_true", help="Enable GunnSight autotuner", dest="gunnsight", default=False)
 options = cmd_parser.parse_args()
 
 # Use the supplied path/file name, else use a file browser to select the drawing.
@@ -1128,9 +1128,11 @@ linksData = []
 index = 0
 for link in links:
     gunns_attr = link.find('./gunns').attrib
+    geom_attr  = link.find('./mxCell/mxGeometry').attrib
     linkClass  = gunns_attr['subtype'].split("/")[-1]
     linkName   = getLinkName(link)
-    linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'))
+    linkStyle  = link.find('./mxCell').attrib['style']
+    linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'), linkStyle, geom_attr)
     linksData.append(linkData)
     index = index + 1
 
@@ -1138,10 +1140,11 @@ for link in links:
 nodesData = []
 for node in netNodes:
     numStr = node.attrib['label']
+    geom_attr  = node.find('./mxCell/mxGeometry').attrib
     if basic_network:
-        nodeData = (numStr, node.attrib['i00.potential'])
+        nodeData = (numStr, node.attrib['i00.potential'], geom_attr)
     else:
-        nodeData = (numStr, node.attrib['i00.initialFluidState'])
+        nodeData = (numStr, node.attrib['i00.initialFluidState'], geom_attr)
         if '0' == nodeData[1] or '' == nodeData[1]:
             sys.exit(console.abort('node ' + nodeData[0] + ' is missing initialFluidState.'))
     nodesData.append(nodeData)
@@ -1233,7 +1236,8 @@ data_model = dict([('networkName', networkName),
                    ('doxLicenses', licenseData),
                    ('doxData', doxygenData),
                    ('doxReferences', referencesData),
-                   ('doxAssumptions', assumptionsData)
+                   ('doxAssumptions', assumptionsData),
+                   ('gunnSight', options.gunnsight)
 ])
 # Add Data Tables to the data model.
 # For now we only support 2D tables.
@@ -1312,12 +1316,15 @@ else:
     hhTemplate = BasicNetworkHeaderTemplate(data_model)
     ccTemplate = BasicNetworkBodyTemplate(data_model)
 
+jsTemplate = NetworkJsonTemplate(data_model)
+
 # For debugging:
-#print(data_model)
+# print(data_model)
 
 hhFileName = outputPath + '/' + networkName + '.hh'
 ccFileName = outputPath + '/' + networkName + '.cpp'
 #ccFileName = os.path.splitext(outputPathFile)[0] + '.cpp'
+jsFileName = outputPath + '/' + networkName + '.json'
 
 # Render templates to output files.
 print ('  Rendering ' + networkName + '.hh...')
@@ -1329,6 +1336,11 @@ print ('  Rendering ' + networkName + '.cpp...')
 with open(ccFileName, 'w') as fcc:
     ccRender = ccTemplate.render()
     fcc.write(ccRender)
+
+print ('  Rendering ' + networkName + '.json...')
+with open(jsFileName, 'w') as fjs:
+    jsRender = jsTemplate.render()
+    fjs.write(jsRender)
 
 END_TIME = datetime.now()
 dt = (END_TIME - START_TIME).total_seconds()
