@@ -32,7 +32,6 @@ class NetworkJsonTemplate:
     for link in links:
       for arg in link[4].split(','):
         if 'Node' in arg:
-          if 'Prv' in link[0]: print(arg)
           if ';' in arg:
             link_paths.append((arg[5:arg.index('+')-1], link[1]))
           else:
