@@ -198,7 +198,7 @@ class BasicNetworkBodyTemplate:
     for link in self.data['links'][-1:]:
       r = r+('    ' + link[1] + '()\n')
     r = r+('{\n')
-    if self.data['gunnSight']:
+    if ('gunnSight' in self.data.keys()) and self.data['gunnSight']:
       r = r + (
         '    /// Initialize map of link names for GunnSight.\n')
       for link in self.data['links']:

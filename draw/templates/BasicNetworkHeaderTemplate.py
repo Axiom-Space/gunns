@@ -96,7 +96,7 @@ class BasicNetworkHeaderTemplate:
     r = r + self.blockIncludesPostLinks()
     if len(self.data['socketLists']) > 0:
       r = r + ('#include "core/Gunns' + self.data['networkType'] + 'JumperPlug.hh"\n')
-    if self.data['gunnSight']:
+    if ('gunnSight' in self.data.keys()) and self.data['gunnSight']:
       r = r + ('#include <map>\n')
     # TODO namespace statement
     r = r + (
@@ -282,7 +282,7 @@ class BasicNetworkHeaderTemplate:
         '        // Links\n')
     for link in self.data['links']:
       r = r + ('        ' + link[0] + ' ' + link[1] + ';    /**< (--) ' + link[1] + ' instance. */\n')
-    if self.data['gunnSight']:
+    if ('gunnSight' in self.data.keys()) and self.data['gunnSight']:
       r = r + (
         '        /// Map of link names for GunnSight, with typing.\n'
         '        std::map<std::string, GunnsFluidConductor*> linkMap; /**< (--) linkMap instance. */\n')
