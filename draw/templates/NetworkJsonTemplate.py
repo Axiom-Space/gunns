@@ -44,11 +44,10 @@ class NetworkJsonTemplate:
     for spotter in self.data['spotters']:
       r = r + ('')
     for link in self.data['links']:
-      if 'Prv' in link[0]: print(link[4])
       r = r + ('    {"key":"' + link[1] + '","category":"' + self.linkShape(link[0]) + '","pos":"' + link[8]['x'] + ' ' + link[8]['y'] + 
                     '","size":"' + link[8]['width'] + ' ' + link[8]['height'] + '","text":"' + link[1] + '"' + self.linkStyle(link[7]) + '},\n')
     for node in self.data['nodes']:
-      r = r + ('    {"key":"' + node[0] + '","category":"Circle","pos":"' + node[2]['x'] + ' ' + node[2]['y'] + '","text":"' + node[0] + '"},\n')
+      r = r + ('    {"key":"' + node[0] + '","category":"Circle","pos":"' + node[2]['x'] + ' ' + node[2]['y'] + '","text":"Node' + node[0] + '"},\n')
     r = r[:-2]
     r = r + ('\n],\n'
              '  "linkDataArray": [\n')
