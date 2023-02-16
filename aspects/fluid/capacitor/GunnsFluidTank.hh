@@ -134,6 +134,10 @@ class GunnsFluidTank : public  GunnsFluidCapacitor
         /// @brief  Returns the bias heat flux from the tank shell.
         virtual double getBiasHeatFlux() const;
         /// @brief  Returns the delta pressure/delta time.
+        double         getTemperature() const;
+        /// @brief  Returns the temperature of tank node (K).
+        double         getPreviousPressure() const;
+        /// @brief  Returns the previous pressure of tank node (kPa).
         double         getDpdt() const;
         /// @brief  Returns the constituent partial pressures.
         double*        getPartialPressure() const;
@@ -243,6 +247,26 @@ inline double GunnsFluidTank::getBiasHeatFlux() const
 inline double GunnsFluidTank::getUndampedHeatFlux() const
 {
     return mHeatFluxFromShell;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   double (K) Temperature.
+///
+/// @details  This method returns the bulk temperature of the tank node.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline double GunnsFluidTank::getTemperature() const
+{
+    return mTemperature;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   double (kPa) Previous pressure.
+///
+/// @details  This method returns the previous pressure of the tank node.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline double GunnsFluidTank::getPreviousPressure() const
+{
+    return mPreviousPressure;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
