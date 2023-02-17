@@ -6,6 +6,12 @@
 # @revs_end
 #
 # This implements a templated output of the network display config (.json) file for GUNNS networks.
+import math
+import numpy as np
+from scipy.spatial import Voronoi, voronoi_plot_2d
+from scipy.spatial.distance import cdist
+import matplotlib.pyplot as plt
+
 class NetworkJsonTemplate:
 
   data = {}
@@ -38,8 +44,35 @@ class NetworkJsonTemplate:
             link_paths.append((link[1], arg[5:arg.index('+')-1]))
     return link_paths
   
+  def portPos(self, port):
+    from_obj = None
+    to_obj = None
+    for link in self.data['links']:
+      if link[1] == port[1]: from_obj = link
+      elif link[1] == port[2]: to_obj = link
+    is_from = True if from_obj else False
+    obj = from_obj if from_obj else to_obj
+    e_str = 'exit' if from_obj else 'entry'
+    port_pt = []
+    style_str = port[3]
+    style_str = style_str[style_str.find(e_str + 'X=')+len(e_str)+2:]
+    port_pt.append(style_str[:style_str.find(';')])
+    style_str = style_str[style_str.find(e_str + 'Y=')+len(e_str)+2:]
+    port_pt.append(style_str[:style_str.find(';')])
+    style_str = style_str[style_str.find(e_str + 'Dx=')+len(e_str)+3:]
+    port_pt.append(style_str[:style_str.find(';')])
+    style_str = style_str[style_str.find(e_str + 'Dy=')+len(e_str)+3:]
+    port_pt.append(style_str[:style_str.find(';')])
+    port_index = 0
+    for constraint in obj[9].find('./connections').iter('constraint'):
+      if constraint.attrib['x'] == port_pt[0] and constraint.attrib['y'] == port_pt[1]: break
+      port_index += 1
+    return is_from, port_index
+
   def render(self):
     r =('{ "class": "go.GraphLinksModel",\n'
+        '  "linkFromPortIdProperty": "fromPort",\n'
+        '  "linkToPortIdProperty": "toPort",\n'
         '  "nodeDataArray": [\n')
     for spotter in self.data['spotters']:
       r = r + ('')
@@ -51,9 +84,14 @@ class NetworkJsonTemplate:
     r = r[:-2]
     r = r + ('\n],\n'
              '  "linkDataArray": [\n')
-    path_dict = self.linkPaths(self.data['links'])
-    for path in path_dict:
-      r = r + ('    {"from":"' + path[0] + '","to":"' + path[1] + '"},\n')
+    for port in self.data['ports']:
+      is_from, port_num = self.portPos(port)
+      r = r + ('    {"label":"' + port[0] + '","from":"')
+      if is_from: r = r + (port[1] + '","fromPort":"' + str(port_num) + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
+      else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + str(port_num) + '"},\n')
+    # path_dict = self.linkPaths(self.data['links'])
+    # for path in path_dict:
+    #   r = r + ('    {"from":"' + path[0] + '","to":"' + path[1] + '"},\n')
     r = r[:-2]
     r = r + ('\n  ]\n'
              '}')

@@ -1125,20 +1125,26 @@ for jumperPlugConfig in jumperPlugConfigs:
 
 # This is a list of data for each link: class, name, initialize block, configData, inputData
 linksData = []
+portsIds = {}
 index = 0
 for link in links:
+    portsIds[link.attrib['id']] = link.attrib['label']
     gunns_attr = link.find('./gunns').attrib
     geom_attr  = link.find('./mxCell/mxGeometry').attrib
     linkClass  = gunns_attr['subtype'].split("/")[-1]
     linkName   = getLinkName(link)
     linkStyle  = link.find('./mxCell').attrib['style']
-    linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'), linkStyle, geom_attr)
+    tmp = linkStyle[linkStyle.find('shape'):]
+    tmp = tmp[:tmp.find(';')]
+    shape = ET.fromstring(compression.decompress(tmp[tmp.find('('):-1]))
+    linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'), linkStyle, geom_attr, shape)
     linksData.append(linkData)
     index = index + 1
 
 # This is a list of data for each node: number, initial state, sorted by node number
 nodesData = []
 for node in netNodes:
+    portsIds[node.attrib['id']] = node.attrib['label']
     numStr = node.attrib['label']
     geom_attr  = node.find('./mxCell/mxGeometry').attrib
     if basic_network:
@@ -1149,6 +1155,28 @@ for node in netNodes:
             sys.exit(console.abort('node ' + nodeData[0] + ' is missing initialFluidState.'))
     nodesData.append(nodeData)
 nodesData.sort(key=lambda tup: int(tup[0]))
+
+# This is a list of data for each link port: source, target, geometry
+#for gnd in gndNodes: portsIds[gnd.attrib['id']] = 'Ground'
+#for ref in refNodes: portsIds[ref.attrib['id']] = 'Ref ' + ref.attrib['label']
+portsData = []
+visited = []
+for port in ports:
+    numStr = port.attrib['label']
+    portStyle  = port.find('./mxCell').attrib['style']
+    #geom  = port.find('./mxCell/mxGeometry')
+    #print(port.find('./mxCell').attrib['source'])
+    if port.find('./mxCell').attrib['source'] in portsIds.keys() and port.find('./mxCell').attrib['target'] in portsIds.keys():
+        portSource = portsIds[port.find('./mxCell').attrib['source']]
+        portTarget = portsIds[port.find('./mxCell').attrib['target']]
+    #else:
+        #print("ERROR - ID NOT FOUND: ")
+        #if port.find('./mxCell').attrib['source'] not in portsIds.keys(): print("\t" + port.find('./mxCell').attrib['source'])
+        #if port.find('./mxCell').attrib['target'] not in portsIds.keys(): print("\t" + port.find('./mxCell').attrib['target'])
+    if (numStr, portSource, portTarget) not in visited and (numStr, portTarget, portSource) not in visited:
+        portData = (numStr, portSource, portTarget, portStyle)
+        portsData.append(portData)
+        visited.append((numStr, portSource, portTarget))
 
 # This is a list of data for each spotter: class, name, config data, input data, constructor block
 spottersData = []
@@ -1225,6 +1253,7 @@ data_model = dict([('networkName', networkName),
                    ('linkSourcePaths', list(sorted(set(link_source_paths)))),
                    ('links', linksData),
                    ('nodes', nodesData),
+                   ('ports', portsData),
                    ('numNodes', numNetNodes),
                    ('spotters', spottersData),
                    ('spotterSourcePaths', list(sorted(set(spotter_source_paths)))),
