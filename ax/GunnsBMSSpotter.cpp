@@ -33,10 +33,7 @@ GunnsBMSSpotterInputData::GunnsBMSSpotterInputData(const int postStepCounter)
 
 GunnsBMSSpotter::GunnsBMSSpotter()
     :
-    GunnsNetworkSpotter(),
-
-    mPreStepCounter(0),
-    mPostStepCounter(0)
+    GunnsNetworkSpotter()
 {
     // nothing to do
 }
@@ -55,8 +52,10 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
     const GunnsBMSSpotterInputData*  input  = validateInput(inputData);
 
     /// - Initialize with validated config & input data.
-    mPreStepCounter  = config->mPreStepCounter;
-    mPostStepCounter = input->mPostStepCounter;
+    mBmsUpIn = configData.mBmsUpIn;
+    mBmsUpOut = configData.mBmsUpOut;
+    mBmsDownIn = configData.mBmsDownIn;
+    mBmsDownOut = configData.mBmsDownOut;
 
     /// - Set the init flag.
     mInitFlag = true;
@@ -64,15 +63,9 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
 
 const GunnsBMSSpotterConfigData* GunnsBMSSpotter::validateConfig(const GunnsNetworkSpotterConfigData* config)
 {
-    const GunnsBMSSpotterConfigData* result = dynamic_cast<const GunnsBMSSpotterConfigData*>(config);
-    if (!result) {
-        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data",
-                    "Bad config data pointer type.");
-    }
-
     /// - Do your other data validation as appropriate.
-
-    return result;
+    
+    // return result;
 }
 
 const GunnsBMSSpotterInputData* GunnsBMSSpotter::validateInput(const GunnsNetworkSpotterInputData* input)
@@ -86,12 +79,4 @@ const GunnsBMSSpotterInputData* GunnsBMSSpotter::validateInput(const GunnsNetwor
     /// - Do your other data validation as appropriate.
 
     return result;
-}
-
-void GunnsBMSSpotter::stepPreSolver(const double dt __attribute__((unused))) {
-    mPreStepCounter++;
-}
-
-void GunnsBMSSpotter::stepPostSolver(const double dt __attribute__((unused))) {
-    mPostStepCounter++;
 }

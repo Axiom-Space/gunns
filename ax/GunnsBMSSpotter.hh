@@ -66,12 +66,9 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         virtual     ~GunnsBMSSpotter() {;}
         virtual void initialize(const GunnsNetworkSpotterConfigData* configData,
                                 const GunnsNetworkSpotterInputData*  inputData);
-        virtual void stepPreSolver(const double dt);
-        virtual void stepPostSolver(const double dt);
+
 
     protected:
-        int                  mPreStepCounter;       /**< (--) counter to support unit tests */
-        int                  mPostStepCounter;      /**< (--) counter to support unit tests */
         const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
         const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
     private:
