@@ -20,30 +20,28 @@ class NetworkJsonTemplate:
     self.data = data
     return
 
-  def linkShape(self, name):
-    if 'Valve' in name:
-      return 'Valve'
+  def linkStyle(self, link):
+    style_dict = {}
+    # Text
+    style_dict['text'] = link[1]
+    # Category
+    if 'Valve' in link[0]:
+      style_dict['category'] = 'Valve'
     else:
-      return 'Process'
-
-  def linkStyle(self, style):
-    r = ''
-    for s in style.split(';'):
+      style_dict['category'] = 'Process'
+    # Size
+    style_dict['size'] = link[8]['width'] + ' ' + link[8]['height']
+    # Position
+    pos = [float(link[8]['x']), float(link[8]['y'])]
+    style_dict['pos'] = str(pos[0] + dims[0]/2) + ' ' + str(pos[1] + dims[1]/2)
+    # Convert style string
+    for s in link[7].split(';'):
       if 'rotation' in s:
-        r = r + ',"angle":"' + s[9:] + '"'
-    return r
+        style_dict['angle'] = s[9:]
+      
+    return style_dict
   
-  def linkPaths(self, links):
-    link_paths = []
-    for link in links:
-      for arg in link[4].split(','):
-        if 'Node' in arg:
-          if ';' in arg:
-            link_paths.append((arg[5:arg.index('+')-1], link[1]))
-          else:
-            link_paths.append((link[1], arg[5:arg.index('+')-1]))
-    return link_paths
-  
+  # Use port style data to determine which link connector it should be attached to
   def portPos(self, port):
     from_obj = None
     to_obj = None
@@ -55,6 +53,7 @@ class NetworkJsonTemplate:
     e_str = 'exit' if from_obj else 'entry'
     port_pt = []
     style_str = port[3]
+    # Extract connection point from style string
     style_str = style_str[style_str.find(e_str + 'X=')+len(e_str)+2:]
     port_pt.append(style_str[:style_str.find(';')])
     style_str = style_str[style_str.find(e_str + 'Y=')+len(e_str)+2:]
@@ -77,8 +76,9 @@ class NetworkJsonTemplate:
     for spotter in self.data['spotters']:
       r = r + ('')
     for link in self.data['links']:
-      r = r + ('    {"key":"' + link[1] + '","category":"' + self.linkShape(link[0]) + '","pos":"' + link[8]['x'] + ' ' + link[8]['y'] + 
-                    '","size":"' + link[8]['width'] + ' ' + link[8]['height'] + '","text":"' + link[1] + '"' + self.linkStyle(link[7]) + '},\n')
+      link_style = linkStyle(link)
+      r = r + ('    {"key":"' + link_style['text'] + '","category":"' + link_style['category'] + '","pos":"' + link_style['pos'] + 
+                    '","size":"' + link_style['size'] + '","text":"' + link_style['text'] + '","angle":"' + link_style['angle'] + '"},\n')
     for node in self.data['nodes']:
       r = r + ('    {"key":"' + node[0] + '","category":"Circle","pos":"' + node[2]['x'] + ' ' + node[2]['y'] + '","text":"Node' + node[0] + '"},\n')
     r = r[:-2]
@@ -89,9 +89,6 @@ class NetworkJsonTemplate:
       r = r + ('    {"label":"' + port[0] + '","from":"')
       if is_from: r = r + (port[1] + '","fromPort":"' + str(port_num) + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
       else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + str(port_num) + '"},\n')
-    # path_dict = self.linkPaths(self.data['links'])
-    # for path in path_dict:
-    #   r = r + ('    {"from":"' + path[0] + '","to":"' + path[1] + '"},\n')
     r = r[:-2]
     r = r + ('\n  ]\n'
              '}')
