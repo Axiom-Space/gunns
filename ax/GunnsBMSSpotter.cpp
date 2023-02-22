@@ -53,6 +53,7 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
     const GunnsBMSSpotterInputData*  input  = validateInput(inputData);
 
     /// - Initialize with validated config & input data.
+    mBattery = config->mBattery;
     mBmsUpIn = config->mBmsUpIn;
     mBmsUpOut = config->mBmsUpOut;
     mBmsDownIn = config->mBmsDownIn;
