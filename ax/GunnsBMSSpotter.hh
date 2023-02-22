@@ -18,6 +18,8 @@
 #include "aspects/electrical/Converter/GunnsElectConverterInput.hh"
 #include "aspects/electrical/Converter/GunnsElectConverterOutput.hh"
 
+#include <iostream>
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    Test Example Derived Network Spotter Configuration Data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,16 +27,16 @@ class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
 {
     public:
 
-        const GunnsElectConverterInput*   mBmsUpIn;
-        const GunnsElectConverterOutput*  mBmsUpOut;
-        const GunnsElectConverterInput*   mBmsDownIn;
-        const GunnsElectConverterOutput*  mBmsDownOut;
+        GunnsElectConverterInput*   mBmsUpIn;
+        GunnsElectConverterOutput*  mBmsUpOut;
+        GunnsElectConverterInput*   mBmsDownIn;
+        GunnsElectConverterOutput*  mBmsDownOut;
 
         GunnsBMSSpotterConfigData(const std::string& name,
-                                    const GunnsElectConverterInput* bmsUpIn,
-                                    const GunnsElectConverterOutput* bmsUpOut,
-                                    const GunnsElectConverterInput* bmsDownIn,
-                                    const GunnsElectConverterOutput* bmsDownOut);
+                                    GunnsElectConverterInput* bmsUpIn,
+                                    GunnsElectConverterOutput* bmsUpOut,
+                                    GunnsElectConverterInput* bmsDownIn,
+                                    GunnsElectConverterOutput* bmsDownOut);
         virtual ~GunnsBMSSpotterConfigData() {;}
 };
 
@@ -44,8 +46,7 @@ class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
 class GunnsBMSSpotterInputData : public GunnsNetworkSpotterInputData
 {
     public:
-        int mPostStepCounter;                     /**< (--) initial counter to support unit tests */
-        GunnsBMSSpotterInputData(const int postStepCounter = 0);
+        GunnsBMSSpotterInputData();
         virtual ~GunnsBMSSpotterInputData() {;}
 };
 
@@ -58,14 +59,17 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     public:
         /// @brief  Enumeration of BMS States
         enum BmsStatus {
-            DISCHARGING     = 0,
-            CHARGING        = 1,
-            TRIPPED         = 2,
+            DISABLED        = 0,
+            DISCHARGING     = 1,
+            CHARGING        = 2,
+            TRIPPED         = 3,
         };
         GunnsBMSSpotter();
         virtual     ~GunnsBMSSpotter() {;}
         virtual void initialize(const GunnsNetworkSpotterConfigData* configData,
                                 const GunnsNetworkSpotterInputData*  inputData);
+        virtual void stepPreSolver(const double dt);
+        virtual void stepPostSolver(const double dt);
 
 
     protected:
@@ -77,23 +81,6 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         GunnsElectConverterInput*   mBmsDownIn;
         GunnsElectConverterOutput*  mBmsDownOut;
 };
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief    Inherit from GunnsBMSSpotter and befriend UtGunnsNetworkSpotter.
-///
-/// @details  Class derived from the unit under test.  It has a constructor with the same arguments
-///           as the parent and a default destructor, but it befriends the unit test case driver
-///           class to allow it access to protected data members.
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//class FriendlyGunnsBMSSpotter : public GunnsBMSSpotter
-//{
-//    public:
-//        FriendlyGunnsBMSSpotter(GunnsBasicConductor& linkRef) : GunnsBMSSpotter(linkRef) {};
-//        virtual ~FriendlyGunnsBMSSpotter() {;}
-//        friend class UtGunnsNetworkSpotter;
-//};
-
-
 
 ///@}
 
