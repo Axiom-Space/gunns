@@ -10,12 +10,14 @@ LIBRARY DEPENDENCY:
 #include "software/exceptions/TsInitializationException.hh"
 
 GunnsBMSSpotterConfigData::GunnsBMSSpotterConfigData(const std::string& name,
+                                                    GunnsElectBattery* battery,
                                                     GunnsElectConverterInput* bmsUpIn,
                                                     GunnsElectConverterOutput* bmsUpOut,
                                                     GunnsElectConverterInput* bmsDownIn,
                                                     GunnsElectConverterOutput* bmsDownOut)
     :
     GunnsNetworkSpotterConfigData(name),
+    mBattery(battery),
     mBmsUpIn(bmsUpIn),
     mBmsUpOut(bmsUpOut),
     mBmsDownIn(bmsDownIn),
@@ -32,10 +34,9 @@ GunnsBMSSpotterInputData::GunnsBMSSpotterInputData()
 }
 
 GunnsBMSSpotter::GunnsBMSSpotter()
-    :
-    GunnsNetworkSpotter()
+    : GunnsNetworkSpotter()
 {
-    // nothing to do
+
 }
 
 void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData,
@@ -59,7 +60,6 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
 
     /// - Set the init flag.
     mInitFlag = true;
-    std::cout << "BMS Spotter Initialized :)__" << std::endl;
 }
 
 const GunnsBMSSpotterConfigData* GunnsBMSSpotter::validateConfig(const GunnsNetworkSpotterConfigData* config)
@@ -99,17 +99,55 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
         mBmsDownOut->setEnabled(false);
     }
 
-    std::cout << mName << "This is the pre-solver" << std::endl;
 }
 
 void GunnsBMSSpotter::stepPostSolver(const double dt) {
-    if ((mBmsUpIn->getEnabled() && mBmsDownIn->getEnabled()) || 
-        (mBmsUpOut->getEnabled() && mBmsDownOut->getEnabled()))
+    if (((mBmsUpIn->getEnabled() && mBmsDownIn->getEnabled()) || (mBmsUpOut->getEnabled() && mBmsDownOut->getEnabled())))
     {
         std::cerr << "Both Up or Down Conv pairs enabled. Disabling down-conv" << std::endl;
         mBmsDownIn->setEnabled(false);
         mBmsDownOut->setEnabled(false);
     }
-    std::cout << mName << "This is the post-solver" << std::endl;
 
 }
+
+    void GunnsBMSSpotter::enableCharging() {
+        disableDischarging();
+        mBmsDownIn->setEnabled(true);
+        mBmsDownOut->setEnabled(true);
+    }
+    void GunnsBMSSpotter::disableCharging() {
+        mBmsDownIn->setEnabled(false);
+        mBmsDownOut->setEnabled(false);
+    }
+    void GunnsBMSSpotter::enableDischarging() {
+        disableCharging();
+        mBmsUpIn->setEnabled(true);
+        mBmsUpOut->setEnabled(true);
+    }
+    void GunnsBMSSpotter::disableDischarging() {
+        mBmsUpIn->setEnabled(false);
+        mBmsUpOut->setEnabled(false);
+    }
+
+    bool GunnsBMSSpotter::isCharging() {
+        return (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled());
+    }
+    bool GunnsBMSSpotter::isDischarging() {
+        return (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled());
+    }
+    bool GunnsBMSSpotter::isInvalidBoth() {
+        return (
+            (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled()) &&
+            (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled())
+        );
+    }
+    bool GunnsBMSSpotter::isInvalidExclusive() {
+        return (
+            (mBmsUpIn->getEnabled() ^ mBmsUpOut->getEnabled()) ||
+            (mBmsDownIn->getEnabled() ^ mBmsDownOut->getEnabled())
+        );
+    }
+    bool GunnsBMSSpotter::isInvalid() {
+        return isInvalidBoth() || isInvalidExclusive();
+    }

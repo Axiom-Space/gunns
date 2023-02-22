@@ -17,22 +17,25 @@
 #include "core/GunnsBasicConductor.hh"
 #include "aspects/electrical/Converter/GunnsElectConverterInput.hh"
 #include "aspects/electrical/Converter/GunnsElectConverterOutput.hh"
+#include "aspects/electrical/Batt/GunnsElectBattery.hh"
 
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief    Test Example Derived Network Spotter Configuration Data
+/// @brief    BMS Network Spotter Configuration Data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
 {
     public:
 
+        GunnsElectBattery*          mBattery;
         GunnsElectConverterInput*   mBmsUpIn;
         GunnsElectConverterOutput*  mBmsUpOut;
         GunnsElectConverterInput*   mBmsDownIn;
         GunnsElectConverterOutput*  mBmsDownOut;
 
         GunnsBMSSpotterConfigData(const std::string& name,
+                                    GunnsElectBattery*         battery,
                                     GunnsElectConverterInput* bmsUpIn,
                                     GunnsElectConverterOutput* bmsUpOut,
                                     GunnsElectConverterInput* bmsDownIn,
@@ -41,7 +44,7 @@ class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief    Test Example Derived Network Spotter Input Data
+/// @brief    BMS Network Spotter Input Data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class GunnsBMSSpotterInputData : public GunnsNetworkSpotterInputData
 {
@@ -64,6 +67,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
             CHARGING        = 2,
             TRIPPED         = 3,
         };
+        
         GunnsBMSSpotter();
         virtual     ~GunnsBMSSpotter() {;}
         virtual void initialize(const GunnsNetworkSpotterConfigData* configData,
@@ -71,11 +75,23 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         virtual void stepPreSolver(const double dt);
         virtual void stepPostSolver(const double dt);
 
+        void enableCharging();
+        void disableCharging();
+        void enableDischarging();
+        void disableDischarging();
+
+        bool isCharging();
+        bool isDischarging();
+        bool isInvalidBoth();
+        bool isInvalidExclusive();
+        bool isInvalid();
+
 
     protected:
         const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
         const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
     private:
+        GunnsElectBattery*          mBattery;
         GunnsElectConverterInput*   mBmsUpIn;
         GunnsElectConverterOutput*  mBmsUpOut;
         GunnsElectConverterInput*   mBmsDownIn;
