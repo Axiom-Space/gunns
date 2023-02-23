@@ -33,7 +33,7 @@ class NetworkJsonTemplate:
     style_dict['size'] = link[8]['width'] + ' ' + link[8]['height']
     # Position
     pos = [float(link[8]['x']), float(link[8]['y'])]
-    style_dict['pos'] = str(pos[0] + dims[0]/2) + ' ' + str(pos[1] + dims[1]/2)
+    style_dict['pos'] = str(pos[0] + float(link[8]['width'])/2) + ' ' + str(pos[1] + float(link[8]['height'])/2)
     # Convert style string
     for s in link[7].split(';'):
       if 'rotation' in s:
@@ -76,7 +76,7 @@ class NetworkJsonTemplate:
     for spotter in self.data['spotters']:
       r = r + ('')
     for link in self.data['links']:
-      link_style = linkStyle(link)
+      link_style = self.linkStyle(link)
       r = r + ('    {"key":"' + link_style['text'] + '","category":"' + link_style['category'] + '","pos":"' + link_style['pos'] + 
                     '","size":"' + link_style['size'] + '","text":"' + link_style['text'] + '","angle":"' + link_style['angle'] + '"},\n')
     for node in self.data['nodes']:
@@ -85,8 +85,9 @@ class NetworkJsonTemplate:
     r = r + ('\n],\n'
              '  "linkDataArray": [\n')
     for port in self.data['ports']:
+      if float(port[0]) > 1: continue
       is_from, port_num = self.portPos(port)
-      r = r + ('    {"label":"' + port[0] + '","from":"')
+      r = r + ('    {"label":"' + port[0] + '","isAnimated":false,"from":"')
       if is_from: r = r + (port[1] + '","fromPort":"' + str(port_num) + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
       else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + str(port_num) + '"},\n')
     r = r[:-2]
