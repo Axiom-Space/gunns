@@ -2,16 +2,18 @@
 #define TemplateSpotter_EXISTS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @defgroup UT_GUNNS_NETWORK_SPOTTER    Gunns Network Spotter Unit Test
-/// @ingroup  UT_GUNNS
+/// @defgroup 
+/// @ingroup  
 ///
-/// @copyright Copyright 2019 United States Government as represented by the Administrator of the
-///            National Aeronautics and Space Administration.  All Rights Reserved.
+/// @copyright 
+///            
 ///
 /// @details  This is a Template Spotter Class, used to bare-bones demonstrate how to create a 
 ///           spotter for the AxSim.  A How-To Page can be found on Axiom's Network at:
 ///             https://vault.axiomspace.com/display/SEI/Making+a+Custom+Spotter
 ///           Else, copy and rename this file to get the boiler-plate needed for a custom spotter
+///
+/// @author ((Tristan Mansfield) (Feb 2023) (tristan@axiomspace.com))
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

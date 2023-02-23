@@ -1,6 +1,8 @@
 /************************** TRICK HEADER ***********************************************************
-@copyright Copyright 2019 United States Government as represented by the Administrator of the
-           National Aeronautics and Space Administration.  All Rights Reserved.
+
+AUTHOR:
+ ((Tristan Mansfield) (Feb 2023) (tristan@axiomspace.com))
+
 
 LIBRARY DEPENDENCY:
  ((core/GunnsNetworkSpotter.o))
