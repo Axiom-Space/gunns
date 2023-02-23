@@ -6,12 +6,6 @@
 # @revs_end
 #
 # This implements a templated output of the network display config (.json) file for GUNNS networks.
-import math
-import numpy as np
-from scipy.spatial import Voronoi, voronoi_plot_2d
-from scipy.spatial.distance import cdist
-import matplotlib.pyplot as plt
-
 class NetworkJsonTemplate:
 
   data = {}
