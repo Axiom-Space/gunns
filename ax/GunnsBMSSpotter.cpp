@@ -26,17 +26,24 @@ GunnsBMSSpotterConfigData::GunnsBMSSpotterConfigData(const std::string& name,
     // nothing to do
 }
 
-GunnsBMSSpotterInputData::GunnsBMSSpotterInputData()
-    :
-    GunnsNetworkSpotterInputData()
+GunnsBMSSpotterInputData::GunnsBMSSpotterInputData(double startingFluxFromBatt, 
+        double lowSocCutoff, double highSocCutoff) // 
+    : GunnsNetworkSpotterInputData()
+    , mStartingNetFluxFromBatt(startingFluxFromBatt)
+    , mLowSocCutoff(lowSocCutoff)
+    , mHighSocCutoff(highSocCutoff)
 {
     // nothing to do
 }
 
 GunnsBMSSpotter::GunnsBMSSpotter()
     : GunnsNetworkSpotter()
+    , mTotalDischargeTime(0.0)
+    , mTotalChargeTime(0.0)
+    , mCurrentStateTime(0.0)
+    , mStatus(BmsStatus::DISCHARGING)
 {
-
+    // Nothing to do
 }
 
 void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData,
@@ -58,6 +65,10 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
     mBmsUpOut = config->mBmsUpOut;
     mBmsDownIn = config->mBmsDownIn;
     mBmsDownOut = config->mBmsDownOut;
+
+    mNetFluxFromBatt = input->mStartingNetFluxFromBatt;
+    mLowSocCutoff = input->mLowSocCutoff;
+    mHighSocCutoff = input->mHighSocCutoff;
 
     /// - Set the init flag.
     mInitFlag = true;
@@ -92,6 +103,17 @@ const GunnsBMSSpotterInputData* GunnsBMSSpotter::validateInput(const GunnsNetwor
 }
 
 void GunnsBMSSpotter::stepPreSolver(const double dt) {
+    // 1. Make sure not both channels
+    // 2. Decide if we should be charging or discharging
+    //   a. Status of battery (safety wrt over/under charging most important)
+    //   b. How long have we been charging/discharging (Can't switch back and forth too much) -> 
+    //   c. Status of other batteries (e.g. if only one battery pack is low, rely on others more and charge the one)
+    //   d. 
+    // 3. Enable whichever channel
+    // 4. Set mStatus last thing in PreSolver
+    // 5. Profit ???
+
+    // FIXME_ Check if both channels are on
     if ((mBmsUpIn->getEnabled() && mBmsDownIn->getEnabled()) || 
         (mBmsUpOut->getEnabled() && mBmsDownOut->getEnabled()))
     {
@@ -100,9 +122,12 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
         mBmsDownOut->setEnabled(false);
     }
 
+
+
 }
 
 void GunnsBMSSpotter::stepPostSolver(const double dt) {
+    // 
     if (((mBmsUpIn->getEnabled() && mBmsDownIn->getEnabled()) || (mBmsUpOut->getEnabled() && mBmsDownOut->getEnabled())))
     {
         std::cerr << "Both Up or Down Conv pairs enabled. Disabling down-conv" << std::endl;
@@ -110,45 +135,63 @@ void GunnsBMSSpotter::stepPostSolver(const double dt) {
         mBmsDownOut->setEnabled(false);
     }
 
+    addFlux(dt);
 }
 
-    void GunnsBMSSpotter::enableCharging() {
-        disableDischarging();
-        mBmsDownIn->setEnabled(true);
-        mBmsDownOut->setEnabled(true);
-    }
-    void GunnsBMSSpotter::disableCharging() {
-        mBmsDownIn->setEnabled(false);
-        mBmsDownOut->setEnabled(false);
-    }
-    void GunnsBMSSpotter::enableDischarging() {
-        disableCharging();
-        mBmsUpIn->setEnabled(true);
-        mBmsUpOut->setEnabled(true);
-    }
-    void GunnsBMSSpotter::disableDischarging() {
-        mBmsUpIn->setEnabled(false);
-        mBmsUpOut->setEnabled(false);
-    }
+void GunnsBMSSpotter::enableCharging() {
+    disableDischarging();
+    mBmsDownIn->setEnabled(true);
+    mBmsDownOut->setEnabled(true);
 
-    bool GunnsBMSSpotter::isCharging() {
-        return (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled());
-    }
-    bool GunnsBMSSpotter::isDischarging() {
-        return (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled());
-    }
-    bool GunnsBMSSpotter::isInvalidBoth() {
-        return (
-            (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled()) &&
-            (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled())
-        );
-    }
-    bool GunnsBMSSpotter::isInvalidExclusive() {
-        return (
-            (mBmsUpIn->getEnabled() ^ mBmsUpOut->getEnabled()) ||
-            (mBmsDownIn->getEnabled() ^ mBmsDownOut->getEnabled())
-        );
-    }
-    bool GunnsBMSSpotter::isInvalid() {
-        return isInvalidBoth() || isInvalidExclusive();
-    }
+}
+void GunnsBMSSpotter::disableCharging() {
+    mBmsDownIn->setEnabled(false);
+    mBmsDownOut->setEnabled(false);
+}
+void GunnsBMSSpotter::enableDischarging() {
+    disableCharging();
+    mBmsUpIn->setEnabled(true);
+    mBmsUpOut->setEnabled(true);
+}
+void GunnsBMSSpotter::disableDischarging() {
+    mBmsUpIn->setEnabled(false);
+    mBmsUpOut->setEnabled(false);
+}
+
+bool GunnsBMSSpotter::isCharging() {
+    return (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled());
+}
+bool GunnsBMSSpotter::isDischarging() {
+    return (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled());
+}
+bool GunnsBMSSpotter::isInvalidBoth() {
+    return (
+        // Check if all are enabled -- can only charge OR discharge at once
+        (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled()) &&
+        (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled())
+    );
+}
+bool GunnsBMSSpotter::isInvalidExclusive() {
+    return (
+        // Is just one side of up-conv or down-conv enabled?
+        (mBmsUpIn->getEnabled() ^ mBmsUpOut->getEnabled()) ||
+        (mBmsDownIn->getEnabled() ^ mBmsDownOut->getEnabled())
+    );
+}
+bool GunnsBMSSpotter::isInvalid() {
+    return isInvalidBoth() || isInvalidExclusive();
+}
+
+void GunnsBMSSpotter::updateStatus() {
+    if (isInvalid()) {
+        mStatus = BmsStatus::INVALID;
+    } else if (isCharging()) {
+        mStatus = BmsStatus::CHARGING;
+    } else if (isDischarging()) {
+        mStatus = BmsStatus::DISCHARGING;
+    } else if ()
+}
+
+void GunnsBMSSpotter::addFlux(const double dt) {
+    mNetFluxFromBatt += (dt*mBattery->getFlux()); // mFlux should already account for direction
+}

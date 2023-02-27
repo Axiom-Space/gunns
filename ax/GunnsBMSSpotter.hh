@@ -12,6 +12,17 @@
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/* FORWARD WORK: -> Why am I thinking this hard about this before I even talk to Avionics?
+ *   1. Internal variable to track total charging / discharging / disabled time 
+ *   2. Internal variable to track how long current charge/discharge/disable time lasted
+ *      a. Used to check when we're allowed to switch on/off
+ *      b. 
+ *   3. 
+ *   1. 
+ *   1. 
+ *
+ */
+
 
 #include "core/GunnsNetworkSpotter.hh"
 #include "core/GunnsBasicConductor.hh"
@@ -49,7 +60,11 @@ class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
 class GunnsBMSSpotterInputData : public GunnsNetworkSpotterInputData
 {
     public:
-        GunnsBMSSpotterInputData();
+        double mStartingNetFluxFromBatt;
+        double      mLowSocCutoff;
+        double      mHighSocCutoff;
+
+        GunnsBMSSpotterInputData(double startingFluxFromBatt, double lowSocCutoff, double highSocCutoff);
         virtual ~GunnsBMSSpotterInputData() {;}
 };
 
@@ -66,6 +81,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
             DISCHARGING     = 1,
             CHARGING        = 2,
             TRIPPED         = 3,
+            INVALID         = 4,
         };
         
         GunnsBMSSpotter();
@@ -86,6 +102,8 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         bool isInvalidExclusive();
         bool isInvalid();
 
+        void updateStatus();
+
 
     protected:
         const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
@@ -96,6 +114,19 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         GunnsElectConverterOutput*  mBmsUpOut;
         GunnsElectConverterInput*   mBmsDownIn;
         GunnsElectConverterOutput*  mBmsDownOut;
+
+        double      mNetFluxFromBatt;
+        double      mLowSocCutoff;
+        double      mHighSocCutoff;
+
+        double      mTotalDischargeTime;
+        double      mTotalChargeTime;
+        double      mCurrentStateTime;
+
+        BmsStatus   mStatus;
+
+        void addFlux(const double dt);
+
 };
 
 ///@}
