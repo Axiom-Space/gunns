@@ -1130,14 +1130,14 @@ index = 0
 for link in links:
     portsIds[link.attrib['id']] = link.attrib['label']
     gunns_attr = link.find('./gunns').attrib
-    geom_attr  = link.find('./mxCell/mxGeometry').attrib
+    linkGeom  = link.find('./mxCell/mxGeometry').attrib
     linkClass  = gunns_attr['subtype'].split("/")[-1]
     linkName   = getLinkName(link)
     linkStyle  = link.find('./mxCell').attrib['style']
-    tmp = linkStyle[linkStyle.find('shape'):]
-    tmp = tmp[:tmp.find(';')]
-    shape = ET.fromstring(compression.decompress(tmp[tmp.find('('):-1]))
-    linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'), linkStyle, geom_attr, shape)
+    tmp_str = linkStyle[linkStyle.find('shape'):]
+    tmp_str = tmp_str[:tmp_str.find(';')]
+    linkShape = ET.fromstring(compression.decompress(tmp_str[tmp_str.find('('):-1]))
+    linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'), linkStyle, linkGeom, linkShape)
     linksData.append(linkData)
     index = index + 1
 
@@ -1146,11 +1146,11 @@ nodesData = []
 for node in netNodes:
     portsIds[node.attrib['id']] = node.attrib['label']
     numStr = node.attrib['label']
-    geom_attr  = node.find('./mxCell/mxGeometry').attrib
+    nodeGeom  = node.find('./mxCell/mxGeometry').attrib
     if basic_network:
-        nodeData = (numStr, node.attrib['i00.potential'], geom_attr)
+        nodeData = (numStr, node.attrib['i00.potential'], nodeGeom)
     else:
-        nodeData = (numStr, node.attrib['i00.initialFluidState'], geom_attr)
+        nodeData = (numStr, node.attrib['i00.initialFluidState'], nodeGeom)
         if '0' == nodeData[1] or '' == nodeData[1]:
             sys.exit(console.abort('node ' + nodeData[0] + ' is missing initialFluidState.'))
     nodesData.append(nodeData)

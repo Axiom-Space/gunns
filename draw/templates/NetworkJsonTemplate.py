@@ -14,6 +14,7 @@ class NetworkJsonTemplate:
     self.data = data
     return
 
+  # Use link data to build a dict of json info
   def linkStyle(self, link):
     style_dict = {}
     # Text
@@ -32,9 +33,54 @@ class NetworkJsonTemplate:
     for s in link[7].split(';'):
       if 'rotation' in s:
         style_dict['angle'] = s[9:]
-      
+    # Convert shape
+    style_dict['shape'] = self.convertShape(link[9])
+    # Get connection points
+    style_dict['connections'] = self.getConnections(link[9])
     return style_dict
   
+  # Transform link shape data into GoJS geometry string
+  def convertShape(self, shape):
+    geom_str = ''
+    for obj in shape.find('./foreground'):
+      if obj.tag == 'stroke' or obj.tag == 'fillstroke': continue
+      print(obj)
+      if obj.tag == 'rect': geom_str += 'M' + self.formatAttribs(obj.attrib, ['x', 'y']) + 'L' + self.formatAttribs(obj.attrib, ['rect'])
+      for item in obj:
+        attribs = item.attrib
+        if item.tag == 'move': geom_str += 'M' + self.formatAttribs(attribs, ['x', 'y'])
+        elif item.tag == 'line': geom_str += 'L' + self.formatAttribs(attribs, ['x', 'y'])
+        elif item.tag == 'curve': geom_str += 'C' + self.formatAttribs(attribs, ['x', 'y', 'x1', 'y1', 'x2', 'y2'])
+        elif item.tag == 'arc': geom_str += 'A' + self.formatAttribs(attribs, ['rx', 'ry', 'x-axis-rotation', 'large-arc-flag', 'sweep-flag', 'x', 'y'])
+        elif item.tag == 'close': geom_str = geom_str[:-1] + 'z '; continue
+        for key in attribs:
+          geom_str += attribs[key] + ' '
+      while geom_str[-1] == ' ': geom_str = geom_str[:-1]
+      if geom_str[-1] != 'z': geom_str += 'z'
+    return geom_str
+  
+  def formatAttribs(self, attribs, keys):
+    s = ''
+    if keys[0] == 'rect':
+      s += str(int(attribs['x']) + int(attribs['w'])) + ' ' + attribs['y'] + ' '
+      s += str(int(attribs['x']) + int(attribs['w'])) + ' ' + str(int(attribs['y']) + int(attribs['h'])) + ' '
+      s += attribs['x'] + ' ' + str(int(attribs['y']) + int(attribs['h'])) + ' '
+      s += attribs['x'] + ' ' + attribs['y'] + ' '
+      return s
+    for key in keys:
+      try: s += attribs[key] + ' '
+      except: print('Key not found: ' + key)
+    return s
+  
+  def getConnections(self, shape):
+    connections = '['
+    for item in shape.find('./connections'):
+      connections += '{"portId":"' + item.attrib['name'] + '",'
+      connections += '"x":"' + item.attrib['x'] + '",'
+      connections += '"y":"' + item.attrib['y'] + '"},'
+    connections = connections[:-1] + ']'
+    return connections
+
   # Use port style data to determine which link connector it should be attached to
   def portPos(self, port):
     from_obj = None
@@ -46,8 +92,8 @@ class NetworkJsonTemplate:
     obj = from_obj if from_obj else to_obj
     e_str = 'exit' if from_obj else 'entry'
     port_pt = []
-    style_str = port[3]
     # Extract connection point from style string
+    style_str = port[3]
     style_str = style_str[style_str.find(e_str + 'X=')+len(e_str)+2:]
     port_pt.append(style_str[:style_str.find(';')])
     style_str = style_str[style_str.find(e_str + 'Y=')+len(e_str)+2:]
@@ -71,17 +117,18 @@ class NetworkJsonTemplate:
       r = r + ('')
     for link in self.data['links']:
       link_style = self.linkStyle(link)
-      r = r + ('    {"key":"' + link_style['text'] + '","category":"' + link_style['category'] + '","pos":"' + link_style['pos'] + 
-                    '","size":"' + link_style['size'] + '","text":"' + link_style['text'] + '","angle":"' + link_style['angle'] + '"},\n')
+      r = r + ('    {"key":"' + link_style['text'] + '","category":"Link","pos":"' + link_style['pos'] + 
+                    '","size":"' + link_style['size'] + '","text":"' + link_style['text'] + '","angle":"' + link_style['angle'] + 
+                    '","geometryString":"' + link_style['shape'] + '","itemArray":' + link_style['connections'] + '},\n')
     for node in self.data['nodes']:
-      r = r + ('    {"key":"' + node[0] + '","category":"Circle","pos":"' + node[2]['x'] + ' ' + node[2]['y'] + '","text":"Node' + node[0] + '"},\n')
+      r = r + ('    {"key":"' + node[0] + '","category":"Node","pos":"' + node[2]['x'] + ' ' + node[2]['y'] + '","text":"Node' + node[0] + '"},\n')
     r = r[:-2]
     r = r + ('\n],\n'
              '  "linkDataArray": [\n')
     for port in self.data['ports']:
       if float(port[0]) > 1: continue
       is_from, port_num = self.portPos(port)
-      r = r + ('    {"label":"' + port[0] + '","isAnimated":false,"from":"')
+      r = r + ('    {"label":"' + port[0] + '","from":"')
       if is_from: r = r + (port[1] + '","fromPort":"' + str(port_num) + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
       else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + str(port_num) + '"},\n')
     r = r[:-2]
