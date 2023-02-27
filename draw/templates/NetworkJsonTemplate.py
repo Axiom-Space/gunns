@@ -41,7 +41,7 @@ class NetworkJsonTemplate:
   
   # Transform link shape data into GoJS geometry string
   def convertShape(self, shape):
-    geom_str = ''
+    geom_str = 'F '
     for obj in shape.find('./foreground'):
       if obj.tag == 'stroke' or obj.tag == 'fillstroke': continue
       print(obj)
@@ -53,8 +53,6 @@ class NetworkJsonTemplate:
         elif item.tag == 'curve': geom_str += 'C' + self.formatAttribs(attribs, ['x', 'y', 'x1', 'y1', 'x2', 'y2'])
         elif item.tag == 'arc': geom_str += 'A' + self.formatAttribs(attribs, ['rx', 'ry', 'x-axis-rotation', 'large-arc-flag', 'sweep-flag', 'x', 'y'])
         elif item.tag == 'close': geom_str = geom_str[:-1] + 'z '; continue
-        for key in attribs:
-          geom_str += attribs[key] + ' '
       while geom_str[-1] == ' ': geom_str = geom_str[:-1]
       if geom_str[-1] != 'z': geom_str += 'z'
     return geom_str
@@ -102,11 +100,10 @@ class NetworkJsonTemplate:
     port_pt.append(style_str[:style_str.find(';')])
     style_str = style_str[style_str.find(e_str + 'Dy=')+len(e_str)+3:]
     port_pt.append(style_str[:style_str.find(';')])
-    port_index = 0
     for constraint in obj[9].find('./connections').iter('constraint'):
-      if constraint.attrib['x'] == port_pt[0] and constraint.attrib['y'] == port_pt[1]: break
-      port_index += 1
-    return is_from, port_index
+      if constraint.attrib['x'] == port_pt[0] and constraint.attrib['y'] == port_pt[1]: 
+        return is_from, constraint.attrib['name']
+    return is_from, '0'
 
   def render(self):
     r =('{ "class": "go.GraphLinksModel",\n'
@@ -127,10 +124,10 @@ class NetworkJsonTemplate:
              '  "linkDataArray": [\n')
     for port in self.data['ports']:
       if float(port[0]) > 1: continue
-      is_from, port_num = self.portPos(port)
+      is_from, port_name = self.portPos(port)
       r = r + ('    {"label":"' + port[0] + '","from":"')
-      if is_from: r = r + (port[1] + '","fromPort":"' + str(port_num) + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
-      else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + str(port_num) + '"},\n')
+      if is_from: r = r + (port[1] + '","fromPort":"' + port_name + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
+      else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + port_name + '"},\n')
     r = r[:-2]
     r = r + ('\n  ]\n'
              '}')
