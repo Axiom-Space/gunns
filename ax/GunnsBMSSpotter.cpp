@@ -122,7 +122,23 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
         mBmsDownOut->setEnabled(false);
     }
 
+    // Bad Hysteresis here
+    if ((mBattery->getSoc() <= 0.30) && (mStatus != BmsStatus::CHARGING)) {
+        disableDischarging();
+        enableCharging();
+        updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
+        std::cerr << returnStatus() << std::endl;
+    } else if ((mBattery->getSoc() >= 0.80) && mStatus != BmsStatus::DISCHARGING) {
+        disableCharging();
+        enableDischarging();
+        updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
+        std::cerr << returnStatus() << std::endl;
+    }
 
+    // try to keep transformer down out voltage equal to battery voltage?
+    if (mStatus == BmsStatus::CHARGING) { // mSourcePotential is set at end of GunnsElectBattery::updateState()
+        mBmsDownOut->setSetpoint(mBattery->getSourcePotential());
+    }
 
 }
 
@@ -189,7 +205,7 @@ void GunnsBMSSpotter::updateStatus() {
         mStatus = BmsStatus::CHARGING;
     } else if (isDischarging()) {
         mStatus = BmsStatus::DISCHARGING;
-    } else if ()
+    }
 }
 
 void GunnsBMSSpotter::addFlux(const double dt) {

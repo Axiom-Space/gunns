@@ -83,6 +83,29 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
             TRIPPED         = 3,
             INVALID         = 4,
         };
+
+        std::string returnStatus() {
+            switch (this->mStatus)
+            {
+            case BmsStatus::DISABLED:
+                return "DISABLED";
+                break;
+            case BmsStatus::DISCHARGING:
+                return "DISCHARGING";
+                break;
+            case BmsStatus::CHARGING:
+                return "CHARGING";
+                break;
+            case BmsStatus::TRIPPED:
+                return "TRIPPED";
+                break;
+            case BmsStatus::INVALID:
+                return "INVALID";
+                break;
+            default:
+                break;
+            }
+        }
         
         GunnsBMSSpotter();
         virtual     ~GunnsBMSSpotter() {;}
@@ -104,12 +127,14 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
 
         void updateStatus();
 
+        GunnsElectBattery*          mBattery;
+
 
     protected:
         const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
         const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
     private:
-        GunnsElectBattery*          mBattery;
+        
         GunnsElectConverterInput*   mBmsUpIn;
         GunnsElectConverterOutput*  mBmsUpOut;
         GunnsElectConverterInput*   mBmsDownIn;

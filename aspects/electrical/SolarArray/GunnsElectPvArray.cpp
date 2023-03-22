@@ -335,11 +335,11 @@ void GunnsElectPvArray::updateArray(const double dt)
     ///   find the highest string open-circuit voltage and maximum power.  The voltage will also be
     ///   the same for the entire array.
     double percentInsolation = 0.0;
-    double isc               = 0.0;
-    double voc               = 0.0;
-    double vmpp              = 0.0;
-    double impp              = 0.0;
-    double pmpp              = 0.0;
+    double isc               = 0.0; // I short circuit
+    double voc               = 0.0; // V Open Circuit
+    double vmpp              = 0.0; // V Max Power Point
+    double impp              = 0.0; // I Max Power Point
+    double pmpp              = 0.0; // Power Max Power Point
     for (unsigned int section=0; section<mConfig.mNumSections; ++section) {
         mSections[section].update(dt);
         percentInsolation += mSections[section].getPercentInsolation();
