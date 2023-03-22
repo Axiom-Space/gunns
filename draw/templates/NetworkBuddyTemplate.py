@@ -503,66 +503,54 @@ class NetworkBuddyTemplate:
       r = r + '\n'
     r = r[:-1] + ('        }\n'
         '\n')
-    # Define attribute getter/setter typedef for maps
-    r = r + ('        /** @brief Get attribute of a link\n'
-        '         * @param attribute : name of attribute to retreive\n'
+    # Getter and Setter functions
+    r = r + ('        /** @brief Type definition for link interaction functions\n'
+        '         * @param vecstr : name of link, name of attribute, and optionally value to set\n'
         '        *******************************************************************************/\n'
-        '        typedef std::string (' + name + '::* getAttrib)(std::string link, std::string attrib);\n'
-        '\n'
-        '        /** @brief Set attribute of a link\n'
-        '         * @param attribute : name of attribute to set\n'
-        '         * @param value : value to set\n'
-        '        *******************************************************************************/\n'
-        '        typedef std::string (' + name + '::* setAttrib)(std::string link, std::string attrib, std::string value);\n')
-    # Getter functions
+        '        typedef std::string (' + name + '::*commandFunc)(const std::vector<std::string> &vecstr);\n')
     for linkType in linkMap.keys():
       r = r + ('\n'
         '        /** @brief Get attribute from ' + linkType + '\n'
-        '         * @param attrib : Attribute to be retreived\n'
+        '         * @param vecstr : Attribute to be retreived\n'
         '        *******************************************************************************/\n'
-        '        std::string get' + linkType + 'Attrib(std::string link, std::string attrib) {\n')
+        '        std::string get' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
       for attrib in self.linkAttribs[linkType]:
         if self.linkAttribs[linkType][attrib][0] == '': continue
-        r = r + ('            if (attrib == "' + attrib + '") { return std::to_string(' + linkType[5].lower() + linkType[6:] + 's[link]->' + self.linkAttribs[linkType][attrib][0] + '); }\n')
+        r = r + ('            if (vecstr.at(1) == "' + attrib + '") { return std::to_string(' + linkType[5].lower() + linkType[6:] + 's[vecstr.at(0)]->' + self.linkAttribs[linkType][attrib][0] + '); }\n')
       r = r + ('            return "Attribute cannot be retreived.";\n'
         '        };\n')
-    r = r + ('\n'
-        '        /** @brief Get map for programmatic interaction\n'
-        '        *******************************************************************************/\n'
-        '        const std::map<std::string, ' + name + '::getAttrib> getAttribMap {\n')
-    for linkType in linkMap.keys():
-      r = r + ('            {"' + linkType + '", &' + name + '::get' + linkType + 'Attrib},\n')
-    r = r[:-2] + ('\n'
-        '        };\n'
-        '\n'
-        '        /** @brief Get attribute from a link\n'
-        '        *******************************************************************************/\n'
-        '        std::string get(const std::string &link, const std::string &attrib) {\n'
-        '            typename std::map<std::string, ' + name + '::getAttrib>::const_iterator it;\n'
-        '            it = getAttribMap.find(linkTypes[link]);\n'
-        '            if (it == getAttribMap.end()) return 0;\n'
-        '            getAttrib g = it->second;\n'
-        '            return (this->*g)(link, attrib);\n'
-        '        };\n')
-    # Setter functions
     for linkType in linkMap.keys():
       r = r + ('\n'
         '        /** @brief Set attribute from ' + linkType + '\n'
         '         * @param attrib : Attribute to be retreived\n'
         '        *******************************************************************************/\n'
-        '        std::string set' + linkType + 'Attrib(std::string link, std::string attrib, std::string value) {\n')
+        '        std::string set' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
       for attrib in self.linkAttribs[linkType].keys():
         if self.linkAttribs[linkType][attrib][1] == '': continue
-        r = r + ('            if (attrib == "' + attrib + '") { return ' + linkType[5].lower() + linkType[6:] + 's[link]->' + self.linkAttribs[linkType][attrib][1] + '; }\n')
+        r = r + ('            if (vecstr.at(1) == "' + attrib + '") { return ' + linkType[5].lower() + linkType[6:] + 's[vecstr.at(0)]->' + self.linkAttribs[linkType][attrib][1] + '; }\n')
       r = r + ('            return "Attribute cannot be set.";\n'
         '        };\n')
     r = r + ('\n'
         '        /** @brief Set map for programmatic interaction\n'
         '        *******************************************************************************/\n'
-        '        const std::map<std::string, ' + name + '::setAttrib> setAttribMap {\n')
+        '        const std::map<std::string, ' + name + '::commandFunc> funcMap {\n')
     for linkType in linkMap.keys():
-      r = r + ('            {"' + linkType + '", &' + name + '::set' + linkType + 'Attrib},\n')
+      r = r + ('            {"get' + linkType + '", &' + name + '::get' + linkType + 'Attrib},\n')
+      r = r + ('            {"set' + linkType + '", &' + name + '::set' + linkType + 'Attrib},\n')
     r = r[:-2] + ('\n'
+        '        };\n'
+        '\n'
+        '        /** @brief Parse command \n'
+        '        *******************************************************************************/\n'
+        '        std::string parseCommand(const std::vector<std::string> &vecstr) {\n'
+        '            if (vecstr.at(0) == "getFlux") return getFlux();\n'
+        '            if (vecstr.at(0) == "getLink") return getLink(vecstr.at(1));\n'
+        '            typename std::map<std::string, ' + name + '::commandFunc>::const_iterator it;\n'
+        '            it = funcMap.find(vecstr.at(0) + linkTypes[vecstr.at(1)]);\n'
+        '            if (it == funcMap.end()) return "";\n'
+        '            commandFunc s = it->second;\n'
+        '            std::vector<std::string> inputs(vecstr.begin() + 1, vecstr.end());\n'
+        '            return (this->*s)(inputs);\n'
         '        };\n'
         '\n')
     # Helper Functions
@@ -581,15 +569,6 @@ class NetworkBuddyTemplate:
         r = r + ('            std::cout << net->' + link[1] + '.getFlux() << std::endl;\n')
     r = r + ('        };\n'
         '\n'
-        '        /** @brief Set attribute of a link\n'
-        '        *******************************************************************************/\n'
-        '        std::string set(const std::string &link, const std::string &attrib, const std::string &value) {\n'
-        '            typename std::map<std::string, ' + name + '::setAttrib>::const_iterator it;\n'
-        '            it = setAttribMap.find(linkTypes[link]);\n'
-        '            if (it == setAttribMap.end()) return 0;\n'
-        '            setAttrib s = it->second;\n'
-        '            return (this->*s)(link, attrib, value);\n'
-        '        };\n'
         '\n'
         '    private:\n'
         '        ' + name + ' (const ' + name + '&);\n'
