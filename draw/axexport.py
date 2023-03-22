@@ -50,6 +50,7 @@ import modules.compression as compression
 import modules.shapeLibs as shapeLibs
 import modules.consoleMsg as console
 import modules.xmlUtils as xmlUtils
+import modules.shapeMap as shapeMap
 import json
 from templates.BasicNetworkHeaderTemplate import BasicNetworkHeaderTemplate
 from templates.FluidNetworkHeaderTemplate import FluidNetworkHeaderTemplate
@@ -1136,7 +1137,8 @@ for link in links:
     linkStyle  = link.find('./mxCell').attrib['style']
     tmp_str = linkStyle[linkStyle.find('shape'):]
     tmp_str = tmp_str[:tmp_str.find(';')]
-    linkShape = ET.fromstring(compression.decompress(tmp_str[tmp_str.find('('):-1]))
+    try: linkShape = ET.fromstring(compression.decompress(tmp_str[tmp_str.find('('):-1]))
+    except: linkShape = ET.fromstring(shapeMap.shapeMap[tmp_str[tmp_str.find('=')+1:]])
     linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'), linkStyle, linkGeom, linkShape)
     linksData.append(linkData)
     index = index + 1

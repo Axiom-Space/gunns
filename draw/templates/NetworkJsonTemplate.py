@@ -19,11 +19,6 @@ class NetworkJsonTemplate:
     style_dict = {}
     # Text
     style_dict['text'] = link[1]
-    # Category
-    if 'Valve' in link[0]:
-      style_dict['category'] = 'Valve'
-    else:
-      style_dict['category'] = 'Process'
     # Size
     style_dict['size'] = link[8]['width'] + ' ' + link[8]['height']
     # Position
@@ -31,8 +26,8 @@ class NetworkJsonTemplate:
     style_dict['pos'] = str(pos[0] + float(link[8]['width'])/2) + ' ' + str(pos[1] + float(link[8]['height'])/2)
     # Convert style string
     for s in link[7].split(';'):
-      if 'rotation' in s:
-        style_dict['angle'] = s[9:]
+      if 'rotation' in s: style_dict['angle'] = s[9:]
+      else: style_dict['angle'] = '0'
     # Convert shape
     style_dict['shape'] = self.convertShape(link[9])
     # Get connection points
@@ -41,23 +36,31 @@ class NetworkJsonTemplate:
   
   # Transform link shape data into GoJS geometry string
   def convertShape(self, shape):
-    geom_str = ''
-    for obj in shape.find('./foreground'):
-      if obj.tag == 'stroke' or obj.tag == 'fillstroke': continue
-      print(obj)
-      if obj.tag == 'rect': geom_str += 'M' + self.formatAttribs(obj.attrib, ['x', 'y']) + 'L' + self.formatAttribs(obj.attrib, ['rect'])
-      for item in obj:
-        attribs = item.attrib
-        if item.tag == 'move': geom_str += 'M' + self.formatAttribs(attribs, ['x', 'y'])
-        elif item.tag == 'line': geom_str += 'L' + self.formatAttribs(attribs, ['x', 'y'])
-        elif item.tag == 'curve': geom_str += 'C' + self.formatAttribs(attribs, ['x', 'y', 'x1', 'y1', 'x2', 'y2'])
-        elif item.tag == 'arc': geom_str += 'A' + self.formatAttribs(attribs, ['rx', 'ry', 'x-axis-rotation', 'large-arc-flag', 'sweep-flag', 'x', 'y'])
-        elif item.tag == 'close': geom_str = geom_str[:-1] + 'z '; continue
-        for key in attribs:
-          geom_str += attribs[key] + ' '
-      while geom_str[-1] == ' ': geom_str = geom_str[:-1]
-      if geom_str[-1] != 'z': geom_str += 'z'
-    return geom_str
+    geom_strs = []
+    index = 0
+    for layer in ['background', 'foreground']:
+      if not shape.find('./' + layer): continue
+      if len(geom_strs) > 0: geom_strs[-1] += 'z'
+      for obj in shape.find('./' + layer):
+        if obj.tag == 'stroke' or obj.tag == 'fontfamily' or obj.tag == 'text': continue
+        elif obj.tag == 'fill' or obj.tag == 'fillstroke': geom_strs[index-1] = 'F ' + geom_strs[index-1] + 'x '; continue
+        elif obj.tag == 'rect': geom_strs.append('M' + self.formatAttribs(obj.attrib, ['x', 'y']) + 'L' + self.formatAttribs(obj.attrib, ['rect']))
+        else:
+          geom_strs.append('')
+          for item in obj:
+            attribs = item.attrib
+            if item.tag == 'move': geom_strs[index] += 'M' + self.formatAttribs(attribs, ['x', 'y'])
+            elif item.tag == 'line': geom_strs[index] += 'L' + self.formatAttribs(attribs, ['x', 'y'])
+            elif item.tag == 'curve': geom_strs[index] += 'C' + self.formatAttribs(attribs, ['x', 'y', 'x1', 'y1', 'x2', 'y2'])
+            elif item.tag == 'arc': geom_strs[index] += 'A' + self.formatAttribs(attribs, ['rx', 'ry', 'x-axis-rotation', 'large-arc-flag', 'sweep-flag', 'x', 'y'])
+            elif item.tag == 'close': geom_strs[index] = geom_strs[index][:-1] + 'z '; continue
+            else: print('Tag not recognized: ' + item.tag)
+        while geom_strs[index][-1] == ' ': geom_strs[index] = geom_strs[index][:-1]
+        # if geom_strs[index][-1] != 'z': geom_strs[index] += 'z'
+        index += 1
+    final = ''
+    for s in geom_strs: final += s + ' '
+    return final
   
   def formatAttribs(self, attribs, keys):
     s = ''
@@ -102,11 +105,10 @@ class NetworkJsonTemplate:
     port_pt.append(style_str[:style_str.find(';')])
     style_str = style_str[style_str.find(e_str + 'Dy=')+len(e_str)+3:]
     port_pt.append(style_str[:style_str.find(';')])
-    port_index = 0
     for constraint in obj[9].find('./connections').iter('constraint'):
-      if constraint.attrib['x'] == port_pt[0] and constraint.attrib['y'] == port_pt[1]: break
-      port_index += 1
-    return is_from, port_index
+      if constraint.attrib['x'] == port_pt[0] and constraint.attrib['y'] == port_pt[1]: 
+        return is_from, constraint.attrib['name']
+    return is_from, '0'
 
   def render(self):
     r =('{ "class": "go.GraphLinksModel",\n'
@@ -127,10 +129,10 @@ class NetworkJsonTemplate:
              '  "linkDataArray": [\n')
     for port in self.data['ports']:
       if float(port[0]) > 1: continue
-      is_from, port_num = self.portPos(port)
+      is_from, port_name = self.portPos(port)
       r = r + ('    {"label":"' + port[0] + '","from":"')
-      if is_from: r = r + (port[1] + '","fromPort":"' + str(port_num) + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
-      else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + str(port_num) + '"},\n')
+      if is_from: r = r + (port[1] + '","fromPort":"' + port_name + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
+      else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + port_name + '"},\n')
     r = r[:-2]
     r = r + ('\n  ]\n'
              '}')
