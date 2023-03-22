@@ -549,8 +549,7 @@ class NetworkBuddyTemplate:
         '            it = funcMap.find(vecstr.at(0) + linkTypes[vecstr.at(1)]);\n'
         '            if (it == funcMap.end()) return "";\n'
         '            commandFunc s = it->second;\n'
-        '            std::vector<std::string> inputs(vecstr.begin() + 1, vecstr.end());\n'
-        '            return (this->*s)(inputs);\n'
+        '            return (this->*s)({vecstr.begin()+1, vecstr.end()});\n'
         '        };\n'
         '\n')
     # Helper Functions
