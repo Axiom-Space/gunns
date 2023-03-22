@@ -479,7 +479,7 @@ class NetworkBuddyTemplate:
         '{\n'
         '    public:\n'
         '        // GUNNS Link Maps\n'
-        '        std::map<std::string, GunnsBasicLink*> netLinks;\n')
+        '        std::map<std::string, std::string> linkTypes;\n')
     linkMap = self.linkTypes(self.data)
     for linkType in linkMap.keys():
       r = r + ('        std::map<std::string, ' + linkType + '*> ' + linkType[5].lower() + linkType[6:] + 's;\n')
@@ -491,7 +491,11 @@ class NetworkBuddyTemplate:
         '        void initialize(' + self.data['networkName'] + ' *n) {\n'
         '            // Initialize pointer to GUNNS network\n'
         '            net = n;\n'
-        '\n')
+        '\n'
+        '            // Initialize link type map\n')
+    for link in self.data['links']:
+      r = r + ('            linkTypes["' + link[1] + '"] = "' + link[0] + '";\n')
+    r = r + ('\n')
     for linkType in linkMap.keys():
       r = r + ('            // Initialize link map for ' + linkType + '\n')
       for link in linkMap[linkType]:
@@ -529,6 +533,16 @@ class NetworkBuddyTemplate:
     for linkType in linkMap.keys():
       r = r + ('            {"' + linkType + '", &' + name + '::get' + linkType + 'Attrib},\n')
     r = r[:-2] + ('\n'
+        '        };\n'
+        '\n'
+        '        /** @brief Get attribute from a link\n'
+        '        *******************************************************************************/\n'
+        '        std::string get(const std::string &link, const std::string &attrib) {\n'
+        '            typename std::map<std::string, ' + name + '::getAttrib>::const_iterator it;\n'
+        '            it = getAttribMap.find(linkTypes[link]);\n'
+        '            if (it == getAttribMap.end()) return 0;\n'
+        '            getAttrib g = it->second;\n'
+        '            return (this->*g)(link, attrib);\n'
         '        };\n')
     # Setter functions
     for linkType in linkMap.keys():
@@ -567,7 +581,19 @@ class NetworkBuddyTemplate:
         r = r + ('            std::cout << net->' + link[1] + '.getFlux() << std::endl;\n')
     r = r + ('        };\n'
         '\n'
+        '        /** @brief Set attribute of a link\n'
+        '        *******************************************************************************/\n'
+        '        std::string set(const std::string &link, const std::string &attrib, const std::string &value) {\n'
+        '            typename std::map<std::string, ' + name + '::setAttrib>::const_iterator it;\n'
+        '            it = setAttribMap.find(linkTypes[link]);\n'
+        '            if (it == setAttribMap.end()) return 0;\n'
+        '            setAttrib s = it->second;\n'
+        '            return (this->*s)(link, attrib, value);\n'
+        '        };\n'
+        '\n'
         '    private:\n'
+        '        ' + name + ' (const ' + name + '&);\n'
+        '        ' + name + '& operator=(const ' + name  + '&);\n'
         '        ' + self.data['networkName'] + ' *net;\n'
         '};\n'
         '\n'
