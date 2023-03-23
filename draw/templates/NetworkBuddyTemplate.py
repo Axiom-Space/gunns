@@ -5,6 +5,52 @@
 # @rev_entry(Kyle Fondon, Axiom Space, GUNNS, March 2023, --, Initial implementation.}
 # @revs_end
 #
+import os
+
+# Function to grab all getter and setter functions from GUNNS
+def getGunnsFuncs(gunns_home):
+  getters = {}
+  setters = {}
+  link_structure = {}
+  for folder in ['/core', '/aspects']:
+    for root, dirs, files in os.walk(gunns_home + folder):
+      for file in files:
+        if '.h' in file:
+          link = file[:file.index('.')]
+          getters[link]= {}
+          setters[link]= {}
+          with open(root + '/' + file, 'r') as gfile:
+            lines = gfile.readlines()
+            while len(lines) > 0: 
+              if 'class ' + link in lines[0] and 'InputData' not in lines[0] and 'ConfigData' not in lines[0]: break
+              lines.pop(0)
+            if len(lines) <= 0: print("Could not process link: ", link); continue
+            tmp = lines[0][lines[0].find(':')+1:].strip().split(' ') if ':' in lines[0] else ['', '', '']
+            link_structure[link] = tmp[2] if tmp[1] == '' else tmp[1]
+            for line in lines[1:]:
+              if 'protected:' in line or 'private:' in line: break
+              line = line.strip()
+              if 'get' in line and line[-1] == ';' and '(' in line and '*' not in line:
+                func = line[line.index('get'):line.index(')')+1]
+                attr = func[3].lower() + func[4:func.find('(')]
+                getters[link][attr] = func
+              if 'set' in line and line[-1] == ';' and '(' in line and '*' not in line and 'reset' not in line:
+                func = line[line.index('set'):line.index(')')+1]
+                attr = func[3].lower() + func[4:func.find('(')]
+                setters[link][attr] = func
+  visited = []
+  for link in link_structure.keys():
+    if link_structure[link] == '': visited.append(link)
+  while len(visited) < len(link_structure.keys()):
+    for link in link_structure.keys():
+      if link_structure[link] in visited and link_structure[link] in link_structure.keys():
+        for attr in getters[link_structure[link]].keys(): getters[link][attr] = getters[link_structure[link]][attr]
+        for attr in setters[link_structure[link]].keys(): 
+          setters[link][attr] = setters[link_structure[link]][attr]
+          if attr == 'lastMinorStep': print(link_structure[link])
+        visited.append(link)
+  return getters, setters
+
 # This implements a templated output of the buddy class utilities file (.hh)
 class NetworkBuddyTemplate:
 
@@ -407,11 +453,25 @@ class NetworkBuddyTemplate:
   
   linkAttribs = {**genericLinkAttribs, **fluidLinkAttribs, **thermalLinkAttribs, **electricLinkAttribs}
 
-  data = {}
-
   def __init__(self, data):
     self.data = data
+    self.getters, self.setters = getGunnsFuncs('/home/vagrant/ax-sim/lib/gunns')
     return
+  
+  def format(self, func):
+    func_out = func[:func.index('(')+1]
+    if func[:3] == 'get': return func_out + ')'
+    params = ''
+    v_index = 2
+    for param in [p.strip() for p in func[func.index('(')+1:func.index(')')].split(',')]:
+      if param == '': continue
+      tmp = param.split(' ')
+      args = []
+      for i in range(len(tmp)):
+        if tmp[i] != '' and 'const' not in tmp[i]: args.append(tmp[i])        
+      params += 'vecstr.at('+ str(v_index) + '), '
+      v_index += 1
+    return func_out + params[:-2] + ')'
   
   def linkTypes(self, data):
     linkMap = {}
@@ -514,9 +574,8 @@ class NetworkBuddyTemplate:
         '         * @param vecstr : Attribute to be retreived\n'
         '        *******************************************************************************/\n'
         '        std::string get' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
-      for attrib in self.linkAttribs[linkType]:
-        if self.linkAttribs[linkType][attrib][0] == '': continue
-        r = r + ('            if (vecstr.at(1) == "' + attrib + '") { return std::to_string(' + linkType[5].lower() + linkType[6:] + 's[vecstr.at(0)]->' + self.linkAttribs[linkType][attrib][0] + '); }\n')
+      for attrib in self.getters[linkType]:
+        r = r + ('            if (vecstr.at(1) == "' + attrib + '") { return std::to_string(' + linkType[5].lower() + linkType[6:] + 's[vecstr.at(0)]->' + self.format(self.getters[linkType][attrib]) + '); }\n')
       r = r + ('            return "Attribute cannot be retreived.";\n'
         '        };\n')
     for linkType in linkMap.keys():
@@ -525,10 +584,9 @@ class NetworkBuddyTemplate:
         '         * @param attrib : Attribute to be retreived\n'
         '        *******************************************************************************/\n'
         '        std::string set' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
-      for attrib in self.linkAttribs[linkType].keys():
-        if self.linkAttribs[linkType][attrib][1] == '': continue
-        r = r + ('            if (vecstr.at(1) == "' + attrib + '") { return ' + linkType[5].lower() + linkType[6:] + 's[vecstr.at(0)]->' + self.linkAttribs[linkType][attrib][1] + '; }\n')
-      r = r + ('            return "Attribute cannot be set.";\n'
+      # for attrib in self.setters[linkType].keys():
+      #   r = r + ('            if (vecstr.at(1) == "' + attrib + '") { ' + linkType[5].lower() + linkType[6:] + 's[vecstr.at(0)]->' + self.format(self.setters[linkType][attrib]) + '; }\n')
+      r = r + ('            return "Attribute set.";\n'
         '        };\n')
     r = r + ('\n'
         '        /** @brief Set map for programmatic interaction\n'
