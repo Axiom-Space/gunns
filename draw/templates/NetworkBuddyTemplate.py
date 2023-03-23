@@ -7,456 +7,57 @@
 #
 import os
 
-# Function to grab all getter and setter functions from GUNNS
-def getGunnsFuncs(gunns_home):
-  getters = {}
-  setters = {}
-  link_structure = {}
-  for folder in ['/core', '/aspects']:
-    for root, dirs, files in os.walk(gunns_home + folder):
-      for file in files:
-        if '.h' in file:
-          link = file[:file.index('.')]
-          getters[link]= {}
-          setters[link]= {}
-          with open(root + '/' + file, 'r') as gfile:
-            lines = gfile.readlines()
-            while len(lines) > 0: 
-              if 'class ' + link in lines[0] and 'InputData' not in lines[0] and 'ConfigData' not in lines[0]: break
-              lines.pop(0)
-            if len(lines) <= 0: print("Could not process link: ", link); continue
-            tmp = lines[0][lines[0].find(':')+1:].strip().split(' ') if ':' in lines[0] else ['', '', '']
-            link_structure[link] = tmp[2] if tmp[1] == '' else tmp[1]
-            for line in lines[1:]:
-              if 'protected:' in line or 'private:' in line: break
-              line = line.strip()
-              if 'get' in line and line[-1] == ';' and '(' in line and '*' not in line:
-                func = line[line.index('get'):line.index(')')+1]
-                attr = func[3].lower() + func[4:func.find('(')]
-                getters[link][attr] = func
-              if 'set' in line and line[-1] == ';' and '(' in line and '*' not in line and 'reset' not in line:
-                func = line[line.index('set'):line.index(')')+1]
-                attr = func[3].lower() + func[4:func.find('(')]
-                setters[link][attr] = func
-  visited = []
-  for link in link_structure.keys():
-    if link_structure[link] == '': visited.append(link)
-  while len(visited) < len(link_structure.keys()):
-    for link in link_structure.keys():
-      if link_structure[link] in visited and link_structure[link] in link_structure.keys():
-        for attr in getters[link_structure[link]].keys(): getters[link][attr] = getters[link_structure[link]][attr]
-        for attr in setters[link_structure[link]].keys(): 
-          setters[link][attr] = setters[link_structure[link]][attr]
-          if attr == 'lastMinorStep': print(link_structure[link])
-        visited.append(link)
-  return getters, setters
-
 # This implements a templated output of the buddy class utilities file (.hh)
 class NetworkBuddyTemplate:
 
-  genericLinkAttribs = {
-    'GunnsBasicConductor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsBasicCapacitor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsBasicPotential': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsBasicSource': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsBasicSocket': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsBasicJumper': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsBasicExternalSupply': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsBasicExternalDemand': 
-        {
-          'flux': ('getFlux()', '')
-        },
-  }
-  fluidLinkAttribs = {
-    'GunnsFluidConductor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidCapacitor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidPotential': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSource': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidTank': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidBalloon': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidAccum': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidAccumGas': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidValve': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidCheckValve': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluid3WayValve': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluid3WayCheckValve': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidBalancedPrv': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidRegulatorValve': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidReleifValve': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidLeak': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidDistributedIf': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidExternalSupply': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidExternalDemand': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSelectiveMembrane': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidHeatExchanger': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsGasFan': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsLiquidCentrifugalPump': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsGasDisplacementPump': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsLiquidDisplacementPump': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidCondensingHxSeparator': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSimpleQd': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidPipe': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSourceBoundary': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidReactor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidHotReactor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidPhaseChangeConductor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidPhaseChangeSource': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidEvaporation': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidHeater': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidFlowController': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSensor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidLiquidWaterSensor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSocket': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidJumper': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidShadow': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidAdsorber': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidHotAdsorber': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidMultiAdsorber': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSorptionBed': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidMetabolic': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidMetabolic2': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidEqConductor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidHatch': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidHiFiOrifice': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidHiFiValve': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidFireSource': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidMultiSeparator': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSeparatorGas': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSeparatorLiquid': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSimpleRocket': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSublimator': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsGasTurbine': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidTypeChangeConductor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsFluidSimpleH2Redox': 
-        {
-          'flux': ('getFlux()', '')
-        },
-  }
-  thermalLinkAttribs = {
-    'GunnsThermalRadiation': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsThermalCapacitor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsThermalPotential': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsThermalSource': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsThermalHeater': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsThermalPanel': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsThermalMultiPanel': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsThermalPhaseChangeBattery': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsThermoElectricDevice': 
-        {
-          'flux': ('getFlux()', '')
-        },
-  }
-  electricLinkAttribs = {
-    'GunnsElectBattery': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectPvArray': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectPvRegShunt': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectPvRegConv': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectRealDiode': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'SwitchElect': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectUserLoadSwitch': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectUserLoadSwitch2': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectSelector': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'ConverterElect': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectricalResistor': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsResistorPowerFunction': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsResistiveLoad': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'EpsConstantPowerLoad': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsBasicFlowController': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectIps': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectShort': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectConverterInput': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectConverterOutput': 
-        {
-          'flux': ('getFlux()', '')
-        },
-    'GunnsElectDistributedIf': 
-        {
-          'flux': ('getFlux()', '')
-        },
-  }
-  
-  linkAttribs = {**genericLinkAttribs, **fluidLinkAttribs, **thermalLinkAttribs, **electricLinkAttribs}
-
   def __init__(self, data):
     self.data = data
-    self.getters, self.setters = getGunnsFuncs('/home/vagrant/ax-sim/lib/gunns')
+    self.getters, self.setters = self.getGunnsFuncs('/home/vagrant/ax-sim/lib/gunns')
     return
+
+  # Function to grab all getter and setter functions from GUNNS
+  def getGunnsFuncs(self, gunns_home):
+    getters = {}
+    setters = {}
+    link_structure = {}
+    for folder in ['/core', '/aspects']:
+      for root, dirs, files in os.walk(gunns_home + folder):
+        for file in files:
+          if '.h' in file:
+            link = file[:file.index('.')]
+            getters[link]= {}
+            setters[link]= {}
+            with open(root + '/' + file, 'r') as gfile:
+              lines = gfile.readlines()
+              while len(lines) > 0: 
+                if 'class ' + link in lines[0] and 'InputData' not in lines[0] and 'ConfigData' not in lines[0]: break
+                lines.pop(0)
+              if len(lines) <= 0: print("Could not process link: ", link); continue
+              tmp = lines[0][lines[0].find(':')+1:].strip().split(' ') if ':' in lines[0] else ['', '', '']
+              link_structure[link] = tmp[2] if tmp[1] == '' else tmp[1]
+              for line in lines[1:]:
+                if 'protected:' in line or 'private:' in line: break
+                line = line.strip()
+                if 'get' in line and line[-1] == ';' and '(' in line and '*' not in line:
+                  func = line[line.index('get'):line.index(')')+1]
+                  attr = func[3].lower() + func[4:func.find('(')]
+                  getters[link][attr] = func
+                if 'set' in line and line[-1] == ';' and '(' in line and '*' not in line and 'reset' not in line:
+                  func = line[line.index('set'):line.index(')')+1]
+                  attr = func[3].lower() + func[4:func.find('(')]
+                  setters[link][attr] = func
+    visited = []
+    for link in link_structure.keys():
+      if link_structure[link] == '': visited.append(link)
+    while len(visited) < len(link_structure.keys()):
+      for link in link_structure.keys():
+        if link_structure[link] in visited and link_structure[link] in link_structure.keys():
+          for attr in getters[link_structure[link]].keys(): getters[link][attr] = getters[link_structure[link]][attr]
+          for attr in setters[link_structure[link]].keys(): 
+            setters[link][attr] = setters[link_structure[link]][attr]
+            if attr == 'lastMinorStep': print(link_structure[link])
+          visited.append(link)
+    return getters, setters
   
   def format(self, func):
     func_out = func[:func.index('(')+1]
