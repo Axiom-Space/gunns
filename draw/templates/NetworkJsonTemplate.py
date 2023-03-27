@@ -106,7 +106,7 @@ class NetworkJsonTemplate:
             if item.tag == 'move' or item.tag == 'line' or item.tag == 'curve' or item.tag == 'arc': geom_strs[index] += self.formatAttribs(item.tag, item.attrib)
             elif item.tag == 'close': geom_strs[index] = geom_strs[index][:-1] + 'z '; continue
             else: print('Tag not recognized: ' + item.tag)
-        while geom_strs[index][-1] == ' ': geom_strs[index] = geom_strs[index][:-1]
+        while len(geom_strs[index]) > 0 and geom_strs[index][-1] == ' ': geom_strs[index] = geom_strs[index][:-1]
         # if geom_strs[index][-1] != 'z': geom_strs[index] += 'z'
         index += 1
     final = ''
