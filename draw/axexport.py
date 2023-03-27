@@ -50,13 +50,12 @@ import modules.compression as compression
 import modules.shapeLibs as shapeLibs
 import modules.consoleMsg as console
 import modules.xmlUtils as xmlUtils
-import modules.shapeMap as shapeMap
-import json
 from templates.BasicNetworkHeaderTemplate import BasicNetworkHeaderTemplate
 from templates.FluidNetworkHeaderTemplate import FluidNetworkHeaderTemplate
 from templates.BasicNetworkBodyTemplate import BasicNetworkBodyTemplate
 from templates.FluidNetworkBodyTemplate import FluidNetworkBodyTemplate
 from templates.NetworkJsonTemplate import NetworkJsonTemplate
+from templates.NetworkBuddyTemplate import NetworkBuddyTemplate
 
 START_TIME = datetime.now()
 
@@ -1124,68 +1123,68 @@ for jumperPlugConfig in jumperPlugConfigs:
             link.attrib[jumperPlugConfig[1]] = jumperPlugConfig[2]
             break
 
-# This is a list of data for each link: class, name, initialize block, configData, inputData
+idList = []
+# This is a list of data for each link: class, name, initialize block, configData, inputData, xml data
 linksData = []
-portsIds = {}
 index = 0
 for link in links:
-    portsIds[link.attrib['id']] = link.attrib['label']
+    idList.append(link.attrib['id'])
     gunns_attr = link.find('./gunns').attrib
-    linkGeom  = link.find('./mxCell/mxGeometry').attrib
     linkClass  = gunns_attr['subtype'].split("/")[-1]
     linkName   = getLinkName(link)
-    linkStyle  = link.find('./mxCell').attrib['style']
-    tmp_str = linkStyle[linkStyle.find('shape'):]
-    tmp_str = tmp_str[:tmp_str.find(';')]
-    try: linkShape = ET.fromstring(compression.decompress(tmp_str[tmp_str.find('('):-1]))
-    except: linkShape = ET.fromstring(shapeMap.shapeMap[tmp_str[tmp_str.find('=')+1:]])
-    linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'), linkStyle, linkGeom, linkShape)
+    linkData   = (linkClass, linkName, getConfigData(link.attrib), getInputData(link.attrib), getLinkInitialize(link, port_maps[index]), getLinkConstructorBody(link, 'c'), getLinkConstructorBody(link, 'i'), link)
     linksData.append(linkData)
     index = index + 1
 
-# This is a list of data for each node: number, initial state, sorted by node number
+# This is a list of data for each node: number, initial state, xml data --- sorted by node number
 nodesData = []
 for node in netNodes:
-    portsIds[node.attrib['id']] = node.attrib['label']
+    idList.append(node.attrib['id'])
     numStr = node.attrib['label']
-    nodeGeom  = node.find('./mxCell/mxGeometry').attrib
     if basic_network:
-        nodeData = (numStr, node.attrib['i00.potential'], nodeGeom)
+        nodeData = (numStr, node.attrib['i00.potential'], node)
     else:
-        nodeData = (numStr, node.attrib['i00.initialFluidState'], nodeGeom)
+        nodeData = (numStr, node.attrib['i00.initialFluidState'], node)
         if '0' == nodeData[1] or '' == nodeData[1]:
             sys.exit(console.abort('node ' + nodeData[0] + ' is missing initialFluidState.'))
     nodesData.append(nodeData)
 nodesData.sort(key=lambda tup: int(tup[0]))
 
-# This is a list of data for each link port: source, target, geometry
-#for gnd in gndNodes: portsIds[gnd.attrib['id']] = 'Ground'
-#for ref in refNodes: portsIds[ref.attrib['id']] = 'Ref ' + ref.attrib['label']
+# This is a list of data for each ground node: GROUND, xml data
+gndNodesData = []
+for gnd in gndNodes: 
+    idList.append(gnd.attrib['id']) 
+    gndNodesData.append(('GROUND', gnd))
+
+# This is a list of data for each ref node: number, xml data
+refNodesData = []
+for ref in refNodes: 
+    idList.append(ref.attrib['id'])
+    refNodesData.append((ref.attrib['label'], ref))
+
+# This is a list of data for each link port: source, target, geometry, xml data
 portsData = []
 visited = []
 for port in ports:
     numStr = port.attrib['label']
-    portStyle  = port.find('./mxCell').attrib['style']
-    #geom  = port.find('./mxCell/mxGeometry')
-    #print(port.find('./mxCell').attrib['source'])
-    if port.find('./mxCell').attrib['source'] in portsIds.keys() and port.find('./mxCell').attrib['target'] in portsIds.keys():
-        portSource = portsIds[port.find('./mxCell').attrib['source']]
-        portTarget = portsIds[port.find('./mxCell').attrib['target']]
-    #else:
-        #print("ERROR - ID NOT FOUND: ")
-        #if port.find('./mxCell').attrib['source'] not in portsIds.keys(): print("\t" + port.find('./mxCell').attrib['source'])
-        #if port.find('./mxCell').attrib['target'] not in portsIds.keys(): print("\t" + port.find('./mxCell').attrib['target'])
+    if port.find('./mxCell').attrib['source'] in idList and port.find('./mxCell').attrib['target'] in idList:
+        portSource = port.find('./mxCell').attrib['source']
+        portTarget = port.find('./mxCell').attrib['target']
+    else:
+        print("ERROR - ID NOT FOUND: ")
+        if port.find('./mxCell').attrib['source'] not in idList: print("\t" + port.find('./mxCell').attrib['source'])
+        if port.find('./mxCell').attrib['target'] not in idList: print("\t" + port.find('./mxCell').attrib['target'])
     if (numStr, portSource, portTarget) not in visited and (numStr, portTarget, portSource) not in visited:
-        portData = (numStr, portSource, portTarget, portStyle)
+        portData = (numStr, portSource, portTarget, port)
         portsData.append(portData)
         visited.append((numStr, portSource, portTarget))
 
-# This is a list of data for each spotter: class, name, config data, input data, constructor block
+# This is a list of data for each spotter: class, name, config data, input data, constructor block, xml data
 spottersData = []
 for spotter in spotters:
     spotterClass = spotter.attrib['Class'].split("/")[-1]
     spotterName  = spotter.attrib['label']
-    spotterData  = (spotterClass, spotterName, getConfigData(spotter.attrib), getInputData(spotter.attrib), spotter.attrib['ConstructorArgs'], getLinkConstructorBody(spotter, 'c'), getLinkConstructorBody(spotter, 'i'))
+    spotterData  = (spotterClass, spotterName, getConfigData(spotter.attrib), getInputData(spotter.attrib), spotter.attrib['ConstructorArgs'], getLinkConstructorBody(spotter, 'c'), getLinkConstructorBody(spotter, 'i'), spotter)
     spottersData.append(spotterData)
 
 # This is a list of data for each socket list
@@ -1255,6 +1254,8 @@ data_model = dict([('networkName', networkName),
                    ('linkSourcePaths', list(sorted(set(link_source_paths)))),
                    ('links', linksData),
                    ('nodes', nodesData),
+                   ('gndNodes', gndNodesData),
+                   ('refNodes', refNodesData),
                    ('ports', portsData),
                    ('numNodes', numNetNodes),
                    ('spotters', spottersData),
@@ -1347,6 +1348,7 @@ else:
     hhTemplate = BasicNetworkHeaderTemplate(data_model)
     ccTemplate = BasicNetworkBodyTemplate(data_model)
 
+budTemplate = NetworkBuddyTemplate(data_model)
 jsTemplate = NetworkJsonTemplate(data_model)
 
 # For debugging:
@@ -1355,6 +1357,7 @@ jsTemplate = NetworkJsonTemplate(data_model)
 hhFileName = outputPath + '/' + networkName + '.hh'
 ccFileName = outputPath + '/' + networkName + '.cpp'
 #ccFileName = os.path.splitext(outputPathFile)[0] + '.cpp'
+budFileName = outputPath + '/' + networkName.split('_')[0] + 'Bud_' + networkName.split('_')[-1] + '.hh'
 jsFileName = outputPath + '/' + networkName + '.json'
 
 # Render templates to output files.
@@ -1367,6 +1370,11 @@ print ('  Rendering ' + networkName + '.cpp...')
 with open(ccFileName, 'w') as fcc:
     ccRender = ccTemplate.render()
     fcc.write(ccRender)
+
+print ('  Rendering ' + networkName + ' buddy...')
+with open(budFileName, 'w') as fbud:
+    budRender = budTemplate.render()
+    fbud.write(budRender)
 
 print ('  Rendering ' + networkName + '.json...')
 with open(jsFileName, 'w') as fjs:
