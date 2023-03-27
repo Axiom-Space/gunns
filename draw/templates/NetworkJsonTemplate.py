@@ -71,9 +71,10 @@ class NetworkJsonTemplate:
     style_dict['key'] = node.attrib['id']
     # Text
     style_dict['text'] = node.attrib['label']
+    # Key
+    style_dict['size'] = node.find('./mxCell/mxGeometry').attrib['width'] + ' ' + node.find('./mxCell/mxGeometry').attrib['height']
     # Position
-    pos = [float(node.find('./mxCell/mxGeometry').attrib['x']), float(node.find('./mxCell/mxGeometry').attrib['y'])]
-    style_dict['pos'] = str(pos[0] + float(node.find('./mxCell/mxGeometry').attrib['width'])/2) + ' ' + str(pos[1] + float(node.find('./mxCell/mxGeometry').attrib['height'])/2)
+    style_dict['pos'] = node.find('./mxCell/mxGeometry').attrib['x'] + ' ' + node.find('./mxCell/mxGeometry').attrib['y']
     return style_dict
   
   # Get the xml shape data from a style string
@@ -202,7 +203,7 @@ class NetworkJsonTemplate:
     for spotter in self.data['spotters']:
       print("SPOTTER")
       spotter_style = self.spotterStyle(spotter[-1])
-      r = r + ('    {"key":"' + '","category":"Spotter","pos":"' + '"},\n')
+      #r = r + ('    {"key":"' + '","category":"Spotter","pos":"' + '"},\n')
     for link in self.data['links']:
       link_style = self.linkStyle(link[-1])
       r = r + ('    {"key":"' + link_style['key'] + '","category":"Link","pos":"' + link_style['pos'] + 
@@ -210,13 +211,13 @@ class NetworkJsonTemplate:
                     '","geometryString":"' + link_style['shape'] + '","itemArray":' + link_style['connections'] + '},\n')
     for node in self.data['nodes']:
       node_style = self.nodeStyle(node[-1])
-      r = r + ('    {"key":"' + node_style['key'] + '","category":"Node","pos":"' + node_style['pos'] + '","text":"' + node_style['text'] + '"},\n')
+      r = r + ('    {"key":"' + node_style['key'] + '","category":"Node","pos":"' + node_style['pos'] + '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '"},\n')
     for gnd in self.data['gndNodes']:
       node_style = self.nodeStyle(gnd[-1])
-      r = r + ('    {"key":"' + node_style['key'] + '","category":"Ground","pos":"' + node_style['pos'] + '","text":""},\n')
+      r = r + ('    {"key":"' + node_style['key'] + '","category":"Ground","pos":"' + node_style['pos'] + '","text":"","size":"' + node_style['size'] + '"},\n')
     for ref in self.data['refNodes']:
       node_style = self.nodeStyle(ref[-1])
-      r = r + ('    {"key":"' + node_style['key'] + '","category":"Ref","pos":"' + node_style['pos'] + '","text":"' + node_style['text'] + '"},\n')
+      r = r + ('    {"key":"' + node_style['key'] + '","category":"Ref","pos":"' + node_style['pos'] + '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '"},\n')
     r = r[:-2]
     r = r + ('\n],\n'
              '  "linkDataArray": [\n')

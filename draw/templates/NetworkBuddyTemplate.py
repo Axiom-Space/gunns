@@ -70,7 +70,7 @@ class NetworkBuddyTemplate:
       args = []
       for i in range(len(tmp)):
         if tmp[i] != '' and 'const' not in tmp[i]: args.append(tmp[i])        
-      params += 'vecstr.at('+ str(v_index) + '), '
+      params += 'vecstr[]'+ str(v_index) + '], '
       v_index += 1
     return func_out + params[:-2] + ')'
   
@@ -133,6 +133,7 @@ class NetworkBuddyTemplate:
         '\n'
         '#include <iostream>\n'
         '#include <map>\n'
+        '#include <voscpp/vos.h>\n'
         '#include "' + self.data['networkName'] + '.hh"\n'
         '\n'
         '// Main Class\n'
@@ -140,7 +141,8 @@ class NetworkBuddyTemplate:
         '{\n'
         '    public:\n'
         '        // GUNNS Link Maps\n'
-        '        std::map<std::string, std::string> linkTypes;\n')
+        '        std::map<std::string, std::string> linkTypes;\n'
+        '        std::map<std::string, std::vector<std::string>> linkAttribs;\n')
     linkMap = self.linkTypes(self.data)
     for linkType in linkMap.keys():
       r = r + ('        std::map<std::string, ' + linkType + '*> ' + linkType[5].lower() + linkType[6:] + 's;\n')
@@ -158,7 +160,11 @@ class NetworkBuddyTemplate:
       r = r + ('            linkTypes["' + link[1] + '"] = "' + link[0] + '";\n')
     r = r + ('\n')
     for linkType in linkMap.keys():
-      r = r + ('            // Initialize link map for ' + linkType + '\n')
+      r = r + ('            // Initialize link map for ' + linkType + '\n'
+        '            linkAttribs["' + linkType + '"] = {')
+      for attrib in self.getters[linkType]:
+        r = r + ('"' + attrib + '", ')
+      r = r + ('};\n') if r[-1] == '{' else r[:-2] + ('};\n')
       for link in linkMap[linkType]:
         r = r + ('            ' + linkType[5].lower() + linkType[6:] + 's["' + link + '"] = &net->' + link + ';\n')
       r = r + '\n'
@@ -176,7 +182,7 @@ class NetworkBuddyTemplate:
         '        *******************************************************************************/\n'
         '        std::string get' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
       for attrib in self.getters[linkType]:
-        r = r + ('            if (vecstr.at(1) == "' + attrib + '") { return std::to_string(' + linkType[5].lower() + linkType[6:] + 's[vecstr.at(0)]->' + self.format(self.getters[linkType][attrib]) + '); }\n')
+        r = r + ('            if (vecstr[1] == "' + attrib + '") { return std::to_string(' + linkType[5].lower() + linkType[6:] + 's[vecstr[0]]->' + self.format(self.getters[linkType][attrib]) + '); }\n')
       r = r + ('            return "Attribute cannot be retreived.";\n'
         '        };\n')
     for linkType in linkMap.keys():
@@ -186,7 +192,7 @@ class NetworkBuddyTemplate:
         '        *******************************************************************************/\n'
         '        std::string set' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
       # for attrib in self.setters[linkType].keys():
-      #   r = r + ('            if (vecstr.at(1) == "' + attrib + '") { ' + linkType[5].lower() + linkType[6:] + 's[vecstr.at(0)]->' + self.format(self.setters[linkType][attrib]) + '; }\n')
+      #   r = r + ('            if (vecstr[1] == "' + attrib + '") { ' + linkType[5].lower() + linkType[6:] + 's[vecstr[0]]->' + self.format(self.setters[linkType][attrib]) + '; }\n')
       r = r + ('            return "Attribute set.";\n'
         '        };\n')
     r = r + ('\n'
@@ -201,30 +207,48 @@ class NetworkBuddyTemplate:
         '\n'
         '        /** @brief Parse command \n'
         '        *******************************************************************************/\n'
-        '        std::string parseCommand(const std::vector<std::string> &vecstr) {\n'
-        '            if (vecstr.at(0) == "getFlux") return getFlux();\n'
-        '            if (vecstr.at(0) == "getLink") return getLink(vecstr.at(1));\n'
+        '        std::map<std::string, std::string> parseCommand(const std::vector<std::string> &vecstr) {\n'
+        '            if (vecstr[0] == "getFlux") return getFlux();\n'
+        '            if (vecstr[0] == "getLink") return getLink(vecstr[1]);\n'
         '            typename std::map<std::string, ' + name + '::commandFunc>::const_iterator it;\n'
-        '            it = funcMap.find(vecstr.at(0) + linkTypes[vecstr.at(1)]);\n'
-        '            if (it == funcMap.end()) return "";\n'
+        '            it = funcMap.find(vecstr[0] + linkTypes[vecstr[1]]);\n'
+        '            if (it == funcMap.end()) return {};\n'
         '            commandFunc s = it->second;\n'
-        '            return (this->*s)({vecstr.begin()+1, vecstr.end()});\n'
+        '            return {{vecstr[2], (this->*s)({vecstr.begin()+1, vecstr.end()})}};\n'
         '        };\n'
         '\n')
     # Helper Functions
     r = r + ('        /** @brief Get all information on one link\n'
         '         * @param link : name of link\n'
         '        *******************************************************************************/\n'
-        '        std::string getLink(std::string link) {\n'
-        '            std::cout << "PLACEHOLDER";\n')
-    r = r + ('        };\n'
+        '        std::map<std::string, std::string> getLink(const std::string &link, const std::vector<std::string> &attribs=std::vector<std::string>()) {\n'
+        '            std::map<std::string, std::string> result;\n'
+        '            typename std::map<std::string, ' + name + '::commandFunc>::const_iterator it;\n'
+        '            if (attribs.size() > 0) {\n'
+        '                for (std::string attrib : attribs) {\n'
+        '                    it = funcMap.find("get" + linkTypes[link]);\n'
+        '                    if (it == funcMap.end()) continue;\n'
+        '                    commandFunc s = it->second;\n'
+        '                    result[attrib] = (this->*s)({link, attrib});\n'
+        '                }\n'
+        '            } else {\n'
+        '                for (std::string attrib : linkAttribs[linkTypes[link]]) {\n'
+        '                    it = funcMap.find("get" + linkTypes[link]);\n'
+        '                    if (it == funcMap.end()) continue;\n'
+        '                    commandFunc s = it->second;\n'
+        '                    result[attrib] = (this->*s)({link, attrib});\n'
+        '                }\n'
+        '            }\n'
+        '            return result;\n'
+        '        };\n'
         '\n'
         '        /** @brief Get flux from every link in network\n'
         '         * @param links : map of all links, cast to GunnsBasicLink\n'
         '        *******************************************************************************/\n'
-        '        std::string getFlux() {\n')
+        '        std::map<std::string, std::string> getFlux() {\n'
+        '            std::map<std::string, std::string> result;\n')
     for link in self.data['links']:
-        r = r + ('            std::cout << net->' + link[1] + '.getFlux() << std::endl;\n')
+        r = r + ('            result["' + link[1] + '"] = net->' + link[1] + '.getFlux();\n')
     r = r + ('        };\n'
         '\n'
         '\n'
