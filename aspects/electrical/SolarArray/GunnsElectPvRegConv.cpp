@@ -505,3 +505,12 @@ void GunnsElectPvRegConv::computeFlows(const double dt __attribute__((unused)))
     /// - Transport supply current from the array to the downstream circuit node.
     mNodes[0]->collectInflux(mFlux);
 }
+
+
+GunnsElectPvRegConv::PvRegStates GunnsElectPvRegConv::getState() {
+    return mState;
+}
+
+double GunnsElectPvRegConv::getPower() {
+    return mPower;
+}

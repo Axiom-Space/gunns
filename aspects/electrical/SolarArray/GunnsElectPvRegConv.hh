@@ -216,6 +216,11 @@ class GunnsElectPvRegConv : public GunnsBasicLink
         /// @brief Returns a pointer to the trip logic group.
         GunnsElectPvRegTrips* getTrips();
 
+        /// @brief Returns Regulator's State
+        PvRegStates getState();
+        /// @brief Returns Regulator's Power
+        double getPower();
+
     protected:
         double                 mVoltageConvLimit;          /**<    (V)     trick_chkpnt_io(**) Maximum ratio this regulator can increase the input voltage from the array to the output. */
         double                 mVoltageConvEfficiency;     /**<    (--)    trick_chkpnt_io(**) Power efficiency (0-1) of input to output voltage conversion. */
