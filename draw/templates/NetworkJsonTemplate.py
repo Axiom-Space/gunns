@@ -203,11 +203,7 @@ class NetworkJsonTemplate:
     for spotter in self.data['spotters']:
       print("SPOTTER")
       spotter_style = self.spotterStyle(spotter[-1])
-<<<<<<< HEAD
       r = r + ('    {"key":"' + spotter_style['key'] + '","category":"Spotter","pos":"' + spotter_style['pos'] + '","text":"' + spotter_style['text'] + '","size":"' + spotter_style['size'] + '"},\n')
-=======
-      #r = r + ('    {"key":"' + '","category":"Spotter","pos":"' + '"},\n')
->>>>>>> fc19e22d518112e4bfb6ff483cc931177cae7169
     for link in self.data['links']:
       link_style = self.linkStyle(link[-1])
       r = r + ('    {"key":"' + link_style['key'] + '","category":"Link","pos":"' + link_style['pos'] + 
