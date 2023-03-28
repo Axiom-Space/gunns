@@ -5,6 +5,7 @@
 # @rev_entry(Kyle Fondon, Axiom Space, GUNNS, February 2023, --, Initial implementation.}
 # @revs_end
 #
+import math
 import xml.etree.ElementTree as ET
 import modules.compression as compression
 
@@ -36,8 +37,7 @@ class NetworkJsonTemplate:
     # Size
     style_dict['size'] = spotter.find('./mxCell/mxGeometry').attrib['width'] + ' ' + spotter.find('./mxCell/mxGeometry').attrib['height']
     # Position
-    pos = [float(spotter.find('./mxCell/mxGeometry').attrib['x']), float(spotter.find('./mxCell/mxGeometry').attrib['y'])]
-    style_dict['pos'] = str(pos[0] + float(spotter.find('./mxCell/mxGeometry').attrib['width'])/2) + ' ' + str(pos[1] + float(spotter.find('./mxCell/mxGeometry').attrib['height'])/2)
+    style_dict['pos'] = spotter.find('./mxCell/mxGeometry').attrib['x'] + ' ' + spotter.find('./mxCell/mxGeometry').attrib['y']
     print(spotter)
     return style_dict
 
@@ -50,13 +50,29 @@ class NetworkJsonTemplate:
     style_dict['text'] = link.attrib['label']
     # Size
     style_dict['size'] = link.find('./mxCell/mxGeometry').attrib['width'] + ' ' + link.find('./mxCell/mxGeometry').attrib['height']
-    # Position
-    pos = [float(link.find('./mxCell/mxGeometry').attrib['x']), float(link.find('./mxCell/mxGeometry').attrib['y'])]
-    style_dict['pos'] = str(pos[0] + float(link.find('./mxCell/mxGeometry').attrib['width'])/2) + ' ' + str(pos[1] + float(link.find('./mxCell/mxGeometry').attrib['height'])/2)
     # Convert style string
+    angle = 0
     for s in link.find('./mxCell').attrib['style'].split(';'):
-      if 'rotation' in s: style_dict['angle'] = s[9:]
-      else: style_dict['angle'] = '0'
+      if 'rotation' in s: angle += float(s[9:])
+      elif 'direction' in s: 
+        if 'north' in s: angle += 90
+        elif 'west' in s: angle += 180
+        elif 'south' in s: angle += 270
+    # Angle
+    style_dict['angle'] = str(angle)
+    # Position
+    angle = math.radians(angle)
+    pos = [float(link.find('./mxCell/mxGeometry').attrib['x']), float(link.find('./mxCell/mxGeometry').attrib['y'])]
+    pos[0] = round(pos[0] - (math.cos(angle) * float(link.find('./mxCell/mxGeometry').attrib['width'])/2 - math.sin(angle) * float(link.find('./mxCell/mxGeometry').attrib['height'])/2), 1)
+    pos[1] = round(pos[1] - (math.sin(angle) * float(link.find('./mxCell/mxGeometry').attrib['width'])/2 + math.cos(angle) * float(link.find('./mxCell/mxGeometry').attrib['height'])/2), 1)
+    style_dict['pos'] = str(pos[0] + float(link.find('./mxCell/mxGeometry').attrib['width'])/2) + ' ' + str(pos[1] + float(link.find('./mxCell/mxGeometry').attrib['height'])/2)
+    if('2In' in style_dict['text']):
+      print(style_dict['text'])
+      print(link.find('./mxCell/mxGeometry').attrib['x'], link.find('./mxCell/mxGeometry').attrib['y'])
+      print(angle)
+      print(round(math.sin(angle/2) * float(link.find('./mxCell/mxGeometry').attrib['width'])/2))
+      print(round(math.cos(angle/2) * float(link.find('./mxCell/mxGeometry').attrib['height'])/2))
+      print(style_dict['pos'])
     # Convert shape
     shape = self.getShape(link.find('./mxCell').attrib['style'])
     style_dict['shape'] = self.convertShape(shape)
