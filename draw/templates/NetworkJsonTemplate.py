@@ -54,9 +54,9 @@ class NetworkJsonTemplate:
     for s in link.find('./mxCell').attrib['style'].split(';'):
       if 'rotation' in s: angle += float(s[9:])
       elif 'direction' in s: 
-        if 'north' in s: angle += 90
+        if 'south' in s: angle += 90
         elif 'west' in s: angle += 180
-        elif 'south' in s: angle += 270
+        elif 'north' in s: angle += 270
     # Angle
     style_dict['angle'] = str(angle)
     # Position
@@ -81,8 +81,22 @@ class NetworkJsonTemplate:
     style_dict['text'] = node.attrib['label']
     # Key
     style_dict['size'] = node.find('./mxCell/mxGeometry').attrib['width'] + ' ' + node.find('./mxCell/mxGeometry').attrib['height']
+    # Convert style string
+    angle = 0
+    for s in node.find('./mxCell').attrib['style'].split(';'):
+      if 'rotation' in s: angle += float(s[9:])
+      elif 'direction' in s: 
+        if 'south' in s: angle += 90
+        elif 'west' in s: angle += 180
+        elif 'north' in s: angle += 270
+    # Angle
+    style_dict['angle'] = str(angle)
     # Position
     style_dict['pos'] = node.find('./mxCell/mxGeometry').attrib['x'] + ' ' + node.find('./mxCell/mxGeometry').attrib['y']
+    # Port connection points
+    style_dict['connections'] = '[{"portId":"N","x":"0.5","y":"0"}]' if style_dict['text'] == '' else \
+                                '[{"portId":"N","x":"0.5","y":"0"},{"portId":"NE","x":"0.855","y":"0.145"},{"portId":"E","x":"1","y":"0.5"},{"portId":"SE","x":"0.855","y":"0.855"}, ' \
+                                '{"portId":"S","x":"0.5","y":"1"},{"portId":"SW","x":"0.145","y":"0.855"},{"portId":"W","x":"0","y":"0.5"},{"portId":"NW","x":"0.145","y":"0.145"}]'
     return style_dict
   
   # Get the xml shape data from a style string
@@ -178,30 +192,33 @@ class NetworkJsonTemplate:
 
   # Use port style data to determine which link connector it should be attached to
   def portPos(self, port):
+    compass = {'0.5,0':'N','0.855,0.145':'NE','1,0.5':'E','0.855,0.855':'SE','0.5,1':'S','0.145,0.855':'SW','0,0.5':'W','0.145,0.145':'NW'}
     from_obj = None
     to_obj = None
+    # Determine which end of port is a link
     for link in self.data['links']:
       if link[-1].attrib['id'] == port[1]: from_obj = link[-1]
       elif link[-1].attrib['id'] == port[2]: to_obj = link[-1]
     is_from = True if from_obj else False
-    obj = from_obj if from_obj else to_obj
-    e_str = 'exit' if from_obj else 'entry'
-    port_pt = []
-    # Extract connection point from style string
-    style_str = port[3].find('./mxCell').attrib['style']
-    style_str = style_str[style_str.find(e_str + 'X=')+len(e_str)+2:]
-    port_pt.append(style_str[:style_str.find(';')])
-    style_str = style_str[style_str.find(e_str + 'Y=')+len(e_str)+2:]
-    port_pt.append(style_str[:style_str.find(';')])
-    style_str = style_str[style_str.find(e_str + 'Dx=')+len(e_str)+3:]
-    port_pt.append(style_str[:style_str.find(';')])
-    style_str = style_str[style_str.find(e_str + 'Dy=')+len(e_str)+3:]
-    port_pt.append(style_str[:style_str.find(';')])
-    obj_shape = self.getShape(obj.find('./mxCell').attrib['style'])
-    for constraint in obj_shape.find('./connections').iter('constraint'):
-      if constraint.attrib['x'] == port_pt[0] and constraint.attrib['y'] == port_pt[1]: 
-        return is_from, constraint.attrib['name']
-    return is_from, '0'
+    link = from_obj if from_obj else to_obj
+    # Determine node type
+    is_gnd = False
+    for gnd in self.data['gndNodes']:
+      if is_from and gnd[-1].attrib['id'] == port[2]: is_gnd = True
+    # Extract connection points from style string
+    style_map = {}
+    for s in port[3].find('./mxCell').attrib['style'].split(';'): 
+      if '=' in s: style_map[s[:s.index('=')]] = s[s.index('=')+1:]
+    # Get node connection point
+    node_str = 'entry' if from_obj else 'exit'
+    node_pt = 'N' if is_gnd else compass[style_map[node_str+'X']+','+style_map[node_str+'Y']]
+    # Get link connection point
+    link_shape = self.getShape(link.find('./mxCell').attrib['style'])
+    link_str = 'exit' if from_obj else 'entry'
+    for constraint in link_shape.find('./connections').iter('constraint'):
+      if constraint.attrib['x'] == style_map[link_str+'X'] and constraint.attrib['y'] == style_map[link_str+'Y']: 
+        return is_from, constraint.attrib['name'], node_pt
+    return is_from, '0', node_pt
 
   def render(self):
     r =('{ "class": "go.GraphLinksModel",\n'
@@ -218,13 +235,19 @@ class NetworkJsonTemplate:
                     '","geometryString":"' + link_style['shape'] + '","itemArray":' + link_style['connections'] + '},\n')
     for node in self.data['nodes']:
       node_style = self.nodeStyle(node[-1])
-      r = r + ('    {"key":"' + node_style['key'] + '","category":"Node","pos":"' + node_style['pos'] + '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '"},\n')
+      r = r + ('    {"key":"' + node_style['key'] + '","category":"Node","pos":"' + node_style['pos'] + 
+               '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '","itemArray":' + 
+               node_style['connections'] + '},\n')
     for gnd in self.data['gndNodes']:
       node_style = self.nodeStyle(gnd[-1])
-      r = r + ('    {"key":"' + node_style['key'] + '","category":"Ground","pos":"' + node_style['pos'] + '","text":"","size":"' + node_style['size'] + '"},\n')
+      r = r + ('    {"key":"' + node_style['key'] + '","category":"Ground","pos":"' + node_style['pos'] + 
+               '","text":"","size":"' + node_style['size'] + '","angle":"' + node_style['angle'] + '","itemArray":' + 
+               node_style['connections'] + '},\n')
     for ref in self.data['refNodes']:
       node_style = self.nodeStyle(ref[-1])
-      r = r + ('    {"key":"' + node_style['key'] + '","category":"Ref","pos":"' + node_style['pos'] + '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '"},\n')
+      r = r + ('    {"key":"' + node_style['key'] + '","category":"Ref","pos":"' + node_style['pos'] + 
+               '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '","itemArray":' + 
+               node_style['connections'] + '},\n')
     r = r[:-2]
     r = r + ('\n],\n'
              '  "linkDataArray": [\n')
@@ -232,10 +255,10 @@ class NetworkJsonTemplate:
       if port[1] == 'Ground' or port[2] == 'Ground': continue
       elif 'Ref' in port[1] or 'Ref' in port[2]: continue
       elif float(port[0]) > 1: continue
-      is_from, port_name = self.portPos(port)
+      is_from, link_port, node_port = self.portPos(port)
       r = r + ('    {"label":"' + port[0] + '","from":"')
-      if is_from: r = r + (port[1] + '","fromPort":"' + port_name + '","to":"' + port[2] + '","toPort":"' + port[0] + '"},\n')
-      else: r = r + (port[1] + '","fromPort":"' + port[0] + '","to":"' + port[2] + '","toPort":"' + port_name + '"},\n')
+      if is_from: r = r + (port[1] + '","fromPort":"' + link_port + '","to":"' + port[2] + '","toPort":"' + node_port + '"},\n')
+      else: r = r + (port[1] + '","fromPort":"' + node_port + '","to":"' + port[2] + '","toPort":"' + link_port + '"},\n')
     r = r[:-2]
     r = r + ('\n  ]\n'
              '}')
