@@ -38,7 +38,6 @@ class NetworkJsonTemplate:
     style_dict['size'] = spotter.find('./mxCell/mxGeometry').attrib['width'] + ' ' + spotter.find('./mxCell/mxGeometry').attrib['height']
     # Position
     style_dict['pos'] = spotter.find('./mxCell/mxGeometry').attrib['x'] + ' ' + spotter.find('./mxCell/mxGeometry').attrib['y']
-    print(spotter)
     return style_dict
 
   # Use link data to build a dict of json info
@@ -66,13 +65,6 @@ class NetworkJsonTemplate:
     pos[0] = round(pos[0] - (math.cos(angle) * float(link.find('./mxCell/mxGeometry').attrib['width'])/2 - math.sin(angle) * float(link.find('./mxCell/mxGeometry').attrib['height'])/2), 1)
     pos[1] = round(pos[1] - (math.sin(angle) * float(link.find('./mxCell/mxGeometry').attrib['width'])/2 + math.cos(angle) * float(link.find('./mxCell/mxGeometry').attrib['height'])/2), 1)
     style_dict['pos'] = str(pos[0] + float(link.find('./mxCell/mxGeometry').attrib['width'])/2) + ' ' + str(pos[1] + float(link.find('./mxCell/mxGeometry').attrib['height'])/2)
-    if('2In' in style_dict['text']):
-      print(style_dict['text'])
-      print(link.find('./mxCell/mxGeometry').attrib['x'], link.find('./mxCell/mxGeometry').attrib['y'])
-      print(angle)
-      print(round(math.sin(angle/2) * float(link.find('./mxCell/mxGeometry').attrib['width'])/2))
-      print(round(math.cos(angle/2) * float(link.find('./mxCell/mxGeometry').attrib['height'])/2))
-      print(style_dict['pos'])
     # Convert shape
     shape = self.getShape(link.find('./mxCell').attrib['style'])
     style_dict['shape'] = self.convertShape(shape)
@@ -142,8 +134,8 @@ class NetworkJsonTemplate:
       try: s += 'C' + attribs['x'] + ' ' + attribs['y'] + ' ' + attribs['x1'] + ' ' + attribs['y1'] + ' ' + attribs['x2'] + ' ' + attribs['y2'] + ' '
       except: s += 'C' + attribs['x1'] + ' ' + attribs['y1'] + ' ' + attribs['x2'] + ' ' + attribs['y2'] + ' ' + attribs['x3'] + ' ' + attribs['y3'] + ' '
     elif svg == 'arc':
-      try: s += 'A' + attribs['x'] + ' ' + attribs['y'] + ' ' + attribs['x-axis-rotation'] + ' ' + attribs['large-arc-flag'] + ' ' + attribs['sweep-flag'] + ' ' + attribs['x'] + ' ' + attribs['y'] + ' '
-      except: s += 'A' + attribs['x'] + ' ' + attribs['y'] + ' 0 0 ' + attribs['sweep-flag'] + ' ' + attribs['x'] + ' ' + attribs['y'] + ' '
+      try: s += 'A' + attribs['rx'] + ' ' + attribs['ry'] + ' ' + attribs['x-axis-rotation'] + ' ' + attribs['large-arc-flag'] + ' ' + attribs['sweep-flag'] + ' ' + attribs['x'] + ' ' + attribs['y'] + ' '
+      except: s += 'A' + attribs['rx'] + ' ' + attribs['ry'] + ' 0 0 ' + attribs['sweep-flag'] + ' ' + attribs['x'] + ' ' + attribs['y'] + ' '
     # Shape aliases
     elif svg == 'rect':
       s += 'M' + attribs['x'] + ' ' + attribs['y'] + ' ' 
@@ -167,10 +159,10 @@ class NetworkJsonTemplate:
       rx = float(attribs['w'])/2
       ry = float(attribs['h'])/2
       s += 'M' + attribs['x'] + ' ' + str(float(attribs['y']) + ry) + ' '
-      s += 'A' + str(rx) + ' ' + str(ry) + ' 0 0 0 ' + str(float(attribs['x']) + rx) + ' ' + attribs['y'] + ' '
-      s += 'A' + str(rx) + ' ' + str(ry) + ' 0 0 0 ' + str(float(attribs['x']) + 2*rx) + ' ' + str(float(attribs['y']) + ry) + ' '
-      s += 'A' + str(rx) + ' ' + str(ry) + ' 0 0 0 ' + str(float(attribs['x']) + rx) + ' ' + str(float(attribs['y']) + 2*ry) + ' '
-      s += 'A' + str(rx) + ' ' + str(ry) + ' 0 0 0 ' + attribs['x'] + ' ' + str(float(attribs['y']) + ry) + 'z '
+      s += 'A' + str(rx) + ' ' + str(ry) + ' 0 0 1 ' + str(float(attribs['x']) + rx) + ' ' + attribs['y'] + ' '
+      s += 'A' + str(rx) + ' ' + str(ry) + ' 0 0 1 ' + str(float(attribs['x']) + 2*rx) + ' ' + str(float(attribs['y']) + ry) + ' '
+      s += 'A' + str(rx) + ' ' + str(ry) + ' 0 0 1 ' + str(float(attribs['x']) + rx) + ' ' + str(float(attribs['y']) + 2*ry) + ' '
+      s += 'A' + str(rx) + ' ' + str(ry) + ' 0 0 1 ' + attribs['x'] + ' ' + str(float(attribs['y']) + ry) + 'z '
       return s
     else: print('SVG UNRECOGNIZED: ' + svg)
     return s
@@ -217,7 +209,6 @@ class NetworkJsonTemplate:
         '  "linkToPortIdProperty": "toPort",\n'
         '  "nodeDataArray": [\n')
     for spotter in self.data['spotters']:
-      print("SPOTTER")
       spotter_style = self.spotterStyle(spotter[-1])
       r = r + ('    {"key":"' + spotter_style['key'] + '","category":"Spotter","pos":"' + spotter_style['pos'] + '","text":"' + spotter_style['text'] + '","size":"' + spotter_style['size'] + '"},\n')
     for link in self.data['links']:
