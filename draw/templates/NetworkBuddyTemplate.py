@@ -32,7 +32,7 @@ class NetworkBuddyTemplate:
               while len(lines) > 0: 
                 if 'class ' + link in lines[0] and 'InputData' not in lines[0] and 'ConfigData' not in lines[0]: break
                 lines.pop(0)
-              if len(lines) <= 0: print("Could not process link: ", link); continue
+              if len(lines) <= 0: continue  # print("Could not process link: ", link);
               tmp = lines[0][lines[0].find(':')+1:].strip().split(' ') if ':' in lines[0] else ['', '', '']
               link_structure[link] = tmp[2] if tmp[1] == '' else tmp[1]
               for line in lines[1:]:
@@ -145,7 +145,8 @@ class NetworkBuddyTemplate:
         '        std::map<std::string, std::vector<std::string>> linkAttribs;\n')
     linkMap = self.linkTypes(self.data)
     for linkType in linkMap.keys():
-      r = r + ('        std::map<std::string, ' + linkType + '*> ' + linkType[5].lower() + linkType[6:] + 's;\n')
+      linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
+      r = r + ('        std::map<std::string, ' + linkType + '*> ' + linkName + 's;\n')
     r = r + ('\n'
         '        // Default Constructor\n'
         '        ' + name + '() {}\n'
@@ -166,7 +167,8 @@ class NetworkBuddyTemplate:
         r = r + ('"' + attrib + '", ')
       r = r + ('};\n') if r[-1] == '{' else r[:-2] + ('};\n')
       for link in linkMap[linkType]:
-        r = r + ('            ' + linkType[5].lower() + linkType[6:] + 's["' + link + '"] = &net->' + link + ';\n')
+        linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
+        r = r + ('            ' + linkName + 's["' + link + '"] = &net->' + link + ';\n')
       r = r + '\n'
     r = r[:-1] + ('        }\n'
         '\n')
@@ -182,7 +184,8 @@ class NetworkBuddyTemplate:
         '        *******************************************************************************/\n'
         '        std::string get' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
       for attrib in self.getters[linkType]:
-        r = r + ('            if (vecstr[1] == "' + attrib + '") { return std::to_string(' + linkType[5].lower() + linkType[6:] + 's[vecstr[0]]->' + self.format(self.getters[linkType][attrib]) + '); }\n')
+        linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
+        r = r + ('            if (vecstr[1] == "' + attrib + '") { return std::to_string(' + linkName + 's[vecstr[0]]->' + self.format(self.getters[linkType][attrib]) + '); }\n')
       r = r + ('            return "Attribute cannot be retreived.";\n'
         '        };\n')
     for linkType in linkMap.keys():
@@ -192,7 +195,8 @@ class NetworkBuddyTemplate:
         '        *******************************************************************************/\n'
         '        std::string set' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
       # for attrib in self.setters[linkType].keys():
-      #   r = r + ('            if (vecstr[1] == "' + attrib + '") { ' + linkType[5].lower() + linkType[6:] + 's[vecstr[0]]->' + self.format(self.setters[linkType][attrib]) + '; }\n')
+      #   linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
+      #   r = r + ('            if (vecstr[1] == "' + attrib + '") { ' + linkName + 's[vecstr[0]]->' + self.format(self.setters[linkType][attrib]) + '; }\n')
       r = r + ('            return "Attribute set.";\n'
         '        };\n')
     r = r + ('\n'
