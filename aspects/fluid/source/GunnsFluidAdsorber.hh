@@ -148,6 +148,8 @@ class GunnsFluidAdsorber : public GunnsFluidConductor
         virtual void updateFluid(const double dt, const double flowRate);
         /// @brief    Gets the adsorbed mass.
         double getAdsorbedMass() const;
+        /// @brief    Gets the adsorbed mass.
+        void setDesorptionCycle(const bool flag);
         /// @brief    Sets the thermal surface area of this GunnsFluidAdsorber.
         void   setThermalSurfaceArea(const double value);
         /// @brief    Sets the wall temperature of this GunnsFluidAdsorber.
