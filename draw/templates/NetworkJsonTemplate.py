@@ -67,7 +67,11 @@ class NetworkJsonTemplate:
     style_dict['pos'] = str(pos[0] + float(link.find('./mxCell/mxGeometry').attrib['width'])/2) + ' ' + str(pos[1] + float(link.find('./mxCell/mxGeometry').attrib['height'])/2)
     # Convert shape
     shape = self.getShape(link.find('./mxCell').attrib['style'])
-    style_dict['shape'] = self.convertShape(shape)
+    style_dict['shape'], texts = self.convertShape(shape)
+    style_dict['shapeText'] = '['
+    for text in texts: style_dict['shapeText'] += text + ','
+    if style_dict['shapeText'][-1] == ',': style_dict['shapeText'] = style_dict['shapeText'][:-1]
+    style_dict['shapeText'] += ']'
     # Get connection points
     style_dict['connections'] = self.getConnections(shape)
     return style_dict
@@ -113,12 +117,25 @@ class NetworkJsonTemplate:
   def convertShape(self, shape):
     geom_strs = []
     index = 0
+    text = [{}]
     for layer in ['background', 'foreground']:
       if not shape.find('./' + layer): continue
       if len(geom_strs) > 0: geom_strs[-1] += 'z'
       for obj in shape.find('./' + layer):
         if obj.tag == 'stroke' or obj.tag == 'save' or obj.tag == 'restore': continue
-        elif obj.tag == 'fontfamily' or obj.tag == 'fontsize' or obj.tag == 'fontstyle' or obj.tag == 'text': continue
+        elif obj.tag == 'fontstyle': text[-1]['fontstyle'] = obj.attrib['style']; continue
+        elif obj.tag == 'fontvariant': text[-1]['fontvariant'] = obj.attrib['variant']; continue
+        elif obj.tag == 'fontweight': text[-1]['fontweight'] = obj.attrib['weight']; continue
+        elif obj.tag == 'fontfamily': text[-1]['fontfamily'] = obj.attrib['family']; continue
+        elif obj.tag == 'fontsize': text[-1]['fontsize'] = obj.attrib['size']; continue
+        elif obj.tag == 'text': 
+          text[-1]['tText'] = obj.attrib['str']
+          text[-1]['tPos'] = obj.attrib['x'] + ' ' + obj.attrib['y']
+          if 'rotation' in obj.attrib.keys(): text[-1]['tAngle'] = obj.attrib['rotation']
+          if 'align' in obj.attrib.keys(): text[-1]['tAlign'] = obj.attrib['align']
+          if 'valign' in obj.attrib.keys(): text[-1]['vAlign'] = obj.attrib['valign']
+          text.append({})
+          continue
         elif obj.tag == 'alpha' or obj.tag == 'fillcolor' or obj.tag == 'dashpattern' or obj.tag == 'dashed' or obj.tag == 'strokewidth' or obj.tag == 'linejoin': continue
         elif obj.tag == 'fill' or obj.tag == 'fillstroke': geom_strs[index-1] = 'F ' + geom_strs[index-1] + 'x '; continue
         elif obj.tag == 'rect' or obj.tag == 'roundrect' or obj.tag == 'ellipse': geom_strs.append(self.formatAttribs(obj.tag, obj.attrib))
@@ -133,7 +150,23 @@ class NetworkJsonTemplate:
         index += 1
     final = ''
     for s in geom_strs: final += s + ' '
-    return final
+    text_strs = []
+    for t in text[:-1]:
+      text_strs.append('{"tText":"' + t['tText'] + '","tPos":"' + t['tPos'] + '"')
+      if 'tAngle' in t.keys(): 
+        if '-' in t['tAngle']: text_strs[-1] += ',"tAngle":"' + t['tAngle'][1:] + '"'
+        else: text_strs[-1] += ',"tAngle":"-' + t['tAngle'][1:] + '"'
+      if 'tAlign' in t.keys(): text_strs[-1] += ',"tAlign":"' + t['tAlign'] + '"'
+      if 'vAlign' in t.keys(): text_strs[-1] += ',"vAlign":"' + t['vAlign'] + '"'
+      tmp_str = ''
+      if 'fontstyle' in t.keys(): tmp_str += t['fontstyle'] + ' '
+      if 'fontvariant' in t.keys(): tmp_str += t['fontvariant'] + ' '
+      if 'fontweight' in t.keys(): tmp_str += t['fontweight'] + ' '
+      if 'fontsize' in t.keys(): tmp_str += t['fontsize'] + ' '
+      if 'fontfamily' in t.keys(): tmp_str += t['fontfamily'] + ' '
+      if tmp_str != '': text_strs[-1] += ',"tFont":"' + tmp_str[:-1] + '"'
+      text_strs[-1] += '}'
+    return final, text_strs
   
   def formatAttribs(self, svg, attribs):
     s = ''
@@ -184,9 +217,7 @@ class NetworkJsonTemplate:
   def getConnections(self, shape):
     connections = '['
     for item in shape.find('./connections'):
-      connections += '{"portId":"' + item.attrib['name'] + '",'
-      connections += '"x":"' + item.attrib['x'] + '",'
-      connections += '"y":"' + item.attrib['y'] + '"},'
+      connections += '{"portId":"' + item.attrib['name'] + '","x":"' + item.attrib['x'] + '","y":"' + item.attrib['y'] + '"},'
     connections = connections[:-1] + ']'
     return connections
 
@@ -232,21 +263,22 @@ class NetworkJsonTemplate:
       link_style = self.linkStyle(link[-1])
       r = r + ('    {"key":"' + link_style['key'] + '","category":"Link","pos":"' + link_style['pos'] + 
                     '","size":"' + link_style['size'] + '","text":"' + link_style['text'] + '","angle":"' + link_style['angle'] + 
-                    '","geometryString":"' + link_style['shape'] + '","itemArray":' + link_style['connections'] + '},\n')
+                    '","geometryString":"' + link_style['shape'] + '","connections":' + link_style['connections'] + 
+                    ',"shapeText":' + link_style['shapeText'] + '},\n')
     for node in self.data['nodes']:
       node_style = self.nodeStyle(node[-1])
       r = r + ('    {"key":"' + node_style['key'] + '","category":"Node","pos":"' + node_style['pos'] + 
-               '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '","itemArray":' + 
+               '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '","connections":' + 
                node_style['connections'] + '},\n')
     for gnd in self.data['gndNodes']:
       node_style = self.nodeStyle(gnd[-1])
       r = r + ('    {"key":"' + node_style['key'] + '","category":"Ground","pos":"' + node_style['pos'] + 
-               '","text":"","size":"' + node_style['size'] + '","angle":"' + node_style['angle'] + '","itemArray":' + 
+               '","text":"","size":"' + node_style['size'] + '","angle":"' + node_style['angle'] + '","connections":' + 
                node_style['connections'] + '},\n')
     for ref in self.data['refNodes']:
       node_style = self.nodeStyle(ref[-1])
       r = r + ('    {"key":"' + node_style['key'] + '","category":"Ref","pos":"' + node_style['pos'] + 
-               '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '","itemArray":' + 
+               '","text":"' + node_style['text'] + '","size":"' + node_style['size'] + '","connections":' + 
                node_style['connections'] + '},\n')
     r = r[:-2]
     r = r + ('\n],\n'
