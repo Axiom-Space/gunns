@@ -67,7 +67,7 @@ class NetworkJsonTemplate:
     style_dict['pos'] = str(pos[0] + float(link.find('./mxCell/mxGeometry').attrib['width'])/2) + ' ' + str(pos[1] + float(link.find('./mxCell/mxGeometry').attrib['height'])/2)
     # Convert shape
     shape = self.getShape(link.find('./mxCell').attrib['style'])
-    style_dict['shape'], texts = self.convertShape(shape)
+    style_dict['shape'], texts = self.convertShape(shape, style_dict['text'])
     style_dict['shapeText'] = '['
     for text in texts: style_dict['shapeText'] += text + ','
     if style_dict['shapeText'][-1] == ',': style_dict['shapeText'] = style_dict['shapeText'][:-1]
@@ -114,7 +114,7 @@ class NetworkJsonTemplate:
     return shape
   
   # Transform link shape data into GoJS geometry string
-  def convertShape(self, shape):
+  def convertShape(self, shape, name=''):
     geom_strs = []
     index = 0
     text = [{}]
@@ -152,6 +152,7 @@ class NetworkJsonTemplate:
     for s in geom_strs: final += s + ' '
     text_strs = []
     for t in text[:-1]:
+      if t['tText'] == '%TypeLabel%': t['tText'] = name.split('_')[1].upper()
       text_strs.append('{"tText":"' + t['tText'] + '","tPos":"' + t['tPos'] + '"')
       if 'tAngle' in t.keys(): 
         if '-' in t['tAngle']: text_strs[-1] += ',"tAngle":"' + t['tAngle'][1:] + '"'
