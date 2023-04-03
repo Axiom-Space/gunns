@@ -67,7 +67,7 @@ class NetworkJsonTemplate:
     style_dict['pos'] = str(pos[0] + float(link.find('./mxCell/mxGeometry').attrib['width'])/2) + ' ' + str(pos[1] + float(link.find('./mxCell/mxGeometry').attrib['height'])/2)
     # Convert shape
     shape = self.getShape(link.find('./mxCell').attrib['style'])
-    style_dict['shape'], texts = self.convertShape(shape, style_dict['text'])
+    style_dict['shape'], texts = self.convertShape(shape, link.attrib['TypeLabel']) if 'TypeLabel' in link.attrib.keys() else self.convertShape(shape)
     style_dict['shapeText'] = '['
     for text in texts: style_dict['shapeText'] += text + ','
     if style_dict['shapeText'][-1] == ',': style_dict['shapeText'] = style_dict['shapeText'][:-1]
@@ -114,7 +114,7 @@ class NetworkJsonTemplate:
     return shape
   
   # Transform link shape data into GoJS geometry string
-  def convertShape(self, shape, name=''):
+  def convertShape(self, shape, typelabel=''):
     geom_strs = []
     index = 0
     text = [{}]
@@ -152,7 +152,7 @@ class NetworkJsonTemplate:
     for s in geom_strs: final += s + ' '
     text_strs = []
     for t in text[:-1]:
-      if t['tText'] == '%TypeLabel%': t['tText'] = name.split('_')[1].upper()
+      if t['tText'] == '%TypeLabel%': t['tText'] = typelabel
       text_strs.append('{"tText":"' + t['tText'] + '","tPos":"' + t['tPos'] + '"')
       if 'tAngle' in t.keys(): 
         if '-' in t['tAngle']: text_strs[-1] += ',"tAngle":"' + t['tAngle'][1:] + '"'
@@ -224,7 +224,9 @@ class NetworkJsonTemplate:
 
   # Use port style data to determine which link connector it should be attached to
   def portPos(self, port):
-    compass = {'0.5,0':'N','0.855,0.145':'NE','1,0.5':'E','0.855,0.855':'SE','0.5,1':'S','0.145,0.855':'SW','0,0.5':'W','0.145,0.145':'NW'}
+    compass = {'0.5,0':'N','1,0.5':'E','0.5,1':'S','0,0.5':'W',
+               '0.855,0.145':'NE','0.855,0.855':'SE','0.145,0.855':'SW','0.145,0.145':'NW',
+               '1,0':'NE','1,1':'SE','0,1':'SW','0,0':'NW'}
     from_obj = None
     to_obj = None
     # Determine which end of port is a link
@@ -239,7 +241,7 @@ class NetworkJsonTemplate:
       if is_from and gnd[-1].attrib['id'] == port[2]: is_gnd = True
     # Extract connection points from style string
     style_map = {}
-    for s in port[3].find('./mxCell').attrib['style'].split(';'): 
+    for s in port[3].find('./mxCell').attrib['style'].split(';'):
       if '=' in s: style_map[s[:s.index('=')]] = s[s.index('=')+1:]
     # Get node connection point
     node_str = 'entry' if from_obj else 'exit'
