@@ -98,7 +98,7 @@ class IcdBuilder:
         
         ## Declare generic data.
         pui = "xxxx"
-        subsys = "ptcs"
+        subsys = "test"
         type = "double"
         
         try:
