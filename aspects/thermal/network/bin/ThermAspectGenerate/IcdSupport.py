@@ -24,7 +24,7 @@ class IcdSettings():
     ## Default constructs with no arguments. Members are set to PTCS-system settings.
     def __init__(self):
         
-        self.mPtcsRate = "ECLSS_LO"
+        self.mPtcsRate = "PTCS_RATE"
         self.mPtcsSimObject = "Structure_SimObj structure_SimObj"
         
         ## Dictionary for Category WRITE jobs.
