@@ -47,7 +47,7 @@ tEnumFile = os.environ["ICD_HOME"] + "/enum/StructureEnum.hh"
 
 ## Name of icd file and path of trickView file
 tIcdFile = os.environ["ICD_HOME"] + "/STRUCTURE_ICD.txt"
-tTvPath = os.environ["SIM_HOME"] + "/SIM_AxH1/Modified_data/structure/TV_icd_%s.tv"
+tTvPath = os.environ["SIM_HOME"] + "/SIM_AxH1/Modified_data/trick_tv_files/structure/TV_icd_%s.tv"
 
 ## Uniform ICD variables
 tIcdSys = "gunns"
