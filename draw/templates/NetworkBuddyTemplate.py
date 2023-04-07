@@ -252,8 +252,10 @@ class NetworkBuddyTemplate:
         '        std::map<std::string, std::string> getFlux() {\n'
         '            std::map<std::string, std::string> result;\n')
     for link in self.data['links']:
-        r = r + ('            result["' + link[1] + '"] = net->' + link[1] + '.getFlux();\n')
-    r = r + ('        };\n'
+        if 'flux' in self.getters[link[0]]:
+          r = r + ('            result["' + link[1] + '"] = net->' + link[1] + '.getFlux();\n')
+    r = r + ('            return result;\n'
+        '        };\n'
         '\n'
         '\n'
         '    private:\n'
