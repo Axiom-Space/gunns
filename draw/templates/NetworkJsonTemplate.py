@@ -256,6 +256,7 @@ class NetworkJsonTemplate:
 
   def render(self):
     r =('{ "class": "go.GraphLinksModel",\n'
+        '  "networkName": "' + self.data['networkName'] + '",\n'
         '  "linkFromPortIdProperty": "fromPort",\n'
         '  "linkToPortIdProperty": "toPort",\n'
         '  "nodeDataArray": [\n')
