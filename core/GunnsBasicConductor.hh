@@ -117,10 +117,16 @@ class GunnsBasicConductor : public GunnsBasicLink
         virtual void computeFlows(const double dt);
 
         /// @brief Sets the default conductivity of the link
-        void   setDefaultConductivity(const double conductivity);
+        void setDefaultConductivity(const double conductivity);
+
+        /// @brief Sets the blockage flag of the link
+        void setMalfBlockageFlag(const bool blockage_flag);
 
         /// @brief Returns the effective conductivity of the link
         double getEffectiveConductivity() const;
+
+        /// @brief Returns the malfunction blockage flag of the link
+        bool getMalfBlockageFlag() const;
 
     protected:
         double mEffectiveConductivity; /**< (--) trick_chkpnt_io(**) Generic effective conductivity of the link */
@@ -164,6 +170,27 @@ inline void GunnsBasicConductor::setDefaultConductivity(const double conductivit
 {
     mDefaultConductivity = conductivity;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in]  blockage_flag (--) Flag denoting blockage.
+///
+/// @details  Sets the blockage flag of the link.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline void GunnsBasicConductor::setMalfBlockageFlag(const bool blockage_flag)
+{
+    mMalfBlockageFlag = blockage_flag;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   bool -- The malfunction blockage flag of the link.
+///
+/// @details  Returns the malfunction blockage flag of the link.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline bool GunnsBasicConductor::getMalfBlockageFlag() const
+{
+    return mMalfBlockageFlag;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @return   double -- The effective conductivity of the Link
