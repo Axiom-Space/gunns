@@ -196,7 +196,7 @@ class GunnsBasicLink
         double         getPotentialDrop() const;
 
         /// @brief Sets and resets the blockage malfunction
-        bool          getMalfBlockage() const;
+        bool          getMalfBlockageFlag() const;
 
         /// @brief Sets the minimum linearization potential
         virtual void   setMinLinearizationPotential(const double minLinearP);
