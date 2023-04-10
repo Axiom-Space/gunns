@@ -59,20 +59,34 @@ class NetworkBuddyTemplate:
           visited.append(link)
     return getters, setters
   
-  def format(self, func):
+  # TODO: Add handling for setters with default values
+  def format(self, name, func):
     func_out = func[:func.index('(')+1]
-    if func[:3] == 'get': return func_out + ')'
-    params = ''
-    v_index = 2
+    if func[:3] == 'get': return 'return std::to_string(' + name + 's[vecstr[0]]->' + func_out + '));'
+    lines = []
+    params = []
+    index = 0
     for param in [p.strip() for p in func[func.index('(')+1:func.index(')')].split(',')]:
       if param == '': continue
+      lines.append('                if (vecstr.size() == ' + str(index + 3) + ') { ' + name + 's[vecstr[0]]->' + func_out)
       tmp = param.split(' ')
       args = []
       for i in range(len(tmp)):
-        if tmp[i] != '' and 'const' not in tmp[i]: args.append(tmp[i])        
-      params += 'vecstr[]'+ str(v_index) + '], '
-      v_index += 1
-    return func_out + params[:-2] + ')'
+        if tmp[i] != '' and 'const' not in tmp[i]:
+          if tmp[i][-1] == '&': args.append(tmp[i][:-1])
+          else: args.append(tmp[i])
+      print(args)
+      params.append('')
+      if ('string' not in args[0] and 'char' not in args[0]): params[index] += 'vos::lexical_cast<' + args[0] + '>('
+      params[index] += 'vecstr['+ str(index+2) + ']'
+      if ('string' not in args[0] and 'char' not in args[0]): params[index] += ')'
+      for p in params: lines[index] += p + ', '
+      lines[index] = lines[index][:-2] + '); }'
+      index += 1
+    out_str = ''
+    for l in lines: 
+      if l != '': out_str += l + '\n'
+    return lines[-1] + '\n'
   
   def linkTypes(self, data):
     linkMap = {}
@@ -185,7 +199,9 @@ class NetworkBuddyTemplate:
         '        std::string get' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
       for attrib in self.getters[linkType]:
         linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
-        r = r + ('            if (vecstr[1] == "' + attrib + '") { return std::to_string(' + linkName + 's[vecstr[0]]->' + self.format(self.getters[linkType][attrib]) + '); }\n')
+        r = r + ('            if (vecstr[1] == "' + attrib + '") {\n'
+#                 '                return std::to_string(' + linkName + 's[vecstr[0]]->' + self.format(linkName, self.getters[linkType][attrib]) + ');\n'
+                 '            }\n')
       r = r + ('            return "Attribute cannot be retreived.";\n'
         '        };\n')
     for linkType in linkMap.keys():
@@ -193,10 +209,13 @@ class NetworkBuddyTemplate:
         '        /** @brief Set attribute from ' + linkType + '\n'
         '         * @param attrib : Attribute to be retreived\n'
         '        *******************************************************************************/\n'
-        '        std::string set' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
-      # for attrib in self.setters[linkType].keys():
-      #   linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
-      #   r = r + ('            if (vecstr[1] == "' + attrib + '") { ' + linkName + 's[vecstr[0]]->' + self.format(self.setters[linkType][attrib]) + '; }\n')
+        '        std::string set' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n'
+        '            if (vecstr.size() <= 2) return "Attribute cannot be set.";\n')
+      for attrib in self.setters[linkType].keys():
+        linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
+        r = r + ('            if (vecstr[1] == "' + attrib + '") {\n'
+               + self.format(linkName, self.setters[linkType][attrib])
+               + '            }\n')
       r = r + ('            return "Attribute set.";\n'
         '        };\n')
     r = r + ('\n'
