@@ -195,6 +195,9 @@ class GunnsBasicLink
         /// @brief Returns the potential drop across the link
         double         getPotentialDrop() const;
 
+        /// @brief Sets and resets the blockage malfunction
+        bool          getMalfBlockage() const;
+
         /// @brief Sets the minimum linearization potential
         virtual void   setMinLinearizationPotential(const double minLinearP);
 
@@ -488,6 +491,16 @@ inline double GunnsBasicLink::getPower() const
 inline double GunnsBasicLink::getPotentialDrop() const
 {
     return mPotentialDrop;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   bool -- The malfunction blockage flag of the link.
+///
+/// @details  Returns the malfunction blockage flag of the link.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline bool GunnsBasicLink::getMalfBlockage() const
+{
+    return mMalfBlockageFlag;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
