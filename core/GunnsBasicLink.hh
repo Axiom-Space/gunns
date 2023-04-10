@@ -498,7 +498,7 @@ inline double GunnsBasicLink::getPotentialDrop() const
 ///
 /// @details  Returns the malfunction blockage flag of the link.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline bool GunnsBasicLink::getMalfBlockage() const
+inline bool GunnsBasicLink::getMalfBlockageFlag() const
 {
     return mMalfBlockageFlag;
 }
