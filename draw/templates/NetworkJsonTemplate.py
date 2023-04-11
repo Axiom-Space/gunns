@@ -231,8 +231,8 @@ class NetworkJsonTemplate:
     to_obj = None
     # Determine which end of port is a link
     for link in self.data['links']:
-      if link[-1].attrib['id'] == port[1]: from_obj = link[-1]
-      elif link[-1].attrib['id'] == port[2]: to_obj = link[-1]
+      if link[-1].attrib['id'] == port[1]: from_obj = link[-1]; link_name = link[1]
+      elif link[-1].attrib['id'] == port[2]: to_obj = link[-1]; link_name = link[1]
     is_from = True if from_obj else False
     link = from_obj if from_obj else to_obj
     # Determine node type
@@ -245,11 +245,13 @@ class NetworkJsonTemplate:
       if '=' in s: style_map[s[:s.index('=')]] = s[s.index('=')+1:]
     # Get node connection point
     node_str = 'entry' if from_obj else 'exit'
+    if node_str+'X' not in style_map.keys() or node_str+'Y' not in style_map.keys(): print('ERROR: Port not connected properly to ' + link_name)
     node_pt = 'N' if is_gnd else compass[style_map[node_str+'X']+','+style_map[node_str+'Y']]
     # Get link connection point
     link_shape = self.getShape(link.find('./mxCell').attrib['style'])
     link_str = 'exit' if from_obj else 'entry'
     for constraint in link_shape.find('./connections').iter('constraint'):
+      if link_str+'X' not in style_map.keys() or link_str+'Y' not in style_map.keys(): print('ERROR: Port not connected properly to ' + link_name)
       if constraint.attrib['x'] == style_map[link_str+'X'] and constraint.attrib['y'] == style_map[link_str+'Y']: 
         return is_from, constraint.attrib['name'], node_pt
     return is_from, '0', node_pt

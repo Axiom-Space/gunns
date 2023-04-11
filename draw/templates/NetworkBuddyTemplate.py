@@ -75,7 +75,7 @@ class NetworkBuddyTemplate:
         if tmp[i] != '' and 'const' not in tmp[i]:
           if tmp[i][-1] == '&': args.append(tmp[i][:-1])
           else: args.append(tmp[i])
-      print(args)
+      # print(args)
       params.append('')
       if ('string' not in args[0] and 'char' not in args[0]): params[index] += 'vos::lexical_cast<' + args[0] + '>('
       params[index] += 'vecstr['+ str(index+2) + ']'
