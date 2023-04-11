@@ -123,6 +123,9 @@ class EpsConstantPowerLoad : public GunnsBasicConductor {
         /// @brief Method for setting the Power and Nominal Potential
         void setPowerAndNominalPotential(double power, double potential);
 
+        /// @brief Gets power draw for CPL
+        double getPowerDraw() const;
+
     protected:
         double mDesiredPower;         /**< (W) trick_chkpnt_io(**) Desired link power load */
         double mPowerDraw;            /**< (W) trick_chkpnt_io(**) Power draw by the link (opposite sign convention from BasicLink Power*/
@@ -150,6 +153,17 @@ class EpsConstantPowerLoad : public GunnsBasicConductor {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 inline bool EpsConstantPowerLoad::isNonLinear() {
     return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   -- Power draw.
+///
+/// @details  Gets the power draw of a CPL [W]
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline double EpsConstantPowerLoad::getPowerDraw() const
+{
+    return mPowerDraw;
 }
 
 #endif
