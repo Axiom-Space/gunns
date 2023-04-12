@@ -62,7 +62,7 @@ class NetworkBuddyTemplate:
   # TODO: Add handling for setters with default values
   def format(self, name, func):
     func_out = func[:func.index('(')+1]
-    if func[:3] == 'get': return 'return std::to_string(' + name + 's[vecstr[0]]->' + func_out + '));'
+    if func[:3] == 'get': return ('return std::to_string(' + name + 's[vecstr[0]]->' + func_out + '));')
     lines = []
     params = []
     index = 0
@@ -81,7 +81,7 @@ class NetworkBuddyTemplate:
       params[index] += 'vecstr['+ str(index+2) + ']'
       if ('string' not in args[0] and 'char' not in args[0]): params[index] += ')'
       for p in params: lines[index] += p + ', '
-      lines[index] = lines[index][:-2] + '); }'
+      lines[index] = lines[index][:-2] + '); return "Attribute set"; }'
       index += 1
     out_str = ''
     for l in lines: 
@@ -199,9 +199,7 @@ class NetworkBuddyTemplate:
         '        std::string get' + linkType + 'Attrib(const std::vector<std::string> &vecstr) {\n')
       for attrib in self.getters[linkType]:
         linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
-        r = r + ('            if (vecstr[1] == "' + attrib + '") {\n'
-#                 '                return std::to_string(' + linkName + 's[vecstr[0]]->' + self.format(linkName, self.getters[linkType][attrib]) + ');\n'
-                 '            }\n')
+        r = r + ('            if (vecstr[1] == "' + attrib + '") { ' + self.format(linkName, self.getters[linkType][attrib]) + ' }\n')
       r = r + ('            return "Attribute cannot be retreived.";\n'
         '        };\n')
     for linkType in linkMap.keys():
@@ -216,7 +214,7 @@ class NetworkBuddyTemplate:
         r = r + ('            if (vecstr[1] == "' + attrib + '") {\n'
                + self.format(linkName, self.setters[linkType][attrib])
                + '            }\n')
-      r = r + ('            return "Attribute set.";\n'
+      r = r + ('            return "Attribute cannot be set.";\n'
         '        };\n')
     r = r + ('\n'
         '        /** @brief Set map for programmatic interaction\n'
