@@ -62,11 +62,14 @@ class NetworkBuddyTemplate:
   # TODO: Add handling for setters with default values
   def format(self, name, func):
     func_out = func[:func.index('(')+1]
-    if func[:3] == 'get': return ('return std::to_string(' + name + 's[vecstr[0]]->' + func_out + '));')
+    func_params = [p.strip() for p in func[func.index('(')+1:func.index(')')].split(',')]
+    if func[:3] == 'get': 
+      if len(func_params) == 0 or (len(func_params) == 1 and func_params[0] == ''): return ('return std::to_string(' + name + 's[vecstr[0]]->' + func_out + '));')
+      else: return ('return "Attribute cannot be retreived";')
     lines = []
     params = []
     index = 0
-    for param in [p.strip() for p in func[func.index('(')+1:func.index(')')].split(',')]:
+    for param in func_params:
       if param == '': continue
       lines.append('                if (vecstr.size() == ' + str(index + 3) + ') { ' + name + 's[vecstr[0]]->' + func_out)
       tmp = param.split(' ')
@@ -231,6 +234,7 @@ class NetworkBuddyTemplate:
         '        std::map<std::string, std::string> parseCommand(const std::vector<std::string> &vecstr) {\n'
         '            if (vecstr[0] == "getFlux") return getFlux();\n'
         '            if (vecstr[0] == "getLink") return getLink(vecstr[1]);\n'
+        '            if (vecstr[0] == "getLinks") return linkTypes;\n'
         '            typename std::map<std::string, ' + name + '::commandFunc>::const_iterator it;\n'
         '            it = funcMap.find(vecstr[0] + linkTypes[vecstr[1]]);\n'
         '            if (it == funcMap.end()) return {};\n'
@@ -241,6 +245,7 @@ class NetworkBuddyTemplate:
     # Helper Functions
     r = r + ('        /** @brief Get all information on one link\n'
         '         * @param link : name of link\n'
+        '         * @param attribs : optional vector of attributes to get. If not used, the function will return every available attribute.'
         '        *******************************************************************************/\n'
         '        std::map<std::string, std::string> getLink(const std::string &link, const std::vector<std::string> &attribs=std::vector<std::string>()) {\n'
         '            std::map<std::string, std::string> result;\n'
