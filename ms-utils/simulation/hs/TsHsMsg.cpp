@@ -44,7 +44,11 @@ PROGRAMMERS:
 #include "TsHsMsg.hh"
 #include "TsHsTermination.hh"
 #ifndef no_TRICK_ENV
+#if (TRICK_VER >= 17)
+#include "trick/exec_proto.hh"
+#else
 #include "sim_services/Executive/include/exec_proto.hh"
+#endif
 #endif
 
 // Static variable used to enable or disable logging methods.

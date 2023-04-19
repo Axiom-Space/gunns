@@ -28,10 +28,19 @@
 #include <pthread.h> 
 #include <cstring>
 
+#ifndef no_TRICK_ENV
+#if (TRICK_VER >= 17)
+#include "trick/exec_proto.h"
+#include "trick/MemoryManager.hh"
+#include "trick/memorymanager_c_intf.h"
+#include "trick/message_proto.h"
+#else
 #include "sim_services/Executive/include/exec_proto.h" // for exec_get_current_version
 #include "sim_services/MemoryManager/include/MemoryManager.hh" // for ref_name_from_address
 #include "sim_services/MemoryManager/include/memorymanager_c_intf.h"
 #include "sim_services/Message/include/message_proto.h" // for message_publish
+#endif
+#endif
 
 #include "TsMemoryManager.hh"
 

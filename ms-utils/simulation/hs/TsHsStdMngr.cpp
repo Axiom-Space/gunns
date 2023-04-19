@@ -42,7 +42,13 @@ PROGRAMMERS:
 #include <cstring>
 #include <sstream>
 #include <cstdlib>
+#ifndef no_TRICK_ENV
+#if (TRICK_VER >= 17)
+#include "trick/message_proto.h"
+#else
 #include "sim_services/Message/include/message_proto.h"
+#endif
+#endif
 #include "simulation/timer/TS_timer.h"
 //#include "TsHsSqlitePlugin.hh"
 //     (simulation/hs/TsHsSqlitePlugin.o)

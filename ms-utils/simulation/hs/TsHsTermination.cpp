@@ -30,7 +30,11 @@ PROGRAMMERS:
 #include <sstream>
 #include <string>
 #ifndef no_TRICK_ENV
+#if (TRICK_VER >= 17)
+#include "trick/exec_proto.h"
+#else
 #include "sim_services/include/exec_proto.h"
+#endif
 #endif
 #include "TsHsTermination.hh"
 
