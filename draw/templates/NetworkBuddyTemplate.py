@@ -12,7 +12,7 @@ class NetworkBuddyTemplate:
 
   def __init__(self, data):
     self.data = data
-    self.getters, self.setters = self.getGunnsFuncs('/home/vagrant/ax-sim/lib/gunns')
+    self.getters, self.setters = self.getGunnsFuncs(os.environ['GUNNS_HOME'])
     return
 
   # Function to grab all getter and setter functions from GUNNS
