@@ -62,6 +62,7 @@ class NetworkBuddyTemplate:
   # TODO: Add handling for setters with default values
   def format(self, name, func):
     func_out = func[:func.index('(')+1]
+    if 'State' in func_out: return '\n'
     func_params = [p.strip() for p in func[func.index('(')+1:func.index(')')].split(',')]
     if func[:3] == 'get': 
       if len(func_params) == 0 or (len(func_params) == 1 and func_params[0] == ''): return ('return std::to_string(' + name + 's[vecstr[0]]->' + func_out + '));')
@@ -150,7 +151,7 @@ class NetworkBuddyTemplate:
         '\n'
         '#include <iostream>\n'
         '#include <map>\n'
-        '#include <voscpp/vos.h>\n'
+        '#include "vos.h"\n'
         '#include "' + self.data['networkName'] + '.hh"\n'
         '\n'
         '// Main Class\n'
@@ -237,7 +238,7 @@ class NetworkBuddyTemplate:
         '            if (vecstr[0] == "getLinks") return linkTypes;\n'
         '            typename std::map<std::string, ' + name + '::commandFunc>::const_iterator it;\n'
         '            it = funcMap.find(vecstr[0] + linkTypes[vecstr[1]]);\n'
-        '            if (it == funcMap.end()) return {};\n'
+        '            if (it == funcMap.end()) return {{vecstr[1], "Link not found."}};\n'
         '            commandFunc s = it->second;\n'
         '            return {{vecstr[2], (this->*s)({vecstr.begin()+1, vecstr.end()})}};\n'
         '        };\n'
@@ -258,8 +259,10 @@ class NetworkBuddyTemplate:
         '                    result[attrib] = (this->*s)({link, attrib});\n'
         '                }\n'
         '            } else {\n'
-        '                for (std::string attrib : linkAttribs[linkTypes[link]]) {\n'
-        '                    it = funcMap.find("get" + linkTypes[link]);\n'
+        '                auto lt = linkTypes.find(link);\n'
+        '                if (lt == linkTypes.end()) return {{}};\n'
+        '                for (std::string attrib : linkAttribs[lt->second]) {\n'
+        '                    it = funcMap.find("get" + lt->second);\n'
         '                    if (it == funcMap.end()) continue;\n'
         '                    commandFunc s = it->second;\n'
         '                    result[attrib] = (this->*s)({link, attrib});\n'

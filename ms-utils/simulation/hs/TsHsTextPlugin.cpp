@@ -28,7 +28,13 @@ PROGRAMMERS:
 #include <sstream>
 #include <fstream>
 #include <iomanip>
+#ifndef no_TRICK_ENV
+#if (TRICK_VER >= 17)
+#include "trick/message_proto.h"
+#else
 #include "sim_services/Message/include/message_proto.h"
+#endif
+#endif
 #include "simulation/timer/TS_timer.h"
 #include "TS_hs_msg_types.h"
 #include "TsHsTextPlugin.hh"

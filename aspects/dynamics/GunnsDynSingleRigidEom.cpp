@@ -180,7 +180,11 @@ void GunnsDynSingleRigidEom::update()
 }
 
 #ifndef no_TRICK_ENV       // Trick
+#if (TRICK_VER >= 17)
+#include "trick/integrator_c_intf.h"
+#else
 #include "sim_services/Integrator/include/integrator_c_intf.h"
+#endif
 #else                      // non-Trick
 // Declare methods as externs, to be implemented elsewhere (e.g. a unit test program or a non-Trick
 // sim environment).  Note that in C++ the 'extern' keyword is superflous since un-scoped methods

@@ -27,10 +27,16 @@ PROGRAMMERS:
 #include <sstream>
 #include <fstream>
 #include <iomanip>
-#include "sim_services/Message/include/message_proto.h"
 #include "simulation/timer/TS_timer.h"
 #include "TS_hs_msg_types.h"
 #include "TsHsConsolePlugin.hh"
+#ifndef no_TRICK_ENV
+#if (TRICK_VER >= 17)
+#include "trick/message_proto.h"
+#else
+#include "sim_services/Message/include/message_proto.h"
+#endif
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details A local function which returns an ISO-8601 compliant timestamp.

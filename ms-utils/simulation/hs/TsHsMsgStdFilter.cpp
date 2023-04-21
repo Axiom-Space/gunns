@@ -26,7 +26,13 @@ PROGRAMMERS:
 #include <iostream>
 #include <sstream>
 
+#ifndef no_TRICK_ENV
+#if (TRICK_VER >= 17)
+#include "trick/message_proto.h"
+#else
 #include "sim_services/Message/include/message_proto.h"
+#endif
+#endif
 #include "TsHsMsgStdFilter.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
