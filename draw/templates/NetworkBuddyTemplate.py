@@ -160,12 +160,12 @@ class NetworkBuddyTemplate:
         '{\n'
         '    public:\n'
         '        // GUNNS Link Maps\n'
-        '        std::map<std::string, std::string> linkTypes;\n'
-        '        std::map<std::string, std::vector<std::string>> linkAttribs;\n')
+        '        std::map<std::string, std::string> linkTypes;                 /**< (--) trick_chkpnt_io(**) Link type map */\n'
+        '        std::map<std::string, std::vector<std::string>> linkAttribs;  /**< (--) trick_chkpnt_io(**) Link attribute map */\n')
     linkMap = self.linkTypes(self.data)
     for linkType in linkMap.keys():
       linkName = linkType[5].lower() + linkType[6:] if linkType[:5] == 'Gunns' else linkType[0].lower() + linkType[1:]
-      r = r + ('        std::map<std::string, ' + linkType + '*> ' + linkName + 's;\n')
+      r = r + ('        std::map<std::string, ' + linkType + '*> ' + linkName + 's;  /**< (--) trick_chkpnt_io(**) Link attribute map */\n')
     r = r + ('\n'
         '        // Default Constructor\n'
         '        ' + name + '() {}\n'
@@ -190,6 +190,8 @@ class NetworkBuddyTemplate:
         r = r + ('            ' + linkName + 's["' + link + '"] = &net->' + link + ';\n')
       r = r + '\n'
     r = r[:-1] + ('        }\n'
+        '\n'
+        '        void restart(' + self.data['networkName'] + '*n) { initialize(n); }\n'
         '\n')
     # Getter and Setter functions
     r = r + ('        /** @brief Type definition for link interaction functions\n'
