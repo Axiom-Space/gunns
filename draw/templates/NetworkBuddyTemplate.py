@@ -90,7 +90,8 @@ class NetworkBuddyTemplate:
     out_str = ''
     for l in lines: 
       if l != '': out_str += l + '\n'
-    return lines[-1] + '\n'
+    if len(lines) > 0: return lines[-1] + '\n'
+    else: return '                return "Attribute cannot be set";\n'
   
   def linkTypes(self, data):
     linkMap = {}
