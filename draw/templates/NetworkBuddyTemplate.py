@@ -152,7 +152,7 @@ class NetworkBuddyTemplate:
         '\n'
         '#include <iostream>\n'
         '#include <map>\n'
-        '#include "vos.h"\n'
+        '#include "vos.hh"\n'
         '#include "' + self.data['networkName'] + '.hh"\n'
         '\n'
         '// Main Class\n'
