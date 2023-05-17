@@ -15,7 +15,7 @@
 #include "software/exceptions/TsHsException.hh"
 #include "software/exceptions/TsInitializationException.hh"
 
-#include "GunnsFluidValveController.hh"
+#include "GunnsFluidSolenoidValve.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @param[in]  name                 (--)    Name of object.
@@ -32,17 +32,17 @@
 ///
 /// @details    Default constructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidValveControllerConfigData::GunnsFluidValveControllerConfigData(const std::string& name,
-                                                                         GunnsNodeList*     nodes,
-                                                                         const double       maxConductivity,
-                                                                         const double       expansionScaleFactor,
-                                                                         const double       thermalLength,
-                                                                         const double       thermalDiameter,
-                                                                         const double       surfaceRoughnessconst,
-                                                                         const double       minCmdPosition,
-                                                                         const double       maxCmdPosition,
-                                                                         const double       minFluidPosition,
-                                                                         const double       maxFluidPosition)
+GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const std::string& name,
+                                                                     GunnsNodeList*     nodes,
+                                                                     const double       maxConductivity,
+                                                                     const double       expansionScaleFactor,
+                                                                     const double       thermalLength,
+                                                                     const double       thermalDiameter,
+                                                                     const double       surfaceRoughnessconst,
+                                                                     const double       minCmdPosition,
+                                                                     const double       maxCmdPosition,
+                                                                     const double       minFluidPosition,
+                                                                     const double       maxFluidPosition)
     :
     GunnsFluidValveConfigData(name,
                               nodes,
@@ -64,7 +64,7 @@ GunnsFluidValveControllerConfigData::GunnsFluidValveControllerConfigData(const s
 ///
 /// @details    Copy constructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidValveControllerConfigData::GunnsFluidValveControllerConfigData(const GunnsFluidValveControllerConfigData& that)
+GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const GunnsFluidSolenoidValveConfigData& that)
     :
     GunnsFluidValveConfigData(that),
     mMinCmdPosition(that.mMinCmdPosition),
@@ -78,7 +78,7 @@ GunnsFluidValveControllerConfigData::GunnsFluidValveControllerConfigData(const G
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details    Default destructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidValveControllerConfigData::~GunnsFluidValveControllerConfigData()
+GunnsFluidSolenoidValveConfigData::~GunnsFluidSolenoidValveConfigData()
 {
     // nothing to do
 }
@@ -99,7 +99,7 @@ GunnsFluidValveControllerConfigData::~GunnsFluidValveControllerConfigData()
 ///
 /// @details    Default constructs this Valve Controller model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidValveControllerInputData::GunnsFluidValveControllerInputData(const bool   malfBlockageFlag,
+GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const bool   malfBlockageFlag,
                                                                        const double malfBlockageValue,
                                                                        const double position,
                                                                        const bool   malfLeakThruFlag,
@@ -127,7 +127,7 @@ GunnsFluidValveControllerInputData::GunnsFluidValveControllerInputData(const boo
 ///
 /// @details    Copy constructs this Valve Controller model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidValveControllerInputData::GunnsFluidValveControllerInputData(const GunnsFluidValveControllerInputData& that)
+GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const GunnsFluidSolenoidValveInputData& that)
     :
     GunnsFluidValveInputData(that),
     mCmdPosition(that.mCmdPosition),
@@ -140,7 +140,7 @@ GunnsFluidValveControllerInputData::GunnsFluidValveControllerInputData(const Gun
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details    Default destructs this Valve Controller model Input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidValveControllerInputData::~GunnsFluidValveControllerInputData()
+GunnsFluidSolenoidValveInputData::~GunnsFluidSolenoidValveInputData()
 {
     // nothing to do
 }
@@ -148,7 +148,7 @@ GunnsFluidValveControllerInputData::~GunnsFluidValveControllerInputData()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details    Default constructs this Valve Controller model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidValveController::GunnsFluidValveController()
+GunnsFluidSolenoidValve::GunnsFluidSolenoidValve()
     :
     GunnsFluidValve(),
     mMalfValveStuckFlag(false),
@@ -174,7 +174,7 @@ GunnsFluidValveController::GunnsFluidValveController()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details    Default destructs this Valve Controller model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidValveController::~GunnsFluidValveController()
+GunnsFluidSolenoidValve::~GunnsFluidSolenoidValve()
 {
     // nothing to do
 }
@@ -192,8 +192,8 @@ GunnsFluidValveController::~GunnsFluidValveController()
 ///
 /// @details    Initializes this Valve Controller model with configuration and input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidValveController::initialize(const GunnsFluidValveControllerConfigData& configData,
-                                           const GunnsFluidValveControllerInputData&  inputData,
+void GunnsFluidSolenoidValve::initialize(const GunnsFluidSolenoidValveConfigData& configData,
+                                           const GunnsFluidSolenoidValveInputData&  inputData,
                                            std::vector<GunnsBasicLink*>&              links,
                                            const int                                  port0,
                                            const int                                  port1)
@@ -225,7 +225,7 @@ void GunnsFluidValveController::initialize(const GunnsFluidValveControllerConfig
     mMalfManualFlag         = false;
 
     /// - Initialize the outputs (position) consistent with the inputs.
-    GunnsFluidValveController::update(0.0);
+    GunnsFluidSolenoidValve::update(0.0);
 
     /// - Set the initialization complete flag.
     mInitFlag            = true;
@@ -241,8 +241,8 @@ void GunnsFluidValveController::initialize(const GunnsFluidValveControllerConfig
 ///
 /// @details    Validates this Valve Controller model initialization data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidValveController::validate(const GunnsFluidValveControllerConfigData& config,
-                                 const GunnsFluidValveControllerInputData&  input) const
+void GunnsFluidSolenoidValve::validate(const GunnsFluidSolenoidValveConfigData& config,
+                                       const GunnsFluidSolenoidValveInputData&  input) const
 {
     /// - Throw a TsInitializationException exception on valve maximum flow area fraction <= valve minimum flow area fraction.
     TS_GENERIC_IF_ERREX((config.mMaxFluidPosition <= config.mMinFluidPosition),
@@ -275,7 +275,7 @@ void GunnsFluidCheckValve::restartModel()
 ///
 /// @details    Updates this Valve Controller model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidValveController::update(const double dt __attribute__((unused)))
+void GunnsFluidSolenoidValve::update(const double dt __attribute__((unused)))
 {
     updatePosition(mCmdPosition);
 }
@@ -285,7 +285,7 @@ void GunnsFluidValveController::update(const double dt __attribute__((unused)))
 ///
 /// @details    Updates the fractional valve position of this Valve Controller model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidValveController::updatePosition(const double position)
+void GunnsFluidSolenoidValve::updatePosition(const double position)
 {
     /// - Skip the position update on a stuck valve malfunction.
     if (!mMalfValveStuckFlag) {
@@ -313,5 +313,4 @@ void GunnsFluidValveController::updatePosition(const double position)
     const double fluidPosition = mFluidBias + mFluidScale * mCmdPosition;
     mFluidPosition             = MsMath::limitRange(0.0, fluidPosition, 1.0);
 }
-
 
