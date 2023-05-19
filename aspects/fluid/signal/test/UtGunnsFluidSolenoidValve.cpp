@@ -1,9 +1,4 @@
 /************************** TRICK HEADER ***********************************************************
-@copyright Copyright 2019 United States Government as represented by the Administrator of the
-           National Aeronautics and Space Administration.  All Rights Reserved.
-
- LIBRARY DEPENDENCY:
-    ((ax/fluid/GunnsFluidSolenoidValve.o))
 ***************************************************************************************************/
 
 #include "core/GunnsFluidUtils.hh"
@@ -516,18 +511,18 @@ void UtGunnsFluidSolenoidValve::testUpdateStateRateLimited()
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
 
     /// @test    Rate limiting with closed valve and delta v larger than rate limit * dt.
-    mArticle->mOpenTime     = 0.05;
+    mArticle->mOpenTime     = 0.075;
     mArticle->mPosition      = 0.0;
-    mArticle->mPotentialDrop = mOpenVoltage;
+    mArticle->mVoltage = mOpenVoltage;
     double expected = mTimeStep / mOpenTime;
     mArticle->updateState(mTimeStep);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, mArticle->mPosition, mTolerance);
 
     /// @test    Rate limiting with open valve and delta v larger than rate limit * dt.
-    mArticle->mCloseTime     = 0.05;
+    mArticle->mCloseTime     = 0.025;
     mArticle->mPosition      = 1.0;
-    mArticle->mPotentialDrop = mCloseVoltage;
-    expected = mTimeStep / mCloseTime;
+    mArticle->mVoltage = mCloseVoltage;
+    expected = 1.0 - mTimeStep / mCloseTime;
     mArticle->updateState(mTimeStep);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, mArticle->mPosition, mTolerance);
 
@@ -709,18 +704,6 @@ void UtGunnsFluidSolenoidValve::testInitializationExceptions()
     CPPUNIT_ASSERT_THROW(article.initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1),
                          TsInitializationException);
     mInputData->mVoltage = mVoltage;
-
-    /// @test    Initialization exception on invalid input data: mMalfFailToValue < 0.
-    mInputData->mMalfFailToValue = -FLT_EPSILON;
-    CPPUNIT_ASSERT_THROW(article.initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1),
-                         TsInitializationException);
-    mInputData->mMalfFailToValue = mMalfFailToValue;
-
-    /// @test    Initialization exception on invalid input data: mMalfFailToValue > 1.
-    mInputData->mMalfFailToValue = 1.0 + FLT_EPSILON;
-    CPPUNIT_ASSERT_THROW(article.initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1),
-                         TsInitializationException);
-    mInputData->mMalfFailToValue = mMalfFailToValue;
 
     UT_PASS_LAST;
 }

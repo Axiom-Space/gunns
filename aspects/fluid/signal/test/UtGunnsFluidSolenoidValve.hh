@@ -12,7 +12,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/TestFixture.h>
 
-#include "ax/fluid/GunnsFluidSolenoidValve.hh"
+#include "aspects/fluid/signal/GunnsFluidSolenoidValve.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    Inherit from GunnsFluidSolenoidValve and befriend UtGunnsFluidSolenoidValve.

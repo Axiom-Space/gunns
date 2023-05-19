@@ -244,6 +244,11 @@ void GunnsFluidSolenoidValve::validate() const
     if (mCloseTime <= 0.0) {
         GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Close time <= 0.");
     }
+    
+    /// - Throw an exception if voltage < 0.
+    if (mVoltage < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Input Data", "Voltage < 0.");
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
