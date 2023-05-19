@@ -3,7 +3,7 @@
            National Aeronautics and Space Administration.  All Rights Reserved.
 
  LIBRARY DEPENDENCY:
-    ((aspects/fluid/conductor/GunnsFluidSolenoidValve.o))
+    ((ax/fluid/GunnsFluidSolenoidValve.o))
 ***************************************************************************************************/
 
 #include "core/GunnsFluidUtils.hh"
@@ -249,7 +249,6 @@ void UtGunnsFluidSolenoidValve::testConfigAndInput()
     CPPUNIT_ASSERT(mConfigData->mNodeList->mNodes                 == copyConfig.mNodeList->mNodes);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mMaxConductivity,      copyConfig.mMaxConductivity,         0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mExpansionScaleFactor, copyConfig.mExpansionScaleFactor,    0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mRateLimit,            copyConfig.mRateLimit,               0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mOpenVoltage,          copyConfig.mOpenVoltage,             0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mOpenTime,             copyConfig.mOpenTime,                0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mCloseVoltage,         copyConfig.mCloseVoltage,            0.0);
@@ -528,7 +527,7 @@ void UtGunnsFluidSolenoidValve::testUpdateStateRateLimited()
     mArticle->mCloseTime     = 0.05;
     mArticle->mPosition      = 1.0;
     mArticle->mPotentialDrop = mCloseVoltage;
-    double expected = mTimeStep / mCloseTime;
+    expected = mTimeStep / mCloseTime;
     mArticle->updateState(mTimeStep);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, mArticle->mPosition, mTolerance);
 
@@ -580,11 +579,12 @@ void UtGunnsFluidSolenoidValve::testUpdateStateMalfunction()
     mConfigData->mCloseVoltage = 12.0;
     mConfigData->mOpenVoltage  = 16.0;
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
-    mNodes[0].getContent()->setVoltage(112.0);
-    mNodes[1].getContent()->setVoltage(100.0);
+    mNodes[0].getContent()->setPressure(112.0);
+    mNodes[1].getContent()->setPressure(100.0);
     mNodes[0].getContent()->setTemperature(283.0);
     mNodes[1].getContent()->setTemperature(283.0);
-    mArticle->mRateLimit     = 1.0 / mTimeStep;
+    mArticle->mOpenTime = mTimeStep;
+    mArticle->mCloseTime = mTimeStep;
 
     mArticle->mVoltage      = 12.0;
     const double leakRate         = 1.0;

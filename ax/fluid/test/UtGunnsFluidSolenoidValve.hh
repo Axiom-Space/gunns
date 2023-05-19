@@ -2,8 +2,8 @@
 #define UtGunnsFluidSolenoidValve_EXISTS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @defgroup UT_TSM_GUNNS_FLUID_CONDUCTOR_SOLENOID_VALVE    Solenoid Valve Unit Tests
-/// @ingroup  UT_TSM_GUNNS_FLUID_CONDUCTOR
+/// @defgroup UT_TSM_GUNNS_FLUID_SOLENOID_VALVE    Solenoid Valve Unit Tests
+/// @ingroup  UT_TSM_GUNNS_FLUID
 ///
 /// @details  Unit Tests for the GUNNS Fluid Solenoid Valve link model.
 /// @{
@@ -12,7 +12,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/TestFixture.h>
 
-#include "aspects/fluid/conductor/GunnsFluidSolenoidValve.hh"
+#include "ax/fluid/GunnsFluidSolenoidValve.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    Inherit from GunnsFluidSolenoidValve and befriend UtGunnsFluidSolenoidValve.
