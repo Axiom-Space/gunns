@@ -2,42 +2,35 @@
 #define GunnsFluidSolenoidValve_EXISTS
 
 /**
-@file
-@brief     TS21 Fluid Controller Fluid (Valve, Fan, Pump) Controllers declarations.
-
-@defgroup  TSM_CONTROLLER_FLUID   Fluid (Valve, Fan, Pump) Controllers
-@ingroup   TSM_CONTROLLER
-@defgroup  TSM_CONTROLLER_FLUID_VALVE_CONTROLLER   Base (Manual) Solenoid Valve
-@ingroup   TSM_CONTROLLER_FLUID
+@defgroup  TSM_GUNNS_FLUID_CONDUCTOR_Solenoid_VALVE    Solenoid Valve Model
+@ingroup   TSM_GUNNS_FLUID_CONDUCTOR
 
 @copyright Copyright 2019 United States Government as represented by the Administrator of the
            National Aeronautics and Space Administration.  All Rights Reserved.
 
-PURPOSE: ((Base class for TS21 Fluid Controller Solenoid Valves with position and malfunction.)
-
 @details
-   (The simbus will update the GUNNS fluid valve position with the mFluidPosition attribute from this class.
-    Malfunctions support latching to the current position and failing to a specified position.))
+PURPOSE:
+- (Classes for the GUNNS Fluid Solenoid Valve link model.)
 
- REFERENCE:
- - ()
+REFERENCE:
+- (TBD)
 
- ASSUMPTIONS AND LIMITATIONS:
- - ()
+ASSUMPTIONS AND LIMITATIONS:
+- (TBD)
 
- LIBRARY DEPENDENCY:
- - ((GunnsFluidSolenoidValve.o))
+LIBRARY DEPENDENCY:
+- ((GunnsFluidSolenoidValve.o))
 
- PROGRAMMERS:
-- ((Kyle Fondon) (Axiom Space) (Initial) (2023-05)
+PROGRAMMERS:
+- ((Kyle Fondon) (Axiom Space) (Initial) (2023-05))
 
 @{
 */
 
 #include <string>
 
-#include "aspects/fluid/GunnsFluidValve.hh"
 #include "software/SimCompatibility/TsSimCompatibility.hh"
+#include "aspects/fluid/conductor/GunnsFluidValve.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    TS21 Fluid Controller Solenoid Valve Model configuration data
@@ -48,7 +41,7 @@ PURPOSE: ((Base class for TS21 Fluid Controller Solenoid Valves with position an
 /// @details  The sole purpose of this class is to provide a data structure for the Solenoid Valve
 ///           model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidSolenoidValveConfigData : GunnsFluidValveConfigData
+class GunnsFluidSolenoidValveConfigData : public GunnsFluidValveConfigData
 {
     public:
         double        mOpenVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
@@ -63,10 +56,10 @@ class GunnsFluidSolenoidValveConfigData : GunnsFluidValveConfigData
                                           const double       thermalLength        = 0.0,
                                           const double       thermalDiameter      = 0.0,
                                           const double       surfaceRoughness     = 0.0,
-                                          const double       mOpenVoltage         = 0.0,
-                                          const double       mOpenTime            = 0.0,
-                                          const double       mCloseVoltage        = 0.0,
-                                          const double       mCloseTime           = 0.0);
+                                          const double       openVoltage          = 0.0,
+                                          const double       openTime             = 0.0,
+                                          const double       closeVoltage         = 0.0,
+                                          const double       closeTime            = 0.0);
         /// @brief    Copy constructs this Solenoid Valve model configuration data.
         GunnsFluidSolenoidValveConfigData(const GunnsFluidSolenoidValveConfigData& that);
         /// @brief    Default destructs this Solenoid Valve model configuration data.
@@ -82,7 +75,7 @@ class GunnsFluidSolenoidValveConfigData : GunnsFluidValveConfigData
 /// @details  The sole purpose of this class is to provide a data structure for the Solenoid Valve
 ///           model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidSolenoidValveInputData : GunnsFluidValveInputData
+class GunnsFluidSolenoidValveInputData : public GunnsFluidValveInputData
 {
     public:
         double        mVoltage;         /**< (--)   Current voltage over the coil. Updated through simbus */
@@ -96,8 +89,8 @@ class GunnsFluidSolenoidValveInputData : GunnsFluidValveInputData
                                          const bool   malfLeakThruFlag    = false,
                                          const double malfLeakThruValue   = 0.0,
                                          const double wallTemperature     = 0.0,
-                                         const double mVoltage            = 0.0,
-                                         const bool   mMalfStuckFlag      = false,
+                                         const double voltage             = 0.0,
+                                         const bool   malfStuckFlag       = false,
                                          const bool   malfFailToFlag      = false,
                                          const double malfFailToValue     = 0.0);
         /// @brief    Copy constructs this Solenoid Valve model input data.
@@ -114,11 +107,11 @@ class GunnsFluidSolenoidValveInputData : GunnsFluidValveInputData
 ///
 /// @details  Provides the base class for a Solenoid Valve with manual position and malfunctions.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidSolenoidValve : GunnsFluidValve
+class GunnsFluidSolenoidValve : public GunnsFluidValve
 {
     TS_MAKE_SIM_COMPATIBLE(GunnsFluidSolenoidValve);
     public:
-        double        mVoltage;          /**< (--)   Current voltage over the coil. Updated through simbus */
+        double        mVoltage;         /**< (--)   Current voltage over the coil. Updated through simbus */
         bool          mMalfStuckFlag;   /**< (--)   Stuck at current position malfunction flag. */
         bool          mMalfFailToFlag;  /**< (--)   Fail to position malfunction flag. */
         double        mMalfFailToValue; /**< (--)   Fail to position malfunction value. */
@@ -133,9 +126,6 @@ class GunnsFluidSolenoidValve : GunnsFluidValve
                         std::vector<GunnsBasicLink*>&              networkLinks,
                         const int                                  port0,
                         const int                                  port1);
-        /// @brief    Updates this Solenoid Valve model.
-        /// @callgraph
-        virtual void update(const double dt);
         /// @brief Gets the voltage
         double getVoltage() const;
         /// @brief Sets the voltage
@@ -173,43 +163,9 @@ class GunnsFluidSolenoidValve : GunnsFluidValve
 ///
 /// @details  Gets the voltage across the coil of this GUNNS Fluid Solenoid Valve link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidValve::getVoltage() const
+inline double GunnsFluidSolenoidValve::getVoltage() const
 {
     return mVoltage;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in] voltage  (--) Voltage over the coil
-///
-/// @details  Sets the voltage to the given value.
-////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidCheckValve::setVoltage(const bool voltage)
-{
-    mVoltage = voltage;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in] flag  (--) Malfunction activation flag, true activates
-///
-/// @details  Sets the stuck malf flag to given the value.  Calling this method with default
-///           arguments resets the malfunction.
-////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidCheckValve::setMalfStuck(const bool flag)
-{
-    mMalfStuckFlag = flag;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in] flag  (--) Malfunction activation flag, true activates
-/// @param[in] value (--) Fail to position malfunction value
-///
-/// @details  Sets the fail to position malf parameters to given the values.  Calling this method
-///           with default arguments resets the malfunction.
-////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidCheckValve::setMalfFailTo(const bool flag, const double value)
-{
-    mMalfFailToFlag  = flag;
-    mMalfFailToValue = value;
 }
 
 #endif

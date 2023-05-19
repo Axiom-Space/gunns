@@ -20,7 +20,7 @@ class NetworkBuddyTemplate:
     getters = {}
     setters = {}
     link_structure = {}
-    for folder in ['/core', '/aspects']:
+    for folder in ['/core', '/aspects', '/ax']:
       for root, dirs, files in os.walk(gunns_home + folder):
         for file in files:
           if '.h' in file:

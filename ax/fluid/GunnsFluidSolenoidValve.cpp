@@ -1,19 +1,12 @@
-/**
-@file
-@brief    TS21 Fluid Controller Fluid (Valve, Fan, Pump) Controllers implementation.
+/************************** TRICK HEADER ***********************************************************
+LIBRARY DEPENDENCY:
+ ((aspects/fluid/conductor/GunnsFluidValve.o))
+***************************************************************************************************/
 
-@copyright Copyright 2019 United States Government as represented by the Administrator of the
-           National Aeronautics and Space Administration.  All Rights Reserved.
-
- LIBRARY DEPENDENCY:
- ((simulation/hs/TsHsMsg.o)
-  (software/exceptions/TsInitializationException.o))
-*/
-
-#include "GenericMacros.hh"
 #include "math/MsMath.hh"
-#include "software/exceptions/TsHsException.hh"
+#include "simulation/hs/TsHsMsg.hh"
 #include "software/exceptions/TsInitializationException.hh"
+#include <algorithm>
 
 #include "GunnsFluidSolenoidValve.hh"
 
@@ -25,10 +18,10 @@
 /// @param[in]  thermalLength        (m)     Tube length for thermal convection
 /// @param[in]  thermalDiameter      (m)     Tube inner diameter for thermal convection
 /// @param[in]  surfaceRoughness     (m)     Tube wall surface roughness for thermal convection
-/// @param[in]  minCmdPosition       (--)    Minimum valid valve position.
-/// @param[in]  maxCmdPosition       (--)    Maximum valid valve position.
-/// @param[in]  minFluidPosition     (--)    Minimum valid valve flow area fraction.
-/// @param[in]  maxFluidPosition     (--)    Maximum valid valve flow area fraction.
+/// @param[in]  openVoltage          (--)    Voltage threshold at which valve opens, aka pull in voltage
+/// @param[in]  openTime             (--)    Maximum time for solenoid valve to open, aka response time
+/// @param[in]  closeVoltage         (--)    Voltage threshold at which valve closes, aka dropout voltage
+/// @param[in]  closeTime            (--)    Maximum time for solenoid valve to open, aka response time
 ///
 /// @details    Default constructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,11 +31,11 @@ GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const std::
                                                                      const double       expansionScaleFactor,
                                                                      const double       thermalLength,
                                                                      const double       thermalDiameter,
-                                                                     const double       surfaceRoughnessconst,
-                                                                     const double       minCmdPosition,
-                                                                     const double       maxCmdPosition,
-                                                                     const double       minFluidPosition,
-                                                                     const double       maxFluidPosition)
+                                                                     const double       surfaceRoughness,
+                                                                     const double       openVoltage,
+                                                                     const double       openTime,
+                                                                     const double       closeVoltage,
+                                                                     const double       closeTime)
     :
     GunnsFluidValveConfigData(name,
                               nodes,
@@ -51,10 +44,10 @@ GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const std::
                               thermalLength,
                               thermalDiameter,
                               surfaceRoughness),
-    mMinCmdPosition(minCmdPosition),
-    mMaxCmdPosition(maxCmdPosition),
-    mMinFluidPosition(minFluidPosition),
-    mMaxFluidPosition(maxFluidPosition)
+    mOpenVoltage(openVoltage),
+    mOpenTime(openTime),
+    mCloseVoltage(closeVoltage),
+    mCloseTime(closeTime)
 {
     // nothing to do
 }
@@ -67,10 +60,10 @@ GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const std::
 GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const GunnsFluidSolenoidValveConfigData& that)
     :
     GunnsFluidValveConfigData(that),
-    mMinCmdPosition(that.mMinCmdPosition),
-    mMaxCmdPosition(that.mMaxCmdPosition),
-    mMinFluidPosition(that.mMinFluidPosition),
-    mMaxFluidPosition(that.mMaxFluidPosition)
+    mOpenVoltage(that.mOpenVoltage),
+    mOpenTime(that.mOpenTime),
+    mCloseVoltage(that.mCloseVoltage),
+    mCloseTime(that.mCloseTime)
 {
     // nothing to do
 }
@@ -90,24 +83,23 @@ GunnsFluidSolenoidValveConfigData::~GunnsFluidSolenoidValveConfigData()
 /// @param[in]  malfLeakThruFlag       (--)    Leak rate malfunction flag.
 /// @param[in]  malfLeakThruValue      (kg/s)  Leak rate malfunction value.
 /// @param[in]  wallTemperature        (K)     Tube wall temperature for thermal convection
+/// @param[in]  voltage                (--)    Voltage across the solenoid coil.
 /// @param[in]  malfStuckFlag          (--)    Stuck at current position malfunction flag.
 /// @param[in]  malfFailToFlag         (--)    Fail to position malfunction flag.
 /// @param[in]  malfFailToValue        (--)    Fail to position malfunction value
-/// @param[in]  cmdPosition            (--)    Valve position.
-/// @param[in]  manualPositionFlag     (--)    Manual override valve position flag.
-/// @param[in]  manualPositionValue    (--)    Manual override valve position value.
 ///
 /// @details    Default constructs this Valve Controller model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const bool   malfBlockageFlag,
-                                                                       const double malfBlockageValue,
-                                                                       const double position,
-                                                                       const bool   malfLeakThruFlag,
-                                                                       const double malfLeakThruValue,
-                                                                       const double wallTemperature,
-                                                                       const double cmdPosition,
-                                                                       const bool   manualPositionFlag,
-                                                                       const double manualPositionValue)
+                                                                   const double malfBlockageValue,
+                                                                   const double position,
+                                                                   const bool   malfLeakThruFlag,
+                                                                   const double malfLeakThruValue,
+                                                                   const double wallTemperature,
+                                                                   const double voltage,
+                                                                   const bool   malfStuckFlag,
+                                                                   const bool   malfFailToFlag,
+                                                                   const double malfFailToValue)
     :
     GunnsFluidValveInputData(malfBlockageFlag,
                              malfBlockageValue,
@@ -115,9 +107,10 @@ GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const bool   
                              malfLeakThruFlag,
                              malfLeakThruValue,
                              wallTemperature),
-    mCmdPosition(cmdPosition),
-    mManualPositionFlag(manualPositionFlag),
-    mManualPositionValue(manualPositionValue)
+    mVoltage(voltage),
+    mMalfStuckFlag(malfStuckFlag),
+    mMalfFailToFlag(malfFailToFlag),
+    mMalfFailToValue(malfFailToValue)
 {
     // nothing to do
 }
@@ -130,9 +123,10 @@ GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const bool   
 GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const GunnsFluidSolenoidValveInputData& that)
     :
     GunnsFluidValveInputData(that),
-    mCmdPosition(that.mCmdPosition),
-    mManualPositionFlag(that.mManualPositionFlag),
-    mManualPositionValue(that.mManualPositionValue)
+    mVoltage(that.mVoltage),
+    mMalfStuckFlag(that.mMalfStuckFlag),
+    mMalfFailToFlag(that.mMalfFailToFlag),
+    mMalfFailToValue(that.mMalfFailToValue)
 {
     // nothing to do
 }
@@ -151,22 +145,14 @@ GunnsFluidSolenoidValveInputData::~GunnsFluidSolenoidValveInputData()
 GunnsFluidSolenoidValve::GunnsFluidSolenoidValve()
     :
     GunnsFluidValve(),
-    mMalfValveStuckFlag(false),
-    mMalfValveFailToFlag(false),
-    mMalfValveFailToValue(0.0),
-    mMalfManualFlag(false),
-    mMinCmdPosition(0.0),
-    mMaxCmdPosition(0.0),
-    mFluidBias(0.0),
-    mFluidScale(0.0),
-    mCmdPosition(0.0),
-    mManualPositionFlag(false),
-    mManualPositionValue(0.0),
-    mStuckFlag(false),
-    mLowerLimitFlag(false),
-    mUpperLimitFlag(false),
-    mFluidPosition(0.0),
-    mInitFlag(false)
+    mVoltage(0.0),
+    mMalfStuckFlag(false),
+    mMalfFailToFlag(false),
+    mMalfFailToValue(0.0),
+    mOpenVoltage(0.0),
+    mOpenTime(0.0),
+    mCloseVoltage(0.0),
+    mCloseTime(0.0)
 {
     // nothing to do
 }
@@ -193,124 +179,151 @@ GunnsFluidSolenoidValve::~GunnsFluidSolenoidValve()
 /// @details    Initializes this Valve Controller model with configuration and input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void GunnsFluidSolenoidValve::initialize(const GunnsFluidSolenoidValveConfigData& configData,
-                                           const GunnsFluidSolenoidValveInputData&  inputData,
-                                           std::vector<GunnsBasicLink*>&              links,
-                                           const int                                  port0,
-                                           const int                                  port1)
+                                         const GunnsFluidSolenoidValveInputData&  inputData,
+                                         std::vector<GunnsBasicLink*>&            links,
+                                         const int                                port0,
+                                         const int                                port1)
 {
     /// - Reset the initialization complete flag.
-    mInitFlag            = false;
+    mInitFlag               = false;
     
     /// - First initialize & validate parent.
     GunnsFluidValve::initialize(configData, inputData, links, port0, port1);
 
-    /// - Validate the configuration and input data.
-    validate(config, input);
-
     /// - Initialize from the configuration data.
-    mMinCmdPosition         = config.mMinCmdPosition;
-    mMaxCmdPosition         = config.mMaxCmdPosition;
-    mFluidScale             = (config.mMaxFluidPosition - config.mMinFluidPosition) / (mMaxCmdPosition - mMinCmdPosition);
-    mFluidBias              = config.mMaxFluidPosition - mFluidScale * config.mMaxCmdPosition;
+    mOpenVoltage            = configData.mOpenVoltage;
+    mOpenTime               = configData.mOpenTime;
+    mCloseVoltage           = configData.mCloseVoltage;
+    mCloseTime              = configData.mCloseTime;
 
     /// - Initialize from the input data.
-    mCmdPosition            = input.mCmdPosition;
-    mManualPositionFlag     = input.mManualPositionFlag;
-    mManualPositionValue    = input.mManualPositionValue;
+    mVoltage                = inputData.mVoltage;
 
     /// - Initialize malfunctions off..
-    mMalfValveStuckFlag     = false;
-    mMalfValveFailToFlag    = false;
-    mMalfValveFailToValue   = 0.0;
-    mMalfManualFlag         = false;
+    mMalfStuckFlag     = false;
+    mMalfFailToFlag    = false;
+    mMalfFailToValue   = 0.0;
 
-    /// - Initialize the outputs (position) consistent with the inputs.
-    GunnsFluidSolenoidValve::update(0.0);
+    /// - Validate the configuration and input data.
+    validate();
 
     /// - Set the initialization complete flag.
-    mInitFlag            = true;
+    mInitFlag               = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in]  config  (--)  Configuration data.
-/// @param[in]  input   (--)  Input data.
-///
 /// @return     void
 ///
 /// @throws     TsInitializationException
 ///
 /// @details    Validates this Valve Controller model initialization data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::validate(const GunnsFluidSolenoidValveConfigData& config,
-                                       const GunnsFluidSolenoidValveInputData&  input) const
+void GunnsFluidSolenoidValve::validate() const
 {
-    /// - Throw a TsInitializationException exception on valve maximum flow area fraction <= valve minimum flow area fraction.
-    TS_GENERIC_IF_ERREX((config.mMaxFluidPosition <= config.mMinFluidPosition),
-                        TsInitializationException, "Invalid Configuration Data",  "Valve maximum flow area fraction <= valve minimum flow area fraction.");
+    /// - Throw an exception if open voltage < 0.
+    if (mOpenVoltage < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Open voltage < 0.");
+    }
+    
+    /// - Throw an exception if close voltage < 0.
+    if (mCloseVoltage < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Close voltage < 0.");
+    }
 
-    /// - Throw a TsInitializationException exception on valve position out of range.
-    TS_GENERIC_IF_ERREX((!MsMath::isInRange(config.mMinCmdPosition, input.mCmdPosition, config.mMaxCmdPosition)),
-                        TsInitializationException, "Invalid Input Data",          "Valve position out of range.");
+    /// - Throw an exception if open pressure less than close pressure.
+    if (mOpenVoltage < mCloseVoltage) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Open voltage < close voltage.");
+    }
 
-    /// - Throw a TsInitializationException exception on manual position out of range.
-    TS_GENERIC_IF_ERREX(input.mManualPositionFlag && (!MsMath::isInRange(config.mMinCmdPosition, input.mManualPositionValue, config.mMaxCmdPosition)),
-                        TsInitializationException, "Invalid Input Data",          "Manual position out of range.");
+    /// - Throw an exception if open time < 0.
+    if (mOpenTime <= 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Open time <= 0.");
+    }
+    
+    /// - Throw an exception if close time < 0.
+    if (mCloseTime <= 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Close time <= 0.");
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Derived classes should call their base class implementation too.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidCheckValve::restartModel()
+void GunnsFluidSolenoidValve::restartModel()
 {
     /// - Reset the base class.
     GunnsFluidValve::restartModel();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in]  dt  (s)  Time step (not used).
+/// @param[in]      dt  (s)  Time step.
 ///
-/// @note       This method is intended to by called by a manager which has the responsibility
-///             for ensuring that this instance has been initialized, hence the lack of an internal
-///             initialization check.
+/// @return         void
 ///
-/// @details    Updates this Valve Controller model.
+/// @details        Updates this GUNNS Fluid Solenoid Valve Link Model state (valve position and
+///                 effective conductivity).
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::update(const double dt __attribute__((unused)))
+void GunnsFluidSolenoidValve::updateState(const double dt)
 {
-    updatePosition(mCmdPosition);
+    /// - Handle stuck malfunction
+    if (!mMalfStuckFlag) {
+        if (mMalfFailToFlag) {
+            /// - Handle fail to position malfunction with range limiting.
+            mPosition                     = MsMath::limitRange(0.0, mMalfFailToValue, 1.0);
+        } else {
+            const double previousPosition = mPosition;
+            if (mVoltage >= mOpenVoltage) {
+                /// - The position is fully open (1.0) if delta V across the valve is large enough.
+                mPosition                 = 1.0;
+            } else if (mVoltage <= mCloseVoltage) {
+                /// - The position is fully closed (0.0) if delta V across the valve is small enough.
+                mPosition                 = 0.0;
+            } else {
+                /// - Otherwise the position transitions (0.0 to 1.0) linearly in delta V.
+                mPosition                 = (mVoltage - mCloseVoltage) / (mOpenVoltage - mCloseVoltage);
+            }
+
+            /// - Apply range and rate limiting to the computed position.
+            mPosition                     = MsMath::limitRange(std::max(0.0, previousPosition - dt / mCloseTime),
+                                                               mPosition,
+                                                               std::min(1.0, previousPosition + dt / mOpenTime));
+        }
+    }
+    /// - Call parent updateState to apply valve malfunctions and update the effective conductivity.
+    GunnsFluidValve::updateState(dt);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in]  position  (--)  Fractional valve position.
+/// @param[in] voltage  (--) Voltage over the coil
 ///
-/// @details    Updates the fractional valve position of this Valve Controller model.
+/// @details  Sets the voltage to the given value.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::updatePosition(const double position)
+void GunnsFluidSolenoidValve::setVoltage(const double voltage)
 {
-    /// - Skip the position update on a stuck valve malfunction.
-    if (!mMalfValveStuckFlag) {
-        if (mMalfValveFailToFlag) {
-            /// - Set the position to the fail-to value on a valve fail-to position malfunction.
-            mCmdPosition = mMalfValveFailToValue;
-        } else if (mManualPositionFlag && !mMalfManualFlag) {
-            /// - Compute the desired position based on the manual command, if any, and subject to malfunction.
-            mCmdPosition = mManualPositionValue;
-        } else {
-            /// - Otherwise, use the input desired position.
-            mCmdPosition = position;
-        }
-    }
+    mVoltage = voltage;
+}
 
-    /// - Update status flags (stuck, lower limit, upper limit).
-    mStuckFlag                 = mMalfValveStuckFlag || mMalfValveFailToFlag;
-    mLowerLimitFlag            = mCmdPosition <= mMinCmdPosition;
-    mUpperLimitFlag            = mCmdPosition >= mMaxCmdPosition;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in] flag  (--) Malfunction activation flag, true activates
+///
+/// @details  Sets the stuck malf flag to given the value.  Calling this method with default
+///           arguments resets the malfunction.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void GunnsFluidSolenoidValve::setMalfStuck(const bool flag)
+{
+    mMalfStuckFlag = flag;
+}
 
-    /// - In all cases limit the position to the valid range.
-    mCmdPosition               = MsMath::limitRange(mMinCmdPosition, mCmdPosition, mMaxCmdPosition);
-
-    /// - Compute the valve flow area fraction from the position and limit range to 0 to 1.
-    const double fluidPosition = mFluidBias + mFluidScale * mCmdPosition;
-    mFluidPosition             = MsMath::limitRange(0.0, fluidPosition, 1.0);
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in] flag  (--) Malfunction activation flag, true activates
+/// @param[in] value (--) Fail to position malfunction value
+///
+/// @details  Sets the fail to position malf parameters to given the values.  Calling this method
+///           with default arguments resets the malfunction.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void GunnsFluidSolenoidValve::setMalfFailTo(const bool flag, const double value)
+{
+    mMalfFailToFlag  = flag;
+    mMalfFailToValue = value;
 }
 
