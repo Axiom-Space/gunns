@@ -21,7 +21,7 @@ LIBRARY DEPENDENCY:
 /// @param[in]  openVoltage          (--)    Voltage threshold at which valve opens, aka pull in voltage
 /// @param[in]  openTime             (--)    Maximum time for solenoid valve to open, aka response time
 /// @param[in]  closeVoltage         (--)    Voltage threshold at which valve closes, aka dropout voltage
-/// @param[in]  closeTime            (--)    Maximum time for solenoid valve to open, aka response time
+/// @param[in]  closeTime            (--)    Maximum time for solenoid valve to close, aka response time
 ///
 /// @details    Default constructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
