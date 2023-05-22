@@ -25,6 +25,7 @@ SOURCES := \
  $(wildcard $(GUNNS_HOME)/aspects/fluid/fluid/*.cpp) \
  $(wildcard $(GUNNS_HOME)/aspects/fluid/hi-fi/*.cpp) \
  $(wildcard $(GUNNS_HOME)/aspects/fluid/potential/*.cpp) \
+ $(wildcard $(GUNNS_HOME)/aspects/fluid/signal/*.cpp) \
  $(wildcard $(GUNNS_HOME)/aspects/fluid/source/*.cpp) \
  $(wildcard $(GUNNS_HOME)/aspects/thermal/*.cpp) \
  $(wildcard $(GUNNS_HOME)/aspects/thermal/network/*.cpp) \

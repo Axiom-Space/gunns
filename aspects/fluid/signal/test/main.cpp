@@ -1,0 +1,28 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @defgroup  UT_GUNNS_FLUID_AX   Ax Fluid Unit tests
+/// @ingroup   UT_GUNNS_FLUID
+/// @details   Unit test classes for Axiom GUNNS fluid link models.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <cppunit/ui/text/TestRunner.h>
+
+#include "UtGunnsFluidSolenoidValve.hh"
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param     int     --  not used
+/// @param     char**  --  not used
+///
+/// @return    --  status (always 0)
+///
+/// @details  Main for GUNNS fluid conductor link model unit tests in the CPPUNIT framework.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+int main(int, char**)
+{
+    CppUnit::TextTestRunner runner;
+
+    runner.addTest(UtGunnsFluidSolenoidValve::suite());
+
+    runner.run();
+
+    return 0;
+}
