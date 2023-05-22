@@ -23,7 +23,7 @@ class NetworkBuddyTemplate:
     for folder in ['/core', '/aspects']:
       for root, dirs, files in os.walk(gunns_home + folder):
         for file in files:
-          if '.h' in file:
+          if file[-3:] == '.hh' or file[-2:] == '.h':
             link = file[:file.index('.')]
             getters[link]= {}
             setters[link]= {}
