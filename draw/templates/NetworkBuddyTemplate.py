@@ -23,7 +23,7 @@ class NetworkBuddyTemplate:
     for folder in ['/core', '/aspects', '/ax']:
       for root, dirs, files in os.walk(gunns_home + folder):
         for file in files:
-          if '.h' in file:
+          if file[-3:] == '.hh' or file[-2:] == '.h':
             link = file[:file.index('.')]
             getters[link]= {}
             setters[link]= {}
@@ -152,7 +152,7 @@ class NetworkBuddyTemplate:
         '\n'
         '#include <iostream>\n'
         '#include <map>\n'
-        '#include "vos.h"\n'
+        '#include "vos.hh"\n'
         '#include "' + self.data['networkName'] + '.hh"\n'
         '\n'
         '// Main Class\n'
