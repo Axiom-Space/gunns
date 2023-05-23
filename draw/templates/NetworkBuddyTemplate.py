@@ -65,9 +65,10 @@ class NetworkBuddyTemplate:
     if 'State' in func_out: return '\n'
     func_params = [p.strip() for p in func[func.index('(')+1:func.index(')')].split(',')]
     if func[:3] == 'get': 
-      if len(func_params) == 0 or (len(func_params) == 1 and func_params[0] == '') or func_out in ['getMpp(', 'getTerminal(']: 
+      if (len(func_params) == 0 or (len(func_params) == 1 and func_params[0] == '')) and func_out not in ['getMpp(', 'getTerminal(']: 
         return ('return std::to_string(' + name + 's[vecstr[0]]->' + func_out + '));')
-      else: return ('return "Attribute cannot be retreived";')
+      else: 
+        return ('return "Attribute cannot be retreived";')
     lines = []
     params = []
     index = 0
