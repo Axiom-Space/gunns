@@ -82,6 +82,10 @@ class NetworkBuddyTemplate:
           if tmp[i][-1] == '&': args.append(tmp[i][:-1])
           else: args.append(tmp[i])
       # print(args)
+      type_allowed = False
+      for type_n in ['string', 'char', 'int', 'double', 'float', 'bool']:
+        if type_n in args[0]: type_allowed = True
+      if not type_allowed: return '                return "Type not recognized";\n'
       params.append('')
       if ('string' not in args[0] and 'char' not in args[0]): params[index] += 'vos::lexical_cast<' + args[0] + '>('
       params[index] += 'vecstr['+ str(index+2) + ']'
