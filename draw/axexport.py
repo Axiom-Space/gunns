@@ -533,6 +533,28 @@ def keyContainedNodes(container, numberedNodes, gndNodes, allObjects):
             childNodes.append(node)
     return childNodes, updated
 
+def splitCapacitiveNode(capNode):
+    node_str = ('<object About="Fluid Node" i00.initialFluidState="' + capNode.attrib['i00.initialFluidState'] + '" label="' + capNode.attrib['label'] + '" id="' + capNode.attrib['id'] + '">\n'
+                '  <gunns subtype="Fluid" type="Node" />\n'
+                + ET.tostring(capNode.find('./mxCell'), "utf-8").decode() +
+                '</object>')
+    node = ET.fromstring(node_str)
+    link_str = ('<object About="Fluid Capacitor" Ports="0=node" c00.expansionScaleFactor="' + capNode.attrib['c00.expansionScaleFactor'] + '" i00.malfBlockageFlag="' + capNode.attrib['i01.malfBlockageFlag'] + '" i01.malfBlockageValue="' + capNode.attrib['i02.malfBlockageValue'] + '" i02.initialVolume="' + capNode.attrib['i03.initialVolume'] + '" i03.initialFluidState="&amp;' + capNode.attrib['i00.initialFluidState'] + '" id="' + capNode.attrib['id'] + 'vol" label="vol' + capNode.attrib['label'] + '">\n'
+                '  <gunns numPorts="2" reqPorts="0" subtype="core/GunnsFluidCapacitor" type="Link" />\n'
+                '  <mxCell parent="' + capNode.find('./mxCell').attrib['parent'] + '" style="" vertex="1">\n'
+                '    <mxGeometry/>\n'
+                '  </mxCell>\n'
+                '</object>')
+    link = ET.fromstring(link_str)
+    port_str = ('<object About="Link Port" label="0" id="' + capNode.attrib['id'] + 'lp">\n'
+                '  <gunns type="Port" />\n'
+                '  <mxCell style="" parent="' + capNode.find('./mxCell').attrib['parent'] + '" source="' + capNode.attrib['id'] + '" target="' + capNode.attrib['id'] + 'vol" edge="1">\n'
+                '    <mxGeometry/>\n'
+                '  </mxCell>\n'
+                '</object>')
+    port = ET.fromstring(port_str)
+    return node, link, port
+
 #####################
 # BEGIN MAIN SCRIPT #
 #####################
@@ -718,6 +740,21 @@ for an_object in objects:
                 numNetNodes = numNetNodes + 1
                 netNodes.append(an_object)
                 numberedNodes.append(an_object)
+            elif 'CapacitiveFluid' == gunns_attribs['subtype']:
+                n, l, p = splitCapacitiveNode(an_object)
+                fluid_network = True
+                # Add the node
+                numNetNodes = numNetNodes + 1
+                netNodes.append(n)
+                numberedNodes.append(n)
+                # Add the implied capacitor
+                checkName(l)
+                numLinks = numLinks + 1
+                links_id.append(l.attrib['id'])
+                links.append(l)
+                link_source_paths.append(l.find('./gunns').attrib['subtype'])
+                # Add the implied port
+                ports.append(p)
             elif 'Reference' == gunns_attribs['subtype']:
                 refNodes.append(an_object)
                 numberedNodes.append(an_object)

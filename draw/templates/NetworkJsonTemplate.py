@@ -266,6 +266,7 @@ class NetworkJsonTemplate:
       spotter_style = self.spotterStyle(spotter[-1])
       r = r + ('    {"key":"' + spotter_style['key'] + '","category":"Spotter","pos":"' + spotter_style['pos'] + '","text":"' + spotter_style['text'] + '","size":"' + spotter_style['size'] + '"},\n')
     for link in self.data['links']:
+      if link[-1].find('./mxCell').attrib['style'] == "": continue
       link_style = self.linkStyle(link[-1])
       r = r + ('    {"key":"' + link_style['key'] + '","category":"Link","pos":"' + link_style['pos'] + 
                     '","size":"' + link_style['size'] + '","text":"' + link_style['text'] + '","angle":"' + link_style['angle'] + 
@@ -290,6 +291,7 @@ class NetworkJsonTemplate:
     r = r + ('\n],\n'
              '  "linkDataArray": [\n')
     for port in self.data['ports']:
+      if port[-1].find('./mxCell').attrib['style'] == "": continue
       if port[1] == 'Ground' or port[2] == 'Ground': continue
       elif 'Ref' in port[1] or 'Ref' in port[2]: continue
       elif float(port[0]) > 1: continue
