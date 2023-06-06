@@ -534,12 +534,13 @@ def keyContainedNodes(container, numberedNodes, gndNodes, allObjects):
     return childNodes, updated
 
 def splitCapacitiveNode(capNode):
+    name = capNode.attrib['name'] if capNode.attrib['name'] != '' else ('vol' + capNode.attrib['label'])
     if capNode.find('./gunns').attrib['subtype'] == 'CapacitiveFluid':
         node_str = ('<object About="Fluid Node" i00.initialFluidState="' + capNode.attrib['i03.initialFluidState'] + '" label="' + capNode.attrib['label'] + '" id="' + capNode.attrib['id'] + '">\n'
                     '  <gunns subtype="Fluid" type="Node" />\n'
                     + ET.tostring(capNode.find('./mxCell'), "utf-8").decode() +
                     '</object>')
-        link_str = ('<object About="Fluid Capacitor" Ports="0=node" c00.expansionScaleFactor="' + capNode.attrib['c00.expansionScaleFactor'] + '" i00.malfBlockageFlag="' + capNode.attrib['i00.malfBlockageFlag'] + '" i01.malfBlockageValue="' + capNode.attrib['i01.malfBlockageValue'] + '" i02.initialVolume="' + capNode.attrib['i02.initialVolume'] + '" i03.initialFluidState="&amp;' + capNode.attrib['i03.initialFluidState'] + '" id="' + capNode.attrib['id'] + 'vol" label="vol' + capNode.attrib['label'] + '">\n'
+        link_str = ('<object About="Fluid Capacitor" Ports="0=node" c00.expansionScaleFactor="' + capNode.attrib['c00.expansionScaleFactor'] + '" i00.malfBlockageFlag="' + capNode.attrib['i00.malfBlockageFlag'] + '" i01.malfBlockageValue="' + capNode.attrib['i01.malfBlockageValue'] + '" i02.initialVolume="' + capNode.attrib['i02.initialVolume'] + '" i03.initialFluidState="&amp;' + capNode.attrib['i03.initialFluidState'] + '" id="' + capNode.attrib['id'] + 'vol" label="' + name + '">\n'
                     '  <gunns numPorts="2" reqPorts="0" subtype="core/GunnsFluidCapacitor" type="Link" />\n'
                     '  <mxCell parent="' + capNode.find('./mxCell').attrib['parent'] + '" style="" vertex="1">\n'
                     '    <mxGeometry/>\n'
@@ -550,7 +551,7 @@ def splitCapacitiveNode(capNode):
                     '  <gunns subtype="Basic" type="Node" />\n'
                     + ET.tostring(capNode.find('./mxCell'), "utf-8").decode() +
                     '</object>')
-        link_str = ('<object About="Fluid Capacitor" Ports="0=node" c00.editCapacitanceGroup="' + capNode.attrib['c00.editCapacitanceGroup'] + '" i00.malfBlockageFlag="' + capNode.attrib['i00.malfBlockageFlag'] + '" i01.malfBlockageValue="' + capNode.attrib['i01.malfBlockageValue'] + '" i02.capacitance="' + capNode.attrib['i02.capacitance'] + '" i03.potential="' + capNode.attrib['i03.potential'] + '" i04.temperatureOverrideFlag="' + capNode.attrib['i04.temperatureOverrideFlag'] + '" i05.temperatureOverrideValue="' + capNode.attrib['i05.temperatureOverrideValue'] + '" id="' + capNode.attrib['id'] + 'vol" label="vol' + capNode.attrib['label'] + '">\n'
+        link_str = ('<object About="Fluid Capacitor" Ports="0=node" c00.editCapacitanceGroup="' + capNode.attrib['c00.editCapacitanceGroup'] + '" i00.malfBlockageFlag="' + capNode.attrib['i00.malfBlockageFlag'] + '" i01.malfBlockageValue="' + capNode.attrib['i01.malfBlockageValue'] + '" i02.capacitance="' + capNode.attrib['i02.capacitance'] + '" i03.potential="' + capNode.attrib['i03.potential'] + '" i04.temperatureOverrideFlag="' + capNode.attrib['i04.temperatureOverrideFlag'] + '" i05.temperatureOverrideValue="' + capNode.attrib['i05.temperatureOverrideValue'] + '" id="' + capNode.attrib['id'] + 'vol" label="' + name + '">\n'
                     '  <gunns numPorts="2" reqPorts="0" subtype="aspects/thermal/GunnsThermalCapacitor" type="Link" />\n'
                     '  <mxCell parent="' + capNode.find('./mxCell').attrib['parent'] + '" style="" vertex="1">\n'
                     '    <mxGeometry/>\n'
