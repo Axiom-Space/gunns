@@ -26,5 +26,12 @@
     "h": 50,
     "aspect": "fixed",
     "title": "Solenoid Valve"
+  },
+  {
+    "xml": "&lt;mxGraphModel&gt;&lt;root&gt;&lt;mxCell id=\"0\"/&gt;&lt;mxCell id=\"1\" parent=\"0\"/&gt;&lt;object label=\"\" About=\"Solenoid Valve\" Ports=\"0=in, 1=out\" c00.coefficientType=\"DISCHARGE_COEFF\" c01.coefficientValue=\"0.0\" c02.throatDiameter=\"0.0\" c03.criticalReynolds=\"0.0\" c04.expansionScaleFactor=\"0.0\" c05.flowTuningFactor=\"0.0\" c06.openVoltage=\"0.0\" c07.openTime=\"0.0\" c08.closeVoltage=\"0.0\" c09.closeTime=\"0.0\" i00.malfBlockageFlag=\"false\" i01.malfBlockageValue=\"0.0\" i02.position=\"0.0\" i03.malfLeakThruFlag=\"false\" i04.malfLeakThruValue=\"0.0\" i05.voltage=\"0.0\" i06.malfStuckFlag=\"0.0\" i07.malfFailToFlag=\"false\" i08.malfFailToValue=\"0.0\" id=\"2\"&gt;&amp;#xa;      &lt;gunns type=\"Link\" subtype=\"aspects/fluid/hi-fi/GunnsFluidHiFiSolenoidValve\" numPorts=\"2\" reqPorts=\"0,1\"/&gt;&lt;mxCell style=\"verticalLabelPosition=bottom;align=center;fillColor=#FFFFFF;html=1;verticalAlign=top;strokeColor=#000000;strokeWidth=1;shape=stencil(1VbLbsIwEPyaHFNBzKvHlpb2hFCr9r5NNmDVsSPHvP6+TmwkDCTK60AlDvZsMjM7JrY9Ms82kKIXDCBLMVQeefGCYAeSwg/TcKArGwOOB2bKIUGDvH0tl58aeQYGPMRID1cf3+apTEnxi3saKfs65RuUVJnq3mCzgpK8eoMnDeY/Mg8F59oIFTxzKmd1zQ2UK8cL5YY51SIJKpQGtp4PzuxoZw8TM/eCRRMpsVU1tIa9aK3qdPUwdrVuK5G5RsrSJfNYSFxLseXRTX8p5At5VTiVE7HDs97doIcljlwKRvkZxdSlGHenaONi2MZFyESGFUut8ZI09SpQxsynU0HQaC3cDkj3EOpRuCam3V3MmlBUh9xvwKPuvV1QDCv3itsUJOibok0fs54Z2rTRQ5gXFC3+8GTiMIxaeAiaM4AM9YCBXKOvx37MYO2cRvLyyJCW3ople8T0+rULSwcfDjTzpVCQnySm+OhmViv1O/I7+2d+651m92Q4aLEjTRpQdNzzY8FVDAllRz23g0L1HdkOFQ2hWlzhIb+6aR37GvUX1E3LDWRkP2lgdG0jC5Hnd7wC3p3hCY2i0228TL+0wSKXq9tdgZq7fwH8AQ==);fontSize=12;fontColor=#000000;\" vertex=\"1\" parent=\"1\"&gt;&lt;mxGeometry width=\"80\" height=\"50\" as=\"geometry\"/&gt;&lt;/mxCell&gt;&lt;/object&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;",
+    "w": 80,
+    "h": 50,
+    "aspect": "fixed",
+    "title": "HiFi Solenoid Valve"
   }
 ]</mxlibrary>
