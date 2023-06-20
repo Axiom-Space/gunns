@@ -10,6 +10,7 @@
 
 #include "UtGunnsFluidHiFiOrifice.hh"
 #include "UtGunnsFluidHiFiValve.hh"
+#include "UtGunnsFluidHiFiSolenoidValve.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @param     int     --  not used
@@ -25,6 +26,7 @@ int main(int, char**)
 
     runner.addTest(UtGunnsFluidHiFiOrifice::suite());
     runner.addTest(UtGunnsFluidHiFiValve::suite());
+    runner.addTest(UtGunnsFluidHiFiSolenoidValve::suite());
 
     runner.run();
 
