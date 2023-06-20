@@ -80,6 +80,7 @@ class UtGunnsFluidHiFiSolenoidValve: public CppUnit::TestFixture
         double                                    tCriticalReynolds;       /**< (--) Nominal config data */
         double                                    tExpansionScaleFactor;   /**< (--) Nominal config data */
         double                                    tFlowTuningFactor;       /**< (--) Nominal config data */
+        bool                                      tLatching;               /**< (V)  Nominal config data */
         double                                    tOpenVoltage;            /**< (V)  Nominal config data */
         double                                    tOpenTime;               /**< (s)  Nominal config data */
         double                                    tCloseVoltage;           /**< (V)  Nominal config data */
@@ -90,6 +91,7 @@ class UtGunnsFluidHiFiSolenoidValve: public CppUnit::TestFixture
         double                                    tPosition;               /**< (--) Nominal input data */
         bool                                      tMalfLeakThruFlag;       /**< (--) Nominal input data */
         double                                    tMalfLeakThruValue;      /**< (--) Nominal input data */
+        double                                    tFlux;                   /**< (A)  Nominal input data */
         double                                    tVoltage;                /**< (V)  Nominal input data */
         bool                                      tMalfStuckFlag;          /**< (--) Nominal input data */
         bool                                      tMalfFailToFlag;         /**< (--) Nominal input data */

@@ -44,10 +44,11 @@ PROGRAMMERS:
 class GunnsFluidSolenoidValveConfigData : public GunnsFluidValveConfigData
 {
     public:
-        double        mOpenVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
-        double        mOpenTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
-        double        mCloseVoltage;  /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
-        double        mCloseTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
+        bool          mLatching;        /**< (--)  trick_chkpnt_io(**) Boolean denoting whether the solenoid valve is latching. */
+        double        mOpenVoltage;     /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
+        double        mOpenTime;        /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
+        double        mCloseVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
+        double        mCloseTime;       /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
         /// @brief    Default constructs this Solenoid Valve model configuration data.
         GunnsFluidSolenoidValveConfigData(const std::string& name                 = "",
                                           GunnsNodeList*     nodes                = 0,
@@ -56,6 +57,7 @@ class GunnsFluidSolenoidValveConfigData : public GunnsFluidValveConfigData
                                           const double       thermalLength        = 0.0,
                                           const double       thermalDiameter      = 0.0,
                                           const double       surfaceRoughness     = 0.0,
+                                          const bool         latching             = false,
                                           const double       openVoltage          = 0.0,
                                           const double       openTime             = 0.0,
                                           const double       closeVoltage         = 0.0,
@@ -78,7 +80,8 @@ class GunnsFluidSolenoidValveConfigData : public GunnsFluidValveConfigData
 class GunnsFluidSolenoidValveInputData : public GunnsFluidValveInputData
 {
     public:
-        double        mVoltage;         /**< (--)   Current voltage over the coil. Updated through simbus */
+        double        mFlux;            /**< (--)   Current through the coil. Updated through simbus */
+        double        mVoltage;         /**< (--)   Voltage over the coil. Updated through simbus */
         bool          mMalfStuckFlag;   /**< (--)   Stuck at current position malfunction flag. */
         bool          mMalfFailToFlag;  /**< (--)   Fail to position malfunction flag. */
         double        mMalfFailToValue; /**< (--)   Fail to position malfunction value. */
@@ -89,6 +92,7 @@ class GunnsFluidSolenoidValveInputData : public GunnsFluidValveInputData
                                          const bool   malfLeakThruFlag    = false,
                                          const double malfLeakThruValue   = 0.0,
                                          const double wallTemperature     = 0.0,
+                                         const double flux                = 0.0,
                                          const double voltage             = 0.0,
                                          const bool   malfStuckFlag       = false,
                                          const bool   malfFailToFlag      = false,
@@ -111,7 +115,8 @@ class GunnsFluidSolenoidValve : public GunnsFluidValve
 {
     TS_MAKE_SIM_COMPATIBLE(GunnsFluidSolenoidValve);
     public:
-        double        mVoltage;         /**< (--)   Current voltage over the coil. Updated through simbus */
+        double        mFlux;            /**< (--)   Current through the coil. Updated through simbus */
+        double        mVoltage;         /**< (--)   Voltage over the coil. Updated through simbus */
         bool          mMalfStuckFlag;   /**< (--)   Stuck at current position malfunction flag. */
         bool          mMalfFailToFlag;  /**< (--)   Fail to position malfunction flag. */
         double        mMalfFailToValue; /**< (--)   Fail to position malfunction value. */
@@ -126,6 +131,14 @@ class GunnsFluidSolenoidValve : public GunnsFluidValve
                         std::vector<GunnsBasicLink*>&              networkLinks,
                         const int                                  port0,
                         const int                                  port1);
+        /// @brief Gets latching
+        bool getLatching() const;
+        /// @brief Sets latching
+        void setLatching(const bool latching = false);
+        /// @brief Gets the flux
+        double getFlux() const;
+        /// @brief Sets the flux
+        void setFlux(const double flux = 0.0);
         /// @brief Gets the voltage
         double getVoltage() const;
         /// @brief Sets the voltage
@@ -135,10 +148,11 @@ class GunnsFluidSolenoidValve : public GunnsFluidValve
         /// @brief Sets and resets the fail to position malfunction
         void setMalfFailTo(const bool flag = false, const double value = 0.0);
     protected:
-        double        mOpenVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
-        double        mOpenTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
-        double        mCloseVoltage;  /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
-        double        mCloseTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
+        bool          mLatching;        /**< (--)  trick_chkpnt_io(**) Boolean denoting whether the solenoid valve is latching. */
+        double        mOpenVoltage;     /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
+        double        mOpenTime;        /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
+        double        mCloseVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
+        double        mCloseTime;       /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
         /// @brief    Validates this Solenoid Valve model initialization data.
         void validate() const;
         /// @brief Virtual method for derived links to perform their restart functions.
@@ -157,6 +171,26 @@ class GunnsFluidSolenoidValve : public GunnsFluidValve
 };
 
 /// @}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   -- Latching state.
+///
+/// @details  Gets whether this GUNNS Fluid Solenoid Valve is latching.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline bool GunnsFluidSolenoidValve::getLatching() const
+{
+    return mLatching;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   -- Coil current.
+///
+/// @details  Gets the current through the coil of this GUNNS Fluid Solenoid Valve link model.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline double GunnsFluidSolenoidValve::getFlux() const
+{
+    return mFlux;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @return   -- Coil voltage.

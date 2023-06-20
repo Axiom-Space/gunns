@@ -102,23 +102,25 @@ class UtGunnsFluidSolenoidValve: public CppUnit::TestFixture
         double                            mSurfaceRoughness;       /**< (m)             Tube wall surface roughness for thermal convection. */
         double                            mThermalSurfaceArea;     /**< (m2)            Tube inner surface area for thermal convection       */
         double                            mThermalROverD;          /**< (--)            Tube surface roughness over diameter for convection  */
+        bool                              mLatching;               /**< (--)            Boolean denoting whether the solenoid valve is latching.  */
         double                            mOpenVoltage;            /**< (V)             Voltage at which valve is open.  */
         double                            mOpenTime;               /**< (s)             Time it takes for the valve to open  */
         double                            mCloseVoltage;           /**< (V)             Voltage at which valve is closed.  */
         double                            mCloseTime;              /**< (s)             Time it takes for the valve to close  */
-        GunnsFluidSolenoidValveConfigData*   mConfigData;             /**< (--)            Pointer to the nominal configuration data. */
+        GunnsFluidSolenoidValveConfigData*   mConfigData;          /**< (--)            Pointer to the nominal configuration data. */
         bool                              mMalfBlockageFlag;       /**< (--)            Blockage malfunction flag. */
         double                            mMalfBlockageValue;      /**< (--)            Blockage malfunction value. */
         double                            mPosition;               /**< (--)            Fractional position of this valve. */
         bool                              mMalfLeakThruFlag;       /**< (--)            Leak through rate malfunction flag. */
         double                            mMalfLeakThruValue;      /**< (kg/s)          Leak through rate malfunction value. */
         double                            mWallTemperature;        /**< (K)             Tube wall temperature for thermal convection           */
+        double                            mFlux;                   /**< (A)             Current across the solenoid coil  */
         double                            mVoltage;                /**< (V)             Voltage across the solenoid coil  */
         bool                              mMalfStuckFlag;          /**< (--)            Stuck at current position malfunction flag. */
         bool                              mMalfFailToFlag;         /**< (--)            Fail to position malfunction flag. */
         double                            mMalfFailToValue;        /**< (--)            Fail to position malfunction value. */
-        GunnsFluidSolenoidValveInputData*    mInputData;              /**< (--)            Pointer to the nominal input data. */
-        FriendlyGunnsFluidSolenoidValve*     mArticle;                /**< (--)            Pointer to the friendly Solenoid Valve under test. */
+        GunnsFluidSolenoidValveInputData*    mInputData;           /**< (--)            Pointer to the nominal input data. */
+        FriendlyGunnsFluidSolenoidValve*     mArticle;             /**< (--)            Pointer to the friendly Solenoid Valve under test. */
         double                            mPreviousLeakRate;       /**< (kg/s)          Previous leak thru rate value. */
         double                            mLeakConductivity;       /**< (m2)            Conductivity equivalent to the leak. */
         double                            mWallHeatFlux;           /**< (W)             Convection heat flux from the fluid to the tube wall */

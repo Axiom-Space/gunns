@@ -35,6 +35,7 @@ UtGunnsFluidSolenoidValve::UtGunnsFluidSolenoidValve()
     mSurfaceRoughness(0.0),
     mThermalSurfaceArea(0.0),
     mThermalROverD(0.0),
+    mLatching(false),
     mOpenVoltage(0.0),
     mOpenTime(0.0),
     mCloseVoltage(0.0),
@@ -46,6 +47,7 @@ UtGunnsFluidSolenoidValve::UtGunnsFluidSolenoidValve()
     mMalfLeakThruFlag(false),
     mMalfLeakThruValue(0.0),
     mWallTemperature(0.0),
+    mFlux(0.0),
     mVoltage(0.0),
     mMalfStuckFlag(false),
     mMalfFailToFlag(false),
@@ -115,6 +117,7 @@ void UtGunnsFluidSolenoidValve::setUp()
     mSurfaceRoughness     = 2.1336E-6;
     mThermalSurfaceArea   =  mThermalLength * mThermalDiameter * UnitConversion::PI_UTIL;
     mThermalROverD        =  mSurfaceRoughness / mThermalDiameter;
+    mLatching             = false;
     mOpenVoltage          = 10.0;
     mOpenTime             = 0.075;
     mCloseVoltage         = 6.0;
@@ -126,6 +129,7 @@ void UtGunnsFluidSolenoidValve::setUp()
                                                                   mThermalLength,
                                                                   mThermalDiameter,
                                                                   mSurfaceRoughness,
+                                                                  mLatching,
                                                                   mOpenVoltage,
                                                                   mOpenTime,
                                                                   mCloseVoltage,
@@ -140,6 +144,7 @@ void UtGunnsFluidSolenoidValve::setUp()
     mPreviousLeakRate     = 0.0;
     mLeakConductivity     = 0.0;
     mWallTemperature      = 300.0;
+    mFlux                 = 0.0;
     mVoltage              = 0.0;
     mMalfStuckFlag        = false;
     mMalfFailToFlag       = false;
@@ -150,6 +155,7 @@ void UtGunnsFluidSolenoidValve::setUp()
                                                                  mMalfLeakThruFlag,
                                                                  mMalfLeakThruValue,
                                                                  mWallTemperature,
+                                                                 mFlux,
                                                                  mVoltage,
                                                                  mMalfStuckFlag,
                                                                  mMalfFailToFlag,
@@ -199,6 +205,7 @@ void UtGunnsFluidSolenoidValve::testConfigAndInput()
     CPPUNIT_ASSERT(mNodes                                         == mConfigData->mNodeList->mNodes);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mMaxConductivity,                   mConfigData->mMaxConductivity,       0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mExpansionScaleFactor,              mConfigData->mExpansionScaleFactor,  0.0);
+    CPPUNIT_ASSERT(mLatching                                      == mConfigData->mLatching);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mOpenVoltage,                       mConfigData->mOpenVoltage,           0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mOpenTime,                          mConfigData->mOpenTime,              0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mCloseVoltage,                      mConfigData->mCloseVoltage,          0.0);
@@ -210,6 +217,7 @@ void UtGunnsFluidSolenoidValve::testConfigAndInput()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mPosition,                          mInputData->mPosition,               0.0);
     CPPUNIT_ASSERT(mMalfLeakThruFlag                              == mInputData->mMalfLeakThruFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mMalfLeakThruValue,                 mInputData->mMalfLeakThruValue,      0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mFlux,                              mInputData->mFlux,                   0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mVoltage,                           mInputData->mVoltage,                0.0);
     CPPUNIT_ASSERT(mMalfStuckFlag                                 == mInputData->mMalfStuckFlag);
     CPPUNIT_ASSERT(mMalfFailToFlag                                == mInputData->mMalfFailToFlag);
@@ -221,6 +229,7 @@ void UtGunnsFluidSolenoidValve::testConfigAndInput()
     CPPUNIT_ASSERT(0                                              == defaultConfig.mNodeList);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mMaxConductivity,      0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mExpansionScaleFactor, 0.0);
+    CPPUNIT_ASSERT(                                                 !defaultConfig.mLatching);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mOpenVoltage,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mOpenTime,             0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mCloseVoltage,         0.0);
@@ -233,6 +242,7 @@ void UtGunnsFluidSolenoidValve::testConfigAndInput()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultInput.mPosition,              0.0);
     CPPUNIT_ASSERT(                                                 !defaultInput.mMalfLeakThruFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultInput.mMalfLeakThruValue,     0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultInput.mFlux,                  0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultInput.mVoltage,               0.0);
     CPPUNIT_ASSERT(                                                 !defaultInput.mMalfStuckFlag);
     CPPUNIT_ASSERT(                                                 !defaultInput.mMalfFailToFlag);
@@ -244,6 +254,7 @@ void UtGunnsFluidSolenoidValve::testConfigAndInput()
     CPPUNIT_ASSERT(mConfigData->mNodeList->mNodes                 == copyConfig.mNodeList->mNodes);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mMaxConductivity,      copyConfig.mMaxConductivity,         0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mExpansionScaleFactor, copyConfig.mExpansionScaleFactor,    0.0);
+    CPPUNIT_ASSERT(mConfigData->mLatching                         == copyConfig.mLatching);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mOpenVoltage,          copyConfig.mOpenVoltage,             0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mOpenTime,             copyConfig.mOpenTime,                0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mCloseVoltage,         copyConfig.mCloseVoltage,            0.0);
@@ -257,6 +268,7 @@ void UtGunnsFluidSolenoidValve::testConfigAndInput()
     CPPUNIT_ASSERT(mInputData->mMalfLeakThruFlag                  == copyInput.mMalfLeakThruFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInputData->mMalfLeakThruValue,     copyInput.mMalfLeakThruValue,        0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInputData->mVoltage,               copyInput.mVoltage,                  0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mInputData->mFlux,                  copyInput.mFlux,                     0.0);
     CPPUNIT_ASSERT(mInputData->mMalfStuckFlag                     == copyInput.mMalfStuckFlag);
     CPPUNIT_ASSERT(mInputData->mMalfFailToFlag                    == copyInput.mMalfFailToFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInputData->mMalfFailToValue,       copyInput.mMalfFailToValue,          0.0);
@@ -279,6 +291,7 @@ void UtGunnsFluidSolenoidValve::testDefaultConstruction()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mThermalDiameter,      0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mThermalSurfaceArea,   0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mThermalROverD,        0.0);
+    CPPUNIT_ASSERT(                  !mArticle->mLatching);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mOpenVoltage,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mOpenTime,             0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mCloseVoltage,         0.0);
@@ -292,6 +305,7 @@ void UtGunnsFluidSolenoidValve::testDefaultConstruction()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mMalfLeakThruValue,    0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mWallTemperature,      0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mWallHeatFlux,         0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mFlux,                 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mVoltage,              0.0);
     CPPUNIT_ASSERT(                  !mArticle->mMalfStuckFlag);
     CPPUNIT_ASSERT(                  !mArticle->mMalfFailToFlag);
@@ -327,6 +341,7 @@ void UtGunnsFluidSolenoidValve::testNominalInitialization()
     CPPUNIT_ASSERT(&mNodes[1]                        == article.mNodes[1]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mMaxConductivity,      article.mMaxConductivity,      0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mExpansionScaleFactor, article.mExpansionScaleFactor, 0.0);
+    CPPUNIT_ASSERT(mLatching                         == article.mLatching);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mOpenVoltage,          article.mOpenVoltage,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mOpenTime,             article.mOpenTime,             0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mCloseVoltage,         article.mCloseVoltage,         0.0);
@@ -344,6 +359,7 @@ void UtGunnsFluidSolenoidValve::testNominalInitialization()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mWallTemperature,      article.mWallTemperature,      0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                   article.mWallHeatFlux,         0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                   article.mVoltage,              0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                   article.mFlux,                 0.0);
     CPPUNIT_ASSERT(mMalfStuckFlag                    == article.mMalfStuckFlag);
     CPPUNIT_ASSERT(mMalfFailToFlag                   == article.mMalfFailToFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mMalfFailToValue,      article.mMalfFailToValue,      0.0);
@@ -374,10 +390,24 @@ void UtGunnsFluidSolenoidValve::testAccessors()
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
 
     {
-        /// @test    For more than nominal full open position.
+        /// @test    Get latching.
+        const bool expected = true;
+        mArticle->mLatching = expected;
+        const bool returned = mArticle->getLatching();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, returned, 0.0);
+    }
+    {
+        /// @test    Get voltage.
+        const double expected = 1.00;
+        mArticle->mFlux = expected;
+        const double returned = mArticle->getFlux();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, returned, 0.0);
+    }
+    {
+        /// @test    Get voltage.
         const double expected = 1.00;
         mArticle->mVoltage = expected;
-        const double returned = mArticle->getPosition();
+        const double returned = mArticle->getVoltage();
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, returned, 0.0);
     }
 
@@ -394,7 +424,15 @@ void UtGunnsFluidSolenoidValve::testModifiers()
     /// - Initialize default test article with nominal initialization data.
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
     
-    /// @test    The stuck malf is set by the access method.
+    /// @test    The latching state is set by the access method.
+    mArticle->setLatching(true);
+    CPPUNIT_ASSERT(true  == mArticle->mLatching);
+
+    /// @test    The flux is set by the access method.
+    mArticle->setFlux(1.0);
+    CPPUNIT_ASSERT(1.0  == mArticle->mFlux);
+
+    /// @test    The voltage is set by the access method.
     mArticle->setVoltage(1.0);
     CPPUNIT_ASSERT(1.0  == mArticle->mVoltage);
 

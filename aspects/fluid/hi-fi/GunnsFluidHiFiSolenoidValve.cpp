@@ -19,10 +19,11 @@ LIBRARY DEPENDENCY:
 /// @param[in] criticalReynolds       (--) Optional Reynolds number at laminar/turbulent transition.
 /// @param[in] expansionScaleFactor   (--) (0-1) Optional scaling for expansion gas cooling.
 /// @param[in] flowTuningFactor       (--) Optional factor for flow tuning.
-/// @param[in] openVoltage            (--)    Voltage threshold at which valve opens, aka pull in voltage
-/// @param[in] openTime               (--)    Maximum time for solenoid valve to open, aka response time
-/// @param[in] closeVoltage           (--)    Voltage threshold at which valve closes, aka dropout voltage
-/// @param[in] closeTime              (--)    Maximum time for solenoid valve to close, aka response time
+/// @param[in] latching               (--) Boolean denoting whether the solenoid valve is latching
+/// @param[in] openVoltage            (V)  Voltage threshold at which valve opens, aka pull in voltage
+/// @param[in] openTime               (s)  Maximum time for solenoid valve to open, aka response time
+/// @param[in] closeVoltage           (V)  Voltage threshold at which valve closes, aka dropout voltage
+/// @param[in] closeTime              (s)  Maximum time for solenoid valve to close, aka response time
 ///
 /// @details    Default constructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,6 +35,7 @@ GunnsFluidHiFiSolenoidValveConfigData::GunnsFluidHiFiSolenoidValveConfigData(con
                                                                              const double       criticalReynolds,
                                                                              const double       expansionScaleFactor,
                                                                              const double       flowTuningFactor,
+                                                                             const bool         latching,
                                                                              const double       openVoltage,
                                                                              const double       openTime,
                                                                              const double       closeVoltage,
@@ -47,6 +49,7 @@ GunnsFluidHiFiSolenoidValveConfigData::GunnsFluidHiFiSolenoidValveConfigData(con
                                   criticalReynolds,
                                   expansionScaleFactor,
                                   flowTuningFactor),
+    mLatching(latching),
     mOpenVoltage(openVoltage),
     mOpenTime(openTime),
     mCloseVoltage(closeVoltage),
@@ -63,6 +66,7 @@ GunnsFluidHiFiSolenoidValveConfigData::GunnsFluidHiFiSolenoidValveConfigData(con
 GunnsFluidHiFiSolenoidValveConfigData::GunnsFluidHiFiSolenoidValveConfigData(const GunnsFluidHiFiSolenoidValveConfigData& that)
     :
     GunnsFluidHiFiValveConfigData(that),
+    mLatching(that.mLatching),
     mOpenVoltage(that.mOpenVoltage),
     mOpenTime(that.mOpenTime),
     mCloseVoltage(that.mCloseVoltage),
@@ -85,10 +89,11 @@ GunnsFluidHiFiSolenoidValveConfigData::~GunnsFluidHiFiSolenoidValveConfigData()
 /// @param[in]  position           (--)    Fractional position.
 /// @param[in]  malfLeakThruFlag   (--)    Leak through rate malfunction flag.
 /// @param[in]  malfLeakThruValue  (kg/s)  Leak through rate malfunction value.
-/// @param[in]  voltage                (--)    Voltage across the solenoid coil.
-/// @param[in]  malfStuckFlag          (--)    Stuck at current position malfunction flag.
-/// @param[in]  malfFailToFlag         (--)    Fail to position malfunction flag.
-/// @param[in]  malfFailToValue        (--)    Fail to position malfunction value
+/// @param[in]  flux               (A)     Current through the solenoid coil.
+/// @param[in]  voltage            (V)     Voltage across the solenoid coil.
+/// @param[in]  malfStuckFlag      (--)    Stuck at current position malfunction flag.
+/// @param[in]  malfFailToFlag     (--)    Fail to position malfunction flag.
+/// @param[in]  malfFailToValue    (--)    Fail to position malfunction value
 ///
 /// @details    Default constructs this Valve Controller model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +103,7 @@ GunnsFluidHiFiSolenoidValveInputData::GunnsFluidHiFiSolenoidValveInputData(const
                                                                            const bool   malfLeakThruFlag,
                                                                            const double malfLeakThruValue,
                                                                            const double voltage,
+                                                                           const double flux,
                                                                            const bool   malfStuckFlag,
                                                                            const bool   malfFailToFlag,
                                                                            const double malfFailToValue)
@@ -107,6 +113,7 @@ GunnsFluidHiFiSolenoidValveInputData::GunnsFluidHiFiSolenoidValveInputData(const
                                  position,
                                  malfLeakThruFlag,
                                  malfLeakThruValue),
+    mFlux(flux),
     mVoltage(voltage),
     mMalfStuckFlag(malfStuckFlag),
     mMalfFailToFlag(malfFailToFlag),
@@ -123,6 +130,7 @@ GunnsFluidHiFiSolenoidValveInputData::GunnsFluidHiFiSolenoidValveInputData(const
 GunnsFluidHiFiSolenoidValveInputData::GunnsFluidHiFiSolenoidValveInputData(const GunnsFluidHiFiSolenoidValveInputData& that)
     :
     GunnsFluidHiFiValveInputData(that),
+    mFlux(that.mFlux),
     mVoltage(that.mVoltage),
     mMalfStuckFlag(that.mMalfStuckFlag),
     mMalfFailToFlag(that.mMalfFailToFlag),
@@ -145,10 +153,12 @@ GunnsFluidHiFiSolenoidValveInputData::~GunnsFluidHiFiSolenoidValveInputData()
 GunnsFluidHiFiSolenoidValve::GunnsFluidHiFiSolenoidValve()
     :
     GunnsFluidHiFiValve(),
+    mFlux(0.0),
     mVoltage(0.0),
     mMalfStuckFlag(false),
     mMalfFailToFlag(false),
     mMalfFailToValue(0.0),
+    mLatching(false),
     mOpenVoltage(0.0),
     mOpenTime(0.0),
     mCloseVoltage(0.0),
@@ -191,12 +201,14 @@ void GunnsFluidHiFiSolenoidValve::initialize(const GunnsFluidHiFiSolenoidValveCo
     GunnsFluidHiFiValve::initialize(configData, inputData, links, port0, port1);
 
     /// - Initialize from the configuration data.
+    mLatching               = configData.mLatching;
     mOpenVoltage            = configData.mOpenVoltage;
     mOpenTime               = configData.mOpenTime;
     mCloseVoltage           = configData.mCloseVoltage;
     mCloseTime              = configData.mCloseTime;
 
     /// - Initialize from the input data.
+    mFlux                   = inputData.mFlux;
     mVoltage                = inputData.mVoltage;
 
     /// - Initialize malfunctions off..
@@ -277,25 +289,63 @@ void GunnsFluidHiFiSolenoidValve::updateState(const double dt)
             mPosition                     = MsMath::limitRange(0.0, mMalfFailToValue, 1.0);
         } else {
             const double previousPosition = mPosition;
-            if (mVoltage >= mOpenVoltage) {
-                /// - The position is fully open (1.0) if delta V across the valve is large enough.
-                mPosition                 = 1.0;
-            } else if (mVoltage <= mCloseVoltage) {
-                /// - The position is fully closed (0.0) if delta V across the valve is small enough.
-                mPosition                 = 0.0;
-            } else {
-                /// - Otherwise the position transitions (0.0 to 1.0) linearly in delta V.
-                mPosition                 = (mVoltage - mCloseVoltage) / (mOpenVoltage - mCloseVoltage);
-            }
+            if (!mLatching) {
+                if (mVoltage >= mOpenVoltage) {
+                    /// - The position is fully open (1.0) if delta V across the valve is large enough.
+                    mPosition                 = 1.0;
+                } else if (mVoltage <= mCloseVoltage) {
+                    /// - The position is fully closed (0.0) if delta V across the valve is small enough.
+                    mPosition                 = 0.0;
+                } else {
+                    /// - Otherwise the position transitions (0.0 to 1.0) linearly in delta V.
+                    mPosition                 = (mVoltage - mCloseVoltage) / (mOpenVoltage - mCloseVoltage);
+                }
 
-            /// - Apply range and rate limiting to the computed position.
-            mPosition                     = MsMath::limitRange(std::max(0.0, previousPosition - dt / mCloseTime),
-                                                               mPosition,
-                                                               std::min(1.0, previousPosition + dt / mOpenTime));
+                /// - Apply range and rate limiting to the computed position.
+                mPosition                     = MsMath::limitRange(std::max(0.0, previousPosition - dt / mCloseTime),
+                                                                   mPosition,
+                                                                   std::min(1.0, previousPosition + dt / mOpenTime));
+            } else {
+                if (mVoltage >= mOpenVoltage && mFlux > 0) {
+                    /// - The position is fully open (1.0) if delta V across the valve is large enough and current is positive.
+                    mPosition                 = 1.0;
+                } else if (mVoltage >= mOpenVoltage && mFlux < 0) {
+                    /// - The position is fully closed (0.0) if delta V across the valve is large enough and current is positive.
+                    mPosition                 = 0.0;
+                } else {
+                    /// - Otherwise the position transitions (0.0 to 1.0) linearly in delta V.
+                    mPosition                 = (mVoltage - mCloseVoltage) / (mOpenVoltage - mCloseVoltage);
+                }
+
+                /// - Apply range and rate limiting to the computed position.
+                mPosition                     = MsMath::limitRange(std::max(0.0, previousPosition - dt / mCloseTime),
+                                                                   mPosition,
+                                                                   std::min(1.0, previousPosition + dt / mOpenTime));
+            }
         }
     }
     /// - Call parent updateState to apply valve malfunctions and update the effective conductivity.
     GunnsFluidHiFiValve::updateState(dt);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in] latching  (--) latching state 
+///
+/// @details  Sets whether the valve is latching
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void GunnsFluidHiFiSolenoidValve::setLatching(const bool latching)
+{
+    mLatching = latching;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in] flux  (--) Flux through the coil
+///
+/// @details  Sets the flux to the given value.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void GunnsFluidHiFiSolenoidValve::setFlux(const double flux)
+{
+    mFlux = flux;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

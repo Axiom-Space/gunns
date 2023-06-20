@@ -19,6 +19,7 @@ UtGunnsFluidHiFiSolenoidValve::UtGunnsFluidHiFiSolenoidValve()
     tCriticalReynolds(),
     tExpansionScaleFactor(),
     tFlowTuningFactor(),
+    tLatching(),
     tOpenVoltage(),
     tOpenTime(),
     tCloseVoltage(),
@@ -29,6 +30,7 @@ UtGunnsFluidHiFiSolenoidValve::UtGunnsFluidHiFiSolenoidValve()
     tPosition(),
     tMalfLeakThruFlag(),
     tMalfLeakThruValue(),
+    tFlux(),
     tVoltage(),
     tMalfStuckFlag(),
     tMalfFailToFlag(),
@@ -121,6 +123,7 @@ void UtGunnsFluidHiFiSolenoidValve::setUp()
     tCriticalReynolds       = 2300.0;
     tExpansionScaleFactor   = 1.0;
     tFlowTuningFactor       = 1.0;
+    tLatching               = false;
     tOpenVoltage            = 10.0;
     tOpenTime               = 0.075;
     tCloseVoltage           = 6.0;
@@ -133,6 +136,7 @@ void UtGunnsFluidHiFiSolenoidValve::setUp()
                                                                         tCriticalReynolds,
                                                                         tExpansionScaleFactor,
                                                                         tFlowTuningFactor,
+                                                                        tLatching,
                                                                         tOpenVoltage,
                                                                         tOpenTime,
                                                                         tCloseVoltage,
@@ -144,6 +148,7 @@ void UtGunnsFluidHiFiSolenoidValve::setUp()
     tPosition          = 1.0;
     tMalfLeakThruFlag  = false;
     tMalfLeakThruValue = 1.0;
+    tFlux              = 0.0;
     tVoltage           = 0.0;
     tMalfStuckFlag     = false;
     tMalfFailToFlag    = false;
@@ -153,6 +158,7 @@ void UtGunnsFluidHiFiSolenoidValve::setUp()
                                                                   tPosition,
                                                                   tMalfLeakThruFlag,
                                                                   tMalfLeakThruValue,
+                                                                  tFlux,
                                                                   tVoltage,
                                                                   tMalfStuckFlag,
                                                                   tMalfFailToFlag,
@@ -193,6 +199,7 @@ void UtGunnsFluidHiFiSolenoidValve::testConfig()
     CPPUNIT_ASSERT(tCriticalReynolds                                == tConfigData->mCriticalReynolds);
     CPPUNIT_ASSERT(tExpansionScaleFactor                            == tConfigData->mExpansionScaleFactor);
     CPPUNIT_ASSERT(tFlowTuningFactor                                == tConfigData->mFlowTuningFactor);
+    CPPUNIT_ASSERT(tLatching                                        == tConfigData->mLatching);
     CPPUNIT_ASSERT(tOpenVoltage                                     == tConfigData->mOpenVoltage);
     CPPUNIT_ASSERT(tOpenTime                                        == tConfigData->mOpenTime);
     CPPUNIT_ASSERT(tCloseVoltage                                    == tConfigData->mCloseVoltage);
@@ -208,6 +215,7 @@ void UtGunnsFluidHiFiSolenoidValve::testConfig()
     CPPUNIT_ASSERT(0.0                                              == defaultConfig.mCriticalReynolds);
     CPPUNIT_ASSERT(0.0                                              == defaultConfig.mExpansionScaleFactor);
     CPPUNIT_ASSERT(1.0                                              == defaultConfig.mFlowTuningFactor);
+    CPPUNIT_ASSERT(false                                            == defaultConfig.mLatching);
     CPPUNIT_ASSERT(0.0                                              == defaultConfig.mOpenVoltage);
     CPPUNIT_ASSERT(0.0                                              == defaultConfig.mOpenTime);
     CPPUNIT_ASSERT(0.0                                              == defaultConfig.mCloseVoltage);
@@ -223,6 +231,7 @@ void UtGunnsFluidHiFiSolenoidValve::testConfig()
     CPPUNIT_ASSERT(tCriticalReynolds                                == copyConfig.mCriticalReynolds);
     CPPUNIT_ASSERT(tExpansionScaleFactor                            == copyConfig.mExpansionScaleFactor);
     CPPUNIT_ASSERT(tFlowTuningFactor                                == copyConfig.mFlowTuningFactor);
+    CPPUNIT_ASSERT(tLatching                                        == copyConfig.mLatching);
     CPPUNIT_ASSERT(tOpenVoltage                                     == copyConfig.mOpenVoltage);
     CPPUNIT_ASSERT(tOpenTime                                        == copyConfig.mOpenTime);
     CPPUNIT_ASSERT(tCloseVoltage                                    == copyConfig.mCloseVoltage);
@@ -244,6 +253,7 @@ void UtGunnsFluidHiFiSolenoidValve::testInput()
     CPPUNIT_ASSERT(tPosition          == tInputData->mPosition);
     CPPUNIT_ASSERT(tMalfLeakThruFlag  == tInputData->mMalfLeakThruFlag);
     CPPUNIT_ASSERT(tMalfLeakThruValue == tInputData->mMalfLeakThruValue);
+    CPPUNIT_ASSERT(tFlux              == tInputData->mFlux);
     CPPUNIT_ASSERT(tVoltage           == tInputData->mVoltage);
     CPPUNIT_ASSERT(tMalfStuckFlag     == tInputData->mMalfStuckFlag);
     CPPUNIT_ASSERT(tMalfFailToFlag    == tInputData->mMalfFailToFlag);
@@ -256,6 +266,7 @@ void UtGunnsFluidHiFiSolenoidValve::testInput()
     CPPUNIT_ASSERT(0.0                == defaultInput.mPosition);
     CPPUNIT_ASSERT(false              == defaultInput.mMalfLeakThruFlag);
     CPPUNIT_ASSERT(0.0                == defaultInput.mMalfLeakThruValue);
+    CPPUNIT_ASSERT(0.0                == defaultInput.mFlux);
     CPPUNIT_ASSERT(0.0                == defaultInput.mVoltage);
     CPPUNIT_ASSERT(false              == defaultInput.mMalfStuckFlag);
     CPPUNIT_ASSERT(false              == defaultInput.mMalfFailToFlag);
@@ -268,6 +279,7 @@ void UtGunnsFluidHiFiSolenoidValve::testInput()
     CPPUNIT_ASSERT(tPosition          == copyInput.mPosition);
     CPPUNIT_ASSERT(tMalfLeakThruFlag  == copyInput.mMalfLeakThruFlag);
     CPPUNIT_ASSERT(tMalfLeakThruValue == copyInput.mMalfLeakThruValue);
+    CPPUNIT_ASSERT(tFlux              == copyInput.mFlux);
     CPPUNIT_ASSERT(tVoltage           == copyInput.mVoltage);
     CPPUNIT_ASSERT(tMalfStuckFlag     == copyInput.mMalfStuckFlag);
     CPPUNIT_ASSERT(tMalfFailToFlag    == copyInput.mMalfFailToFlag);
@@ -299,13 +311,15 @@ void UtGunnsFluidHiFiSolenoidValve::testDefaultConstruction()
     CPPUNIT_ASSERT(0.0                               == tArticle->mPosition);
     CPPUNIT_ASSERT(0.0                               == tArticle->mLeakArea);
     CPPUNIT_ASSERT(0.0                               == tArticle->mLastLeakRate);
+    CPPUNIT_ASSERT(false                             == tArticle->mLatching);
     CPPUNIT_ASSERT(0.0                               == tArticle->mOpenVoltage);
     CPPUNIT_ASSERT(0.0                               == tArticle->mOpenTime);
     CPPUNIT_ASSERT(0.0                               == tArticle->mCloseVoltage);
     CPPUNIT_ASSERT(0.0                               == tArticle->mCloseTime);
+    CPPUNIT_ASSERT(0.0                               == tArticle->mFlux);
     CPPUNIT_ASSERT(0.0                               == tArticle->mVoltage);
-    CPPUNIT_ASSERT(0.0                               == tArticle->mMalfStuckFlag);
-    CPPUNIT_ASSERT(0.0                               == tArticle->mMalfFailToFlag);
+    CPPUNIT_ASSERT(false                             == tArticle->mMalfStuckFlag);
+    CPPUNIT_ASSERT(false                             == tArticle->mMalfFailToFlag);
     CPPUNIT_ASSERT(0.0                               == tArticle->mMalfFailToValue);
 
     /// @test init flag
@@ -334,6 +348,7 @@ void UtGunnsFluidHiFiSolenoidValve::testNominalInitialization()
     CPPUNIT_ASSERT(tLinkName                         == article.getName());
     CPPUNIT_ASSERT(tMalfBlockageValue                == article.mMalfBlockageValue);
     CPPUNIT_ASSERT(tThroatDiameter                   == article.mThroatDiameter);
+    CPPUNIT_ASSERT(tLatching                         == article.mLatching);
     CPPUNIT_ASSERT(tOpenVoltage                      == article.mOpenVoltage);
     CPPUNIT_ASSERT(tOpenTime                         == article.mOpenTime);
     CPPUNIT_ASSERT(tCloseVoltage                     == article.mCloseVoltage);
@@ -343,6 +358,7 @@ void UtGunnsFluidHiFiSolenoidValve::testNominalInitialization()
     CPPUNIT_ASSERT(tPosition                         == article.mPosition);
     CPPUNIT_ASSERT(tMalfLeakThruFlag                 == article.mMalfLeakThruFlag);
     CPPUNIT_ASSERT(tMalfLeakThruValue                == article.mMalfLeakThruValue);
+    CPPUNIT_ASSERT(tFlux                             == article.mFlux);
     CPPUNIT_ASSERT(tVoltage                          == article.mVoltage);
     CPPUNIT_ASSERT(tMalfStuckFlag                    == article.mMalfStuckFlag);
     CPPUNIT_ASSERT(tMalfFailToFlag                   == article.mMalfFailToFlag);
@@ -453,9 +469,23 @@ void UtGunnsFluidHiFiSolenoidValve::testAccessors()
 
     {
         /// @test    For more than nominal full open position.
+        const bool expected = true;
+        tArticle->mLatching = expected;
+        const bool returned = tArticle->getLatching();
+        CPPUNIT_ASSERT(expected                 == returned);
+    }
+    {
+        /// @test    For more than nominal full open position.
+        const double expected = 1.00;
+        tArticle->mFlux = expected;
+        const double returned = tArticle->getFlux();
+        CPPUNIT_ASSERT(expected                 == returned);
+    }
+    {
+        /// @test    For more than nominal full open position.
         const double expected = 1.00;
         tArticle->mVoltage = expected;
-        const double returned = tArticle->getPosition();
+        const double returned = tArticle->getVoltage();
         CPPUNIT_ASSERT(expected                 == returned);
     }
 
@@ -472,6 +502,14 @@ void UtGunnsFluidHiFiSolenoidValve::testModifiers()
     /// - Initialize default test article with nominal initialization data.
     tArticle->initialize(*tConfigData, *tInputData, tLinks, tPort0, tPort1);
     
+    /// @test    The stuck malf is set by the access method.
+    tArticle->setLatching(true);
+    CPPUNIT_ASSERT(true  == tArticle->mLatching);
+
+    /// @test    The stuck malf is set by the access method.
+    tArticle->setFlux(1.0);
+    CPPUNIT_ASSERT(1.0  == tArticle->mFlux);
+
     /// @test    The stuck malf is set by the access method.
     tArticle->setVoltage(1.0);
     CPPUNIT_ASSERT(1.0  == tArticle->mVoltage);

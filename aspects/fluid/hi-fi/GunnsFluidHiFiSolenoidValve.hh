@@ -44,6 +44,7 @@ PROGRAMMERS:
 class GunnsFluidHiFiSolenoidValveConfigData : public GunnsFluidHiFiValveConfigData
 {
     public:
+        bool          mLatching;        /**< (--)  trick_chkpnt_io(**) Boolean denoting whether the solenoid valve is latching. */
         double        mOpenVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
         double        mOpenTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
         double        mCloseVoltage;  /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
@@ -57,6 +58,7 @@ class GunnsFluidHiFiSolenoidValveConfigData : public GunnsFluidHiFiValveConfigDa
                                               const double       criticalReynolds     = 0.0,
                                               const double       expansionScaleFactor = 0.0,
                                               const double       flowTuningFactor     = 1.0,
+                                              const bool         latching             = false,
                                               const double       openVoltage          = 0.0,
                                               const double       openTime             = 0.0,
                                               const double       closeVoltage         = 0.0,
@@ -79,6 +81,7 @@ class GunnsFluidHiFiSolenoidValveConfigData : public GunnsFluidHiFiValveConfigDa
 class GunnsFluidHiFiSolenoidValveInputData : public GunnsFluidHiFiValveInputData
 {
     public:
+        double        mFlux;            /**< (--)   Current through the coil. Updated through simbus */
         double        mVoltage;         /**< (--)   Current voltage over the coil. Updated through simbus */
         bool          mMalfStuckFlag;   /**< (--)   Stuck at current position malfunction flag. */
         bool          mMalfFailToFlag;  /**< (--)   Fail to position malfunction flag. */
@@ -89,6 +92,7 @@ class GunnsFluidHiFiSolenoidValveInputData : public GunnsFluidHiFiValveInputData
                                              const double position          = 0.0,
                                              const bool   malfLeakThruFlag  = false,
                                              const double malfLeakThruValue = 0.0,
+                                             const double flux              = 0.0,
                                              const double voltage           = 0.0,
                                              const bool   malfStuckFlag     = false,
                                              const bool   malfFailToFlag    = false,
@@ -111,6 +115,7 @@ class GunnsFluidHiFiSolenoidValve : public GunnsFluidHiFiValve
 {
     TS_MAKE_SIM_COMPATIBLE(GunnsFluidHiFiSolenoidValve);
     public:
+        double        mFlux;            /**< (--)   Current through the coil. Updated through simbus */
         double        mVoltage;         /**< (--)   Current voltage over the coil. Updated through simbus */
         bool          mMalfStuckFlag;   /**< (--)   Stuck at current position malfunction flag. */
         bool          mMalfFailToFlag;  /**< (--)   Fail to position malfunction flag. */
@@ -126,6 +131,14 @@ class GunnsFluidHiFiSolenoidValve : public GunnsFluidHiFiValve
                         std::vector<GunnsBasicLink*>&                   networkLinks,
                         const int                                       port0,
                         const int                                       port1);
+        /// @brief Gets latching
+        bool getLatching() const;
+        /// @brief Sets latching
+        void setLatching(const bool latching = false);
+        /// @brief Gets the flux
+        double getFlux() const;
+        /// @brief Sets the flux
+        void setFlux(const double flux = 0.0);
         /// @brief Gets the voltage
         double getVoltage() const;
         /// @brief Sets the voltage
@@ -135,6 +148,7 @@ class GunnsFluidHiFiSolenoidValve : public GunnsFluidHiFiValve
         /// @brief Sets and resets the fail to position malfunction
         void setMalfFailTo(const bool flag = false, const double value = 0.0);
     protected:
+        bool          mLatching;        /**< (--)  trick_chkpnt_io(**) Boolean denoting whether the solenoid valve is latching. */
         double        mOpenVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
         double        mOpenTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
         double        mCloseVoltage;  /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
@@ -157,6 +171,26 @@ class GunnsFluidHiFiSolenoidValve : public GunnsFluidHiFiValve
 };
 
 /// @}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   -- Latching state.
+///
+/// @details  Gets whether this GUNNS Fluid Solenoid Valve is latching.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline bool GunnsFluidHiFiSolenoidValve::getLatching() const
+{
+    return mLatching;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   -- Coil current.
+///
+/// @details  Gets the current through the coil of this GUNNS Fluid Solenoid Valve link model.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline double GunnsFluidHiFiSolenoidValve::getFlux() const
+{
+    return mFlux;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @return   -- Coil voltage.
