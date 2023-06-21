@@ -21,8 +21,8 @@ UtGunnsFluidHiFi3WayValve::UtGunnsFluidHiFi3WayValve()
     tLinkName(),
     tConfigData(),
     tPositionPathB(false),
-    tCoefficientTypeA(GunnsFluidHiFiOrificeConfigData::CoeffTypes::DISCHARGE_COEFF),
-    tCoefficientTypeB(GunnsFluidHiFiOrificeConfigData::CoeffTypes::DISCHARGE_COEFF),
+    tCoefficientTypeA(GunnsFluidHiFiOrificeConfigData::DISCHARGE_COEFF),
+    tCoefficientTypeB(GunnsFluidHiFiOrificeConfigData::DISCHARGE_COEFF),
     tCoefficientValueA(0.0),
     tCoefficientValueB(0.0),
     tThroatDiameterA(0.0),
@@ -88,8 +88,8 @@ void UtGunnsFluidHiFi3WayValve::setUp()
     tNodeList.mNumNodes    = 3;
     tNodeList.mNodes       = tNodes;
     tPositionPathB         = true;
-    tCoefficientTypeA      = GunnsFluidHiFiOrificeConfigData::CoeffTypes::DISCHARGE_COEFF,
-    tCoefficientTypeB      = GunnsFluidHiFiOrificeConfigData::CoeffTypes::DISCHARGE_COEFF,
+    tCoefficientTypeA      = GunnsFluidHiFiOrificeConfigData::DISCHARGE_COEFF,
+    tCoefficientTypeB      = GunnsFluidHiFiOrificeConfigData::DISCHARGE_COEFF,
     tCoefficientValueA     = 0.7,
     tCoefficientValueB     = 0.6,
     tThroatDiameterA       = 0.005,
