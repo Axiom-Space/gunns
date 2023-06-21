@@ -10,6 +10,7 @@
 
 #include "UtGunnsFluidHiFiOrifice.hh"
 #include "UtGunnsFluidHiFiValve.hh"
+#include "UtGunnsFluidHiFiCheckValve.hh"
 #include "UtGunnsFluidHiFi3WayValve.hh"
 #include "UtGunnsFluidHiFiSolenoidValve.hh"
 
@@ -27,6 +28,7 @@ int main(int, char**)
 
     runner.addTest(UtGunnsFluidHiFiOrifice::suite());
     runner.addTest(UtGunnsFluidHiFiValve::suite());
+    runner.addTest(UtGunnsFluidHiFiCheckValve::suite());
     runner.addTest(UtGunnsFluidHiFi3WayValve::suite());
     runner.addTest(UtGunnsFluidHiFiSolenoidValve::suite());
 
