@@ -2,11 +2,8 @@
 #define GunnsFluidSolenoidValve_EXISTS
 
 /**
-@defgroup  TSM_GUNNS_FLUID_CONDUCTOR_Solenoid_VALVE    Solenoid Valve Model
-@ingroup   TSM_GUNNS_FLUID_CONDUCTOR
-
-@copyright Copyright 2019 United States Government as represented by the Administrator of the
-           National Aeronautics and Space Administration.  All Rights Reserved.
+@defgroup  TSM_GUNNS_FLUID_SIGNAL_SOLENOID_VALVE    Solenoid Valve Model
+@ingroup   TSM_GUNNS_FLUID_SIGNAL
 
 @details
 PURPOSE:

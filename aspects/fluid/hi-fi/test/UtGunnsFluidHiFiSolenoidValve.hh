@@ -2,7 +2,7 @@
 #define UtGunnsFluidHiFiSolenoidValve_EXISTS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @defgroup UT_TSM_GUNNS_FLUID_SOLENOID_VALVE    Solenoid Valve Unit Tests
+/// @defgroup UT_TSM_GUNNS_FLUID_HIFI_SOLENOID_VALVE    Solenoid Valve Unit Tests
 /// @ingroup  UT_TSM_GUNNS_FLUID
 ///
 /// @details  Unit Tests for the GUNNS Fluid Solenoid Valve link model.

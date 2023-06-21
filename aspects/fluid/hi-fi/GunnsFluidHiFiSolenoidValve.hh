@@ -2,11 +2,8 @@
 #define GunnsFluidHiFiSolenoidValve_EXISTS
 
 /**
-@defgroup  TSM_GUNNS_FLUID_CONDUCTOR_Solenoid_VALVE    Solenoid Valve Model
-@ingroup   TSM_GUNNS_FLUID_CONDUCTOR
-
-@copyright Copyright 2019 United States Government as represented by the Administrator of the
-           National Aeronautics and Space Administration.  All Rights Reserved.
+@defgroup  TSM_GUNNS_FLUID_HIFI_SOLENOID_VALVE    Solenoid Valve Model
+@ingroup   TSM_GUNNS_FLUID_HIFI
 
 @details
 PURPOSE:
@@ -22,7 +19,7 @@ LIBRARY DEPENDENCY:
 - ((GunnsFluidHiFiSolenoidValve.o))
 
 PROGRAMMERS:
-- ((Kyle Fondon) (Axiom Space) (Initial) (2023-05))
+- ((Kyle Fondon) (Axiom Space) (Initial) (2023-06))
 
 @{
 */
