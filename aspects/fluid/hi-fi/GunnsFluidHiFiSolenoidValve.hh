@@ -1,9 +1,9 @@
-#ifndef GunnsFluidSolenoidValve_EXISTS
-#define GunnsFluidSolenoidValve_EXISTS
+#ifndef GunnsFluidHiFiSolenoidValve_EXISTS
+#define GunnsFluidHiFiSolenoidValve_EXISTS
 
 /**
-@defgroup  TSM_GUNNS_FLUID_SIGNAL_SOLENOID_VALVE    Solenoid Valve Model
-@ingroup   TSM_GUNNS_FLUID_SIGNAL
+@defgroup  TSM_GUNNS_FLUID_HIFI_SOLENOID_VALVE    Solenoid Valve Model
+@ingroup   TSM_GUNNS_FLUID_HIFI
 
 @details
 PURPOSE:
@@ -16,10 +16,10 @@ ASSUMPTIONS AND LIMITATIONS:
 - (TBD)
 
 LIBRARY DEPENDENCY:
-- ((GunnsFluidSolenoidValve.o))
+- ((GunnsFluidHiFiSolenoidValve.o))
 
 PROGRAMMERS:
-- ((Kyle Fondon) (Axiom Space) (Initial) (2023-05))
+- ((Kyle Fondon) (Axiom Space) (Initial) (2023-06))
 
 @{
 */
@@ -27,7 +27,7 @@ PROGRAMMERS:
 #include <string>
 
 #include "software/SimCompatibility/TsSimCompatibility.hh"
-#include "aspects/fluid/conductor/GunnsFluidValve.hh"
+#include "aspects/fluid/hi-fi/GunnsFluidHiFiValve.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    TS21 Fluid Controller Solenoid Valve Model configuration data
@@ -38,34 +38,35 @@ PROGRAMMERS:
 /// @details  The sole purpose of this class is to provide a data structure for the Solenoid Valve
 ///           model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidSolenoidValveConfigData : public GunnsFluidValveConfigData
+class GunnsFluidHiFiSolenoidValveConfigData : public GunnsFluidHiFiValveConfigData
 {
     public:
         bool          mLatching;        /**< (--)  trick_chkpnt_io(**) Boolean denoting whether the solenoid valve is latching. */
-        double        mOpenVoltage;     /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
-        double        mOpenTime;        /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
-        double        mCloseVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
-        double        mCloseTime;       /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
+        double        mOpenVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
+        double        mOpenTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
+        double        mCloseVoltage;  /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
+        double        mCloseTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
         /// @brief    Default constructs this Solenoid Valve model configuration data.
-        GunnsFluidSolenoidValveConfigData(const std::string& name                 = "",
-                                          GunnsNodeList*     nodes                = 0,
-                                          const double       maxConductivity      = 0.0,
-                                          const double       expansionScaleFactor = 0.0,
-                                          const double       thermalLength        = 0.0,
-                                          const double       thermalDiameter      = 0.0,
-                                          const double       surfaceRoughness     = 0.0,
-                                          const bool         latching             = false,
-                                          const double       openVoltage          = 0.0,
-                                          const double       openTime             = 0.0,
-                                          const double       closeVoltage         = 0.0,
-                                          const double       closeTime            = 0.0);
+        GunnsFluidHiFiSolenoidValveConfigData(const std::string& name                 = "",
+                                              GunnsNodeList*     nodes                = 0,
+                                              const CoeffTypes   coefficientType      = DISCHARGE_COEFF,
+                                              const double       coefficientValue     = 0.0,
+                                              const double       throatDiameter       = 0.0,
+                                              const double       criticalReynolds     = 0.0,
+                                              const double       expansionScaleFactor = 0.0,
+                                              const double       flowTuningFactor     = 1.0,
+                                              const bool         latching             = false,
+                                              const double       openVoltage          = 0.0,
+                                              const double       openTime             = 0.0,
+                                              const double       closeVoltage         = 0.0,
+                                              const double       closeTime            = 0.0);
         /// @brief    Copy constructs this Solenoid Valve model configuration data.
-        GunnsFluidSolenoidValveConfigData(const GunnsFluidSolenoidValveConfigData& that);
+        GunnsFluidHiFiSolenoidValveConfigData(const GunnsFluidHiFiSolenoidValveConfigData& that);
         /// @brief    Default destructs this Solenoid Valve model configuration data.
-        virtual ~GunnsFluidSolenoidValveConfigData();
+        virtual ~GunnsFluidHiFiSolenoidValveConfigData();
     private:
         /// @brief    Assigns this Solenoid Valve model configuration data.
-        GunnsFluidSolenoidValveConfigData& operator=(const GunnsFluidSolenoidValveConfigData& that);
+        GunnsFluidHiFiSolenoidValveConfigData& operator=(const GunnsFluidHiFiSolenoidValveConfigData& that);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,33 +75,32 @@ class GunnsFluidSolenoidValveConfigData : public GunnsFluidValveConfigData
 /// @details  The sole purpose of this class is to provide a data structure for the Solenoid Valve
 ///           model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidSolenoidValveInputData : public GunnsFluidValveInputData
+class GunnsFluidHiFiSolenoidValveInputData : public GunnsFluidHiFiValveInputData
 {
     public:
         double        mFlux;            /**< (--)   Current through the coil. Updated through simbus */
-        double        mVoltage;         /**< (--)   Voltage over the coil. Updated through simbus */
+        double        mVoltage;         /**< (--)   Current voltage over the coil. Updated through simbus */
         bool          mMalfStuckFlag;   /**< (--)   Stuck at current position malfunction flag. */
         bool          mMalfFailToFlag;  /**< (--)   Fail to position malfunction flag. */
         double        mMalfFailToValue; /**< (--)   Fail to position malfunction value. */
         /// @brief    Default constructs this Solenoid Valve model input data.
-        GunnsFluidSolenoidValveInputData(const bool   malfBlockageFlag    = false,
-                                         const double malfBlockageValue   = 0.0,
-                                         const double position            = 0.0,
-                                         const bool   malfLeakThruFlag    = false,
-                                         const double malfLeakThruValue   = 0.0,
-                                         const double wallTemperature     = 0.0,
-                                         const double flux                = 0.0,
-                                         const double voltage             = 0.0,
-                                         const bool   malfStuckFlag       = false,
-                                         const bool   malfFailToFlag      = false,
-                                         const double malfFailToValue     = 0.0);
+        GunnsFluidHiFiSolenoidValveInputData(const bool   malfBlockageFlag  = false,
+                                             const double malfBlockageValue = 0.0,
+                                             const double position          = 0.0,
+                                             const bool   malfLeakThruFlag  = false,
+                                             const double malfLeakThruValue = 0.0,
+                                             const double flux              = 0.0,
+                                             const double voltage           = 0.0,
+                                             const bool   malfStuckFlag     = false,
+                                             const bool   malfFailToFlag    = false,
+                                             const double malfFailToValue   = 0.0);
         /// @brief    Copy constructs this Solenoid Valve model input data.
-        GunnsFluidSolenoidValveInputData(const GunnsFluidSolenoidValveInputData& that);
+        GunnsFluidHiFiSolenoidValveInputData(const GunnsFluidHiFiSolenoidValveInputData& that);
         /// @brief    Default destructs this Solenoid Valve model input data.
-        virtual ~GunnsFluidSolenoidValveInputData();
+        virtual ~GunnsFluidHiFiSolenoidValveInputData();
     private:
         /// @brief    Assigns this Solenoid Valve model input data.
-        GunnsFluidSolenoidValveInputData& operator =(const GunnsFluidSolenoidValveInputData& that);
+        GunnsFluidHiFiSolenoidValveInputData& operator =(const GunnsFluidHiFiSolenoidValveInputData& that);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,26 +108,26 @@ class GunnsFluidSolenoidValveInputData : public GunnsFluidValveInputData
 ///
 /// @details  Provides the base class for a Solenoid Valve with manual position and malfunctions.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidSolenoidValve : public GunnsFluidValve
+class GunnsFluidHiFiSolenoidValve : public GunnsFluidHiFiValve
 {
-    TS_MAKE_SIM_COMPATIBLE(GunnsFluidSolenoidValve);
+    TS_MAKE_SIM_COMPATIBLE(GunnsFluidHiFiSolenoidValve);
     public:
         double        mFlux;            /**< (--)   Current through the coil. Updated through simbus */
-        double        mVoltage;         /**< (--)   Voltage over the coil. Updated through simbus */
+        double        mVoltage;         /**< (--)   Current voltage over the coil. Updated through simbus */
         bool          mMalfStuckFlag;   /**< (--)   Stuck at current position malfunction flag. */
         bool          mMalfFailToFlag;  /**< (--)   Fail to position malfunction flag. */
         double        mMalfFailToValue; /**< (--)   Fail to position malfunction value. */
         /// @brief    Default constructs this Solenoid Valve model.
-        GunnsFluidSolenoidValve();
+        GunnsFluidHiFiSolenoidValve();
         /// @brief    Default destructs this Solenoid Valve model.
-        virtual ~GunnsFluidSolenoidValve();
+        virtual ~GunnsFluidHiFiSolenoidValve();
         /// @brief    Initializes this Solenoid Valve model.
         /// @callgraph
-        void initialize(const GunnsFluidSolenoidValveConfigData&   configData,
-                        const GunnsFluidSolenoidValveInputData&    initData,
-                        std::vector<GunnsBasicLink*>&              networkLinks,
-                        const int                                  port0,
-                        const int                                  port1);
+        void initialize(const GunnsFluidHiFiSolenoidValveConfigData&    configData,
+                        const GunnsFluidHiFiSolenoidValveInputData&     initData,
+                        std::vector<GunnsBasicLink*>&                   networkLinks,
+                        const int                                       port0,
+                        const int                                       port1);
         /// @brief Gets latching
         bool getLatching() const;
         /// @brief Sets latching
@@ -146,10 +146,10 @@ class GunnsFluidSolenoidValve : public GunnsFluidValve
         void setMalfFailTo(const bool flag = false, const double value = 0.0);
     protected:
         bool          mLatching;        /**< (--)  trick_chkpnt_io(**) Boolean denoting whether the solenoid valve is latching. */
-        double        mOpenVoltage;     /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
-        double        mOpenTime;        /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
-        double        mCloseVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
-        double        mCloseTime;       /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
+        double        mOpenVoltage;    /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve opens, aka pull in voltage. */
+        double        mOpenTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
+        double        mCloseVoltage;  /**< (--)  trick_chkpnt_io(**) Voltage threshold at which valve closes, aka dropout voltage. */
+        double        mCloseTime;  /**< (--)  trick_chkpnt_io(**) Maximum time for solenoid valve to open, aka response time. */
         /// @brief    Validates this Solenoid Valve model initialization data.
         void validate() const;
         /// @brief Virtual method for derived links to perform their restart functions.
@@ -160,11 +160,11 @@ class GunnsFluidSolenoidValve : public GunnsFluidValve
         ////////////////////////////////////////////////////////////////////////////////////////////
         /// @details  Copy constructor unavailable since declared private and not implemented.
         ////////////////////////////////////////////////////////////////////////////////////////////
-        GunnsFluidSolenoidValve(const GunnsFluidSolenoidValve&);
+        GunnsFluidHiFiSolenoidValve(const GunnsFluidHiFiSolenoidValve&);
         ////////////////////////////////////////////////////////////////////////////////////////////
         /// @details  Assignment operator unavailable since declared private and not implemented.
         ////////////////////////////////////////////////////////////////////////////////////////////
-        GunnsFluidSolenoidValve operator= (const GunnsFluidSolenoidValve&);
+        GunnsFluidHiFiSolenoidValve operator= (const GunnsFluidHiFiSolenoidValve&);
 };
 
 /// @}
@@ -174,7 +174,7 @@ class GunnsFluidSolenoidValve : public GunnsFluidValve
 ///
 /// @details  Gets whether this GUNNS Fluid Solenoid Valve is latching.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline bool GunnsFluidSolenoidValve::getLatching() const
+inline bool GunnsFluidHiFiSolenoidValve::getLatching() const
 {
     return mLatching;
 }
@@ -184,7 +184,7 @@ inline bool GunnsFluidSolenoidValve::getLatching() const
 ///
 /// @details  Gets the current through the coil of this GUNNS Fluid Solenoid Valve link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidSolenoidValve::getFlux() const
+inline double GunnsFluidHiFiSolenoidValve::getFlux() const
 {
     return mFlux;
 }
@@ -194,7 +194,7 @@ inline double GunnsFluidSolenoidValve::getFlux() const
 ///
 /// @details  Gets the voltage across the coil of this GUNNS Fluid Solenoid Valve link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidSolenoidValve::getVoltage() const
+inline double GunnsFluidHiFiSolenoidValve::getVoltage() const
 {
     return mVoltage;
 }

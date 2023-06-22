@@ -1,6 +1,6 @@
 /************************** TRICK HEADER ***********************************************************
 LIBRARY DEPENDENCY:
- ((aspects/fluid/conductor/GunnsFluidValve.o))
+ ((aspects/fluid/hi-fi/GunnsFluidHiFiValve.o))
 ***************************************************************************************************/
 
 #include "math/MsMath.hh"
@@ -8,44 +8,47 @@ LIBRARY DEPENDENCY:
 #include "software/exceptions/TsInitializationException.hh"
 #include <algorithm>
 
-#include "GunnsFluidSolenoidValve.hh"
+#include "GunnsFluidHiFiSolenoidValve.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in]  name                 (--)    Name of object.
-/// @param[in]  nodes                (--)    Pointer to nodes.
-/// @param[in]  maxConductivity      (m2)    Maximum conductivity.
-/// @param[in]  expansionScaleFactor (--)    Scale factor for isentropic gas cooling.
-/// @param[in]  thermalLength        (m)     Tube length for thermal convection
-/// @param[in]  thermalDiameter      (m)     Tube inner diameter for thermal convection
-/// @param[in]  surfaceRoughness     (m)     Tube wall surface roughness for thermal convection
-/// @param[in]  latching             (--)    Boolean denoting whether the solenoid valve is latching
-/// @param[in]  openVoltage          (V)     Voltage threshold at which valve opens, aka pull in voltage
-/// @param[in]  openTime             (s)     Maximum time for solenoid valve to open, aka response time
-/// @param[in]  closeVoltage         (V)     Voltage threshold at which valve closes, aka dropout voltage
-/// @param[in]  closeTime            (s)     Maximum time for solenoid valve to close, aka response time
+/// @param[in] name                   (--) Name of object.
+/// @param[in] nodes                  (--) Pointer to nodes.
+/// @param[in] coefficientType        (--) Type of coefficient to be specified.
+/// @param[in] coefficientValue       (--) Coefficient value of the specified type.
+/// @param[in] throatDiameter         (m)  Throat diameter.
+/// @param[in] criticalReynolds       (--) Optional Reynolds number at laminar/turbulent transition.
+/// @param[in] expansionScaleFactor   (--) (0-1) Optional scaling for expansion gas cooling.
+/// @param[in] flowTuningFactor       (--) Optional factor for flow tuning.
+/// @param[in] latching               (--) Boolean denoting whether the solenoid valve is latching
+/// @param[in] openVoltage            (V)  Voltage threshold at which valve opens, aka pull in voltage
+/// @param[in] openTime               (s)  Maximum time for solenoid valve to open, aka response time
+/// @param[in] closeVoltage           (V)  Voltage threshold at which valve closes, aka dropout voltage
+/// @param[in] closeTime              (s)  Maximum time for solenoid valve to close, aka response time
 ///
 /// @details    Default constructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const std::string& name,
-                                                                     GunnsNodeList*     nodes,
-                                                                     const double       maxConductivity,
-                                                                     const double       expansionScaleFactor,
-                                                                     const double       thermalLength,
-                                                                     const double       thermalDiameter,
-                                                                     const double       surfaceRoughness,
-                                                                     const bool         latching,
-                                                                     const double       openVoltage,
-                                                                     const double       openTime,
-                                                                     const double       closeVoltage,
-                                                                     const double       closeTime)
+GunnsFluidHiFiSolenoidValveConfigData::GunnsFluidHiFiSolenoidValveConfigData(const std::string& name,
+                                                                             GunnsNodeList*     nodes,
+                                                                             const CoeffTypes   coefficientType,
+                                                                             const double       coefficientValue,
+                                                                             const double       throatDiameter,
+                                                                             const double       criticalReynolds,
+                                                                             const double       expansionScaleFactor,
+                                                                             const double       flowTuningFactor,
+                                                                             const bool         latching,
+                                                                             const double       openVoltage,
+                                                                             const double       openTime,
+                                                                             const double       closeVoltage,
+                                                                             const double       closeTime)
     :
-    GunnsFluidValveConfigData(name,
-                              nodes,
-                              maxConductivity,
-                              expansionScaleFactor,
-                              thermalLength,
-                              thermalDiameter,
-                              surfaceRoughness),
+    GunnsFluidHiFiValveConfigData(name,
+                                  nodes,
+                                  coefficientType,
+                                  coefficientValue,
+                                  throatDiameter,
+                                  criticalReynolds,
+                                  expansionScaleFactor,
+                                  flowTuningFactor),
     mLatching(latching),
     mOpenVoltage(openVoltage),
     mOpenTime(openTime),
@@ -60,9 +63,9 @@ GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const std::
 ///
 /// @details    Copy constructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const GunnsFluidSolenoidValveConfigData& that)
+GunnsFluidHiFiSolenoidValveConfigData::GunnsFluidHiFiSolenoidValveConfigData(const GunnsFluidHiFiSolenoidValveConfigData& that)
     :
-    GunnsFluidValveConfigData(that),
+    GunnsFluidHiFiValveConfigData(that),
     mLatching(that.mLatching),
     mOpenVoltage(that.mOpenVoltage),
     mOpenTime(that.mOpenTime),
@@ -75,44 +78,41 @@ GunnsFluidSolenoidValveConfigData::GunnsFluidSolenoidValveConfigData(const Gunns
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details    Default destructs this Valve Controller model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidSolenoidValveConfigData::~GunnsFluidSolenoidValveConfigData()
+GunnsFluidHiFiSolenoidValveConfigData::~GunnsFluidHiFiSolenoidValveConfigData()
 {
     // nothing to do
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in]  malfBlockageFlag       (--)    Blockage malfunction flag.
-/// @param[in]  malfBlockageValue      (--)    Blockage malfunction fractional value (0-1).
-/// @param[in]  position               (--)    Fractional position.
-/// @param[in]  malfLeakThruFlag       (--)    Leak rate malfunction flag.
-/// @param[in]  malfLeakThruValue      (kg/s)  Leak rate malfunction value.
-/// @param[in]  wallTemperature        (K)     Tube wall temperature for thermal convection.
-/// @param[in]  flux                   (A)     Current through the solenoid coil.
-/// @param[in]  voltage                (V)     Voltage across the solenoid coil.
-/// @param[in]  malfStuckFlag          (--)    Stuck at current position malfunction flag.
-/// @param[in]  malfFailToFlag         (--)    Fail to position malfunction flag.
-/// @param[in]  malfFailToValue        (--)    Fail to position malfunction value
+/// @param[in]  malfBlockageFlag   (--)    Blockage malfunction flag.
+/// @param[in]  malfBlockageValue  (--)    Blockage malfunction fractional value (0-1).
+/// @param[in]  position           (--)    Fractional position.
+/// @param[in]  malfLeakThruFlag   (--)    Leak through rate malfunction flag.
+/// @param[in]  malfLeakThruValue  (kg/s)  Leak through rate malfunction value.
+/// @param[in]  flux               (A)     Current through the solenoid coil.
+/// @param[in]  voltage            (V)     Voltage across the solenoid coil.
+/// @param[in]  malfStuckFlag      (--)    Stuck at current position malfunction flag.
+/// @param[in]  malfFailToFlag     (--)    Fail to position malfunction flag.
+/// @param[in]  malfFailToValue    (--)    Fail to position malfunction value
 ///
 /// @details    Default constructs this Valve Controller model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const bool   malfBlockageFlag,
-                                                                   const double malfBlockageValue,
-                                                                   const double position,
-                                                                   const bool   malfLeakThruFlag,
-                                                                   const double malfLeakThruValue,
-                                                                   const double wallTemperature,
-                                                                   const double flux,
-                                                                   const double voltage,
-                                                                   const bool   malfStuckFlag,
-                                                                   const bool   malfFailToFlag,
-                                                                   const double malfFailToValue)
+GunnsFluidHiFiSolenoidValveInputData::GunnsFluidHiFiSolenoidValveInputData(const bool   malfBlockageFlag,
+                                                                           const double malfBlockageValue,
+                                                                           const double position,
+                                                                           const bool   malfLeakThruFlag,
+                                                                           const double malfLeakThruValue,
+                                                                           const double voltage,
+                                                                           const double flux,
+                                                                           const bool   malfStuckFlag,
+                                                                           const bool   malfFailToFlag,
+                                                                           const double malfFailToValue)
     :
-    GunnsFluidValveInputData(malfBlockageFlag,
-                             malfBlockageValue,
-                             position,
-                             malfLeakThruFlag,
-                             malfLeakThruValue,
-                             wallTemperature),
+    GunnsFluidHiFiValveInputData(malfBlockageFlag,
+                                 malfBlockageValue,
+                                 position,
+                                 malfLeakThruFlag,
+                                 malfLeakThruValue),
     mFlux(flux),
     mVoltage(voltage),
     mMalfStuckFlag(malfStuckFlag),
@@ -127,9 +127,9 @@ GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const bool   
 ///
 /// @details    Copy constructs this Valve Controller model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const GunnsFluidSolenoidValveInputData& that)
+GunnsFluidHiFiSolenoidValveInputData::GunnsFluidHiFiSolenoidValveInputData(const GunnsFluidHiFiSolenoidValveInputData& that)
     :
-    GunnsFluidValveInputData(that),
+    GunnsFluidHiFiValveInputData(that),
     mFlux(that.mFlux),
     mVoltage(that.mVoltage),
     mMalfStuckFlag(that.mMalfStuckFlag),
@@ -142,7 +142,7 @@ GunnsFluidSolenoidValveInputData::GunnsFluidSolenoidValveInputData(const GunnsFl
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details    Default destructs this Valve Controller model Input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidSolenoidValveInputData::~GunnsFluidSolenoidValveInputData()
+GunnsFluidHiFiSolenoidValveInputData::~GunnsFluidHiFiSolenoidValveInputData()
 {
     // nothing to do
 }
@@ -150,9 +150,9 @@ GunnsFluidSolenoidValveInputData::~GunnsFluidSolenoidValveInputData()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details    Default constructs this Valve Controller model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidSolenoidValve::GunnsFluidSolenoidValve()
+GunnsFluidHiFiSolenoidValve::GunnsFluidHiFiSolenoidValve()
     :
-    GunnsFluidValve(),
+    GunnsFluidHiFiValve(),
     mFlux(0.0),
     mVoltage(0.0),
     mMalfStuckFlag(false),
@@ -170,7 +170,7 @@ GunnsFluidSolenoidValve::GunnsFluidSolenoidValve()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details    Default destructs this Valve Controller model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidSolenoidValve::~GunnsFluidSolenoidValve()
+GunnsFluidHiFiSolenoidValve::~GunnsFluidHiFiSolenoidValve()
 {
     // nothing to do
 }
@@ -188,17 +188,17 @@ GunnsFluidSolenoidValve::~GunnsFluidSolenoidValve()
 ///
 /// @details    Initializes this Valve Controller model with configuration and input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::initialize(const GunnsFluidSolenoidValveConfigData& configData,
-                                         const GunnsFluidSolenoidValveInputData&  inputData,
-                                         std::vector<GunnsBasicLink*>&            links,
-                                         const int                                port0,
-                                         const int                                port1)
+void GunnsFluidHiFiSolenoidValve::initialize(const GunnsFluidHiFiSolenoidValveConfigData&   configData,
+                                             const GunnsFluidHiFiSolenoidValveInputData&    inputData,
+                                             std::vector<GunnsBasicLink*>&                  links,
+                                             const int                                      port0,
+                                             const int                                      port1)
 {
     /// - Reset the initialization complete flag.
     mInitFlag               = false;
     
     /// - First initialize & validate parent.
-    GunnsFluidValve::initialize(configData, inputData, links, port0, port1);
+    GunnsFluidHiFiValve::initialize(configData, inputData, links, port0, port1);
 
     /// - Initialize from the configuration data.
     mLatching               = configData.mLatching;
@@ -230,7 +230,7 @@ void GunnsFluidSolenoidValve::initialize(const GunnsFluidSolenoidValveConfigData
 ///
 /// @details    Validates this Valve Controller model initialization data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::validate() const
+void GunnsFluidHiFiSolenoidValve::validate() const
 {
     /// - Throw an exception if open voltage < 0.
     if (mOpenVoltage < 0.0) {
@@ -266,10 +266,10 @@ void GunnsFluidSolenoidValve::validate() const
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Derived classes should call their base class implementation too.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::restartModel()
+void GunnsFluidHiFiSolenoidValve::restartModel()
 {
     /// - Reset the base class.
-    GunnsFluidValve::restartModel();
+    GunnsFluidHiFiValve::restartModel();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +280,7 @@ void GunnsFluidSolenoidValve::restartModel()
 /// @details        Updates this GUNNS Fluid Solenoid Valve Link Model state (valve position and
 ///                 effective conductivity).
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::updateState(const double dt)
+void GunnsFluidHiFiSolenoidValve::updateState(const double dt)
 {
     /// - Handle stuck malfunction
     if (!mMalfStuckFlag) {
@@ -325,7 +325,7 @@ void GunnsFluidSolenoidValve::updateState(const double dt)
         }
     }
     /// - Call parent updateState to apply valve malfunctions and update the effective conductivity.
-    GunnsFluidValve::updateState(dt);
+    GunnsFluidHiFiValve::updateState(dt);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,7 +333,7 @@ void GunnsFluidSolenoidValve::updateState(const double dt)
 ///
 /// @details  Sets whether the valve is latching
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::setLatching(const bool latching)
+void GunnsFluidHiFiSolenoidValve::setLatching(const bool latching)
 {
     mLatching = latching;
 }
@@ -343,7 +343,7 @@ void GunnsFluidSolenoidValve::setLatching(const bool latching)
 ///
 /// @details  Sets the flux to the given value.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::setFlux(const double flux)
+void GunnsFluidHiFiSolenoidValve::setFlux(const double flux)
 {
     mFlux = flux;
 }
@@ -353,7 +353,7 @@ void GunnsFluidSolenoidValve::setFlux(const double flux)
 ///
 /// @details  Sets the voltage to the given value.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::setVoltage(const double voltage)
+void GunnsFluidHiFiSolenoidValve::setVoltage(const double voltage)
 {
     mVoltage = voltage;
 }
@@ -364,7 +364,7 @@ void GunnsFluidSolenoidValve::setVoltage(const double voltage)
 /// @details  Sets the stuck malf flag to given the value.  Calling this method with default
 ///           arguments resets the malfunction.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::setMalfStuck(const bool flag)
+void GunnsFluidHiFiSolenoidValve::setMalfStuck(const bool flag)
 {
     mMalfStuckFlag = flag;
 }
@@ -376,7 +376,7 @@ void GunnsFluidSolenoidValve::setMalfStuck(const bool flag)
 /// @details  Sets the fail to position malf parameters to given the values.  Calling this method
 ///           with default arguments resets the malfunction.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidSolenoidValve::setMalfFailTo(const bool flag, const double value)
+void GunnsFluidHiFiSolenoidValve::setMalfFailTo(const bool flag, const double value)
 {
     mMalfFailToFlag  = flag;
     mMalfFailToValue = value;
