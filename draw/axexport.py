@@ -906,6 +906,7 @@ for node in netNodes:
 nodeList.sort(key=lambda tup:tup[0])
 nodeCount  = 0
 renumbered = False
+capNodeRenum = False
 for node in nodeList:
     if node[0] != nodeCount:
         # Renumber reference nodes to follow the renumbered normal node.  Note that
@@ -921,8 +922,10 @@ for node in nodeList:
             print('    ' + console.note('re-ordered nodes starting at node ' + str(nodeCount) + '.'))
         if str(node[0]) in capacitiveNodes.keys():
             capacitiveNodes[str(node[0])].attrib['label'] = str(nodeCount)
-            print('    ' + console.note('capicitive nodes re-ordered! Please rerun gexport.'))
+            capNodeRenum = True
     nodeCount = nodeCount + 1
+if capNodeRenum:
+    sys.exit(console.abort('capicitive nodes re-ordered! Please rerun gexport.'))
 
 # Shape data updates
 for shapeLib in shapeLibs.shapeLibs:
