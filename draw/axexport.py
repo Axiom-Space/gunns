@@ -753,7 +753,7 @@ for an_object in objects:
             elif 'CapacitiveThermal' == gunns_attribs['subtype']:
                 n, l, p = splitCapacitiveNode(an_object)
                 basic_network = True
-                capacitiveNodes[an_object.attrib['label']] = an_object
+                capacitiveNodes[n] = an_object
                 # Add the node
                 numNetNodes = numNetNodes + 1
                 netNodes.append(n)
@@ -774,7 +774,7 @@ for an_object in objects:
             elif 'CapacitiveFluid' == gunns_attribs['subtype']:
                 n, l, p = splitCapacitiveNode(an_object)
                 fluid_network = True
-                capacitiveNodes[an_object.attrib['label']] = an_object
+                capacitiveNodes[n] = an_object
                 # Add the node
                 numNetNodes = numNetNodes + 1
                 netNodes.append(n)
@@ -920,8 +920,8 @@ for node in nodeList:
             renumbered      = True
             contentsUpdated = True
             print('    ' + console.note('re-ordered nodes starting at node ' + str(nodeCount) + '.'))
-        if str(node[0]) in capacitiveNodes.keys():
-            capacitiveNodes[str(node[0])].attrib['label'] = str(nodeCount)
+        if node[1] in capacitiveNodes.keys():
+            capacitiveNodes[node[1]].attrib['label'] = str(nodeCount)
             capNodeRenum = True
     nodeCount = nodeCount + 1
 
@@ -1182,6 +1182,10 @@ xmlUtils.formatXml(root)
 tree.write(outputPathFile, xml_declaration=False)
 print('  ...saved updates to ' + inputFile + '.')
 
+# Exit on capacitive node reordering
+if capNodeRenum:
+    sys.exit(console.abort('capicitive nodes re-ordered! Please rerun gexport.'))
+
 # Skip generating the network class code in the maintenance option.
 if 'false' != options.maintenance:
     quit()
@@ -1412,10 +1416,6 @@ if fluid_network:
         thisCompounds.append(('Masses', masses))
         theCompounds.append(thisCompounds)
     data_model['compounds'] = theCompounds
-
-# Exit on capacitive node reordering
-if capNodeRenum:
-    sys.exit(console.abort('capicitive nodes re-ordered! Please rerun gexport.'))
 
 # Instantiate the output templates
     data_model['networkType'] = 'Fluid'

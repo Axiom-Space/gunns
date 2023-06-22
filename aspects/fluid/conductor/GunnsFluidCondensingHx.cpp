@@ -223,10 +223,10 @@ void GunnsFluidCondensingHx::initialize(const GunnsFluidCondensingHxConfigData& 
 
     /// - Delete old pointers and allocate new ones.
     TS_DELETE_OBJECT     (mCondensateFluid);
-    // TS_DELETE_ARRAY      (mSegmentHeat);
-    // TS_DELETE_ARRAY      (mSegmentTemperature);
-    // TS_NEW_PRIM_ARRAY_EXT(mSegmentTemperature, mNumSegments, double, std::string(mName) + ".mSegmentTemperature");
-    // TS_NEW_PRIM_ARRAY_EXT(mSegmentHeat,        mNumSegments, double, std::string(mName) + ".mSegmentHeat");
+    TS_DELETE_ARRAY      (mSegmentHeat);
+    TS_DELETE_ARRAY      (mSegmentTemperature);
+    TS_NEW_PRIM_ARRAY_EXT(mSegmentTemperature, mNumSegments, double, std::string(mName) + ".mSegmentTemperature");
+    TS_NEW_PRIM_ARRAY_EXT(mSegmentHeat,        mNumSegments, double, std::string(mName) + ".mSegmentHeat");
     TS_NEW_PRIM_OBJECT_EXT(mCondensateFluid, PolyFluid,
                            (*mInternalFluid, std::string(mName) + ".mCondensateFluid", false),
                            std::string(mName) + ".mCondensateFluid");
