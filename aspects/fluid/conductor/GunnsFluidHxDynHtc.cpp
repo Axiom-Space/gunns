@@ -199,6 +199,23 @@ GunnsFluidHxDynHtc::GunnsFluidHxDynHtc()
     // nothing to do
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @note     This should be followed by a call to the initialize method before calling an update
+///           method.
+///
+/// @details  Override constructs this GUNNS Fluid Heat Exchanger With Dynamic HTC.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+GunnsFluidHxDynHtc::GunnsFluidHxDynHtc(const GunnsFluidHxDynHtcConfigData& configData)
+    :
+    GunnsFluidHeatExchanger(configData.mNumSegs),
+    mSegsDynHtc(0)
+{
+    if (configData.mNumSegs > 0) {
+        TS_DELETE_ARRAY(mSegsDynHtc);
+        TS_NEW_CLASS_ARRAY_EXT(mSegsDynHtc, configData.mNumSegs, GunnsFluidHxDynHtcSegment, (), std::string(configData.mName) + ".mSegsDynHtc");
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default destructs this GUNNS Fluid Heat Exchanger With Dynamic HTC.
 ///////////////////////////////////////////////////////////////////////////////////////////////////

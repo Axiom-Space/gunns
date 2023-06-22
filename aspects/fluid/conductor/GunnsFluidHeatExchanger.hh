@@ -116,6 +116,8 @@ class GunnsFluidHeatExchanger : public  GunnsFluidConductor
 
         /// @brief    Default constructs this Heat Exchanger.
         GunnsFluidHeatExchanger();
+        /// @brief    Override constructs this Heat Exchanger.
+        GunnsFluidHeatExchanger(const GunnsFluidHeatExchangerConfigData& configData);
         /// @brief    Default destructs this Heat Exchanger.
         virtual ~GunnsFluidHeatExchanger();
         /// @brief    Initializes this Heat Exchanger with configuration and input data.

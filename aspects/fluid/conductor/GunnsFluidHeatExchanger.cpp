@@ -140,6 +140,44 @@ GunnsFluidHeatExchanger::GunnsFluidHeatExchanger()
     // nothing to do
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @note     This should be followed by a call to the initialize method before calling an update
+///           method.
+///
+/// @details  Override constructs this GUNNS Fluid Heat Exchanger link model.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+GunnsFluidHeatExchanger::GunnsFluidHeatExchanger(const GunnsFluidHeatExchangerConfigData& configData)
+    :
+    GunnsFluidConductor(),
+    mMalfHxDegradeFlag(false),
+    mMalfHxDegradeValue(0.0),
+    mMalfSegDegradeFlag(0),
+    mMalfSegDegradeValue(0),
+    mNumSegs(configData.mNumSegs),
+    mSegHtcDefault(0),
+    mSegHtc(0),
+    mSegTemperature(0),
+    mSegEnergyGain(0),
+    mTotalEnergyGain(0.0),
+    mDeltaTemperature(0.0),
+    mTemperatureOverride(0.0)
+{
+    if (mNumSegs > 0) {
+        TS_DELETE_ARRAY(mSegEnergyGain);
+        TS_DELETE_ARRAY(mSegTemperature);
+        TS_DELETE_ARRAY(mSegHtc);
+        TS_DELETE_ARRAY(mSegHtcDefault);
+        TS_DELETE_ARRAY(mMalfSegDegradeValue);
+        TS_DELETE_ARRAY(mMalfSegDegradeFlag);
+        TS_NEW_PRIM_ARRAY_EXT(mMalfSegDegradeFlag,  mNumSegs, bool,   std::string(configData.mName) + ".mMalfSegDegradeFlag");
+        TS_NEW_PRIM_ARRAY_EXT(mMalfSegDegradeValue, mNumSegs, double, std::string(configData.mName) + ".mMalfSegDegradeValue");
+        TS_NEW_PRIM_ARRAY_EXT(mSegHtcDefault,       mNumSegs, double, std::string(configData.mName) + ".mSegHtcDefault");
+        TS_NEW_PRIM_ARRAY_EXT(mSegHtc,              mNumSegs, double, std::string(configData.mName) + ".mSegHtc");
+        TS_NEW_PRIM_ARRAY_EXT(mSegTemperature,      mNumSegs, double, std::string(configData.mName) + ".mSegTemperature");
+        TS_NEW_PRIM_ARRAY_EXT(mSegEnergyGain,       mNumSegs, double, std::string(configData.mName) + ".mSegEnergyGain");
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default destructs this GUNNS Fluid Heat Exchanger link model.
 ///////////////////////////////////////////////////////////////////////////////////////////////////

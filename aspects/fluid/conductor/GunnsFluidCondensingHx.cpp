@@ -139,6 +139,39 @@ GunnsFluidCondensingHx::GunnsFluidCondensingHx()
     // nothing to do
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @note     This should be followed by a call to the initialize method before calling an update
+///           method.
+///
+/// @details  Override constructs this GUNNS Fluid Condensing Heat Exchanger.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+GunnsFluidCondensingHx::GunnsFluidCondensingHx(const GunnsFluidCondensingHxConfigData& configData)
+    :
+    GunnsFluidConductor(),
+    mMalfHxDegradeFlag(false),
+    mMalfHxDegradeValue(0.0),
+    mNumSegments(configData.mNumSegments),
+    mHtcCoeff0(0.0),
+    mHtcCoeff1(0.0),
+    mHtcExponent(0.0),
+    mHtcLimit(0.0),
+    mSegmentTemperature(0),
+    mSegmentHtc(0.0),
+    mSensibleHeat(0.0),
+    mLatentHeat(0.0),
+    mTotalHeat(0.0),
+    mCondensationRate(0.0),
+    mCondensateFluid(0),
+    mSegmentHeat(0)
+{
+    if (mNumSegments > 0) {
+        TS_DELETE_ARRAY      (mSegmentHeat);
+        TS_DELETE_ARRAY      (mSegmentTemperature);
+        TS_NEW_PRIM_ARRAY_EXT(mSegmentTemperature, mNumSegments, double, std::string(configData.mName) + ".mSegmentTemperature");
+        TS_NEW_PRIM_ARRAY_EXT(mSegmentHeat,        mNumSegments, double, std::string(configData.mName) + ".mSegmentHeat");
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default destructs this GUNNS Fluid Condensing Heat Exchanger.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,10 +223,10 @@ void GunnsFluidCondensingHx::initialize(const GunnsFluidCondensingHxConfigData& 
 
     /// - Delete old pointers and allocate new ones.
     TS_DELETE_OBJECT     (mCondensateFluid);
-    TS_DELETE_ARRAY      (mSegmentHeat);
-    TS_DELETE_ARRAY      (mSegmentTemperature);
-    TS_NEW_PRIM_ARRAY_EXT(mSegmentTemperature, mNumSegments, double, std::string(mName) + ".mSegmentTemperature");
-    TS_NEW_PRIM_ARRAY_EXT(mSegmentHeat,        mNumSegments, double, std::string(mName) + ".mSegmentHeat");
+    // TS_DELETE_ARRAY      (mSegmentHeat);
+    // TS_DELETE_ARRAY      (mSegmentTemperature);
+    // TS_NEW_PRIM_ARRAY_EXT(mSegmentTemperature, mNumSegments, double, std::string(mName) + ".mSegmentTemperature");
+    // TS_NEW_PRIM_ARRAY_EXT(mSegmentHeat,        mNumSegments, double, std::string(mName) + ".mSegmentHeat");
     TS_NEW_PRIM_OBJECT_EXT(mCondensateFluid, PolyFluid,
                            (*mInternalFluid, std::string(mName) + ".mCondensateFluid", false),
                            std::string(mName) + ".mCondensateFluid");
