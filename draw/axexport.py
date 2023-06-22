@@ -738,6 +738,7 @@ for an_object in objects:
 
 # Collect all the network elements we care about -- only <gunns> tagged and are inside the
 # network container.
+capacitiveNodes = {}
 for an_object in objects:
     gunns_tag = an_object.find('./gunns')
     if isDescendant(an_object, netConfig[0], objects_and_cells) and None != gunns_tag:
@@ -752,6 +753,7 @@ for an_object in objects:
             elif 'CapacitiveThermal' == gunns_attribs['subtype']:
                 n, l, p = splitCapacitiveNode(an_object)
                 basic_network = True
+                capacitiveNodes[an_object.attrib['label']] = an_object
                 # Add the node
                 numNetNodes = numNetNodes + 1
                 netNodes.append(n)
@@ -772,6 +774,7 @@ for an_object in objects:
             elif 'CapacitiveFluid' == gunns_attribs['subtype']:
                 n, l, p = splitCapacitiveNode(an_object)
                 fluid_network = True
+                capacitiveNodes[an_object.attrib['label']] = an_object
                 # Add the node
                 numNetNodes = numNetNodes + 1
                 netNodes.append(n)
@@ -903,6 +906,7 @@ for node in netNodes:
 nodeList.sort(key=lambda tup:tup[0])
 nodeCount  = 0
 renumbered = False
+capNodeRenum = False
 for node in nodeList:
     if node[0] != nodeCount:
         # Renumber reference nodes to follow the renumbered normal node.  Note that
@@ -916,7 +920,12 @@ for node in nodeList:
             renumbered      = True
             contentsUpdated = True
             print('    ' + console.note('re-ordered nodes starting at node ' + str(nodeCount) + '.'))
+        if str(node[0]) in capacitiveNodes.keys():
+            capacitiveNodes[str(node[0])].attrib['label'] = str(nodeCount)
+            capNodeRenum = True
     nodeCount = nodeCount + 1
+if capNodeRenum:
+    sys.exit(console.abort('capicitive nodes re-ordered! Please rerun gexport.'))
 
 # Shape data updates
 for shapeLib in shapeLibs.shapeLibs:
