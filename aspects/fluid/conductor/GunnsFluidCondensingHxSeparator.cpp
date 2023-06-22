@@ -218,6 +218,46 @@ GunnsFluidCondensingHxSeparator::GunnsFluidCondensingHxSeparator()
     // nothing to do
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @note     This should be followed by a call to the initialize method before calling an update
+///           method.
+///
+/// @details  Override constructs this GUNNS Fluid Condensing Heat Exchanger & Separator.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+GunnsFluidCondensingHxSeparator::GunnsFluidCondensingHxSeparator(const GunnsFluidCondensingHxSeparatorConfigData& configData)
+    :
+    GunnsFluidCondensingHx(configData),
+    mMalfHxCondensateFlag (false),
+    mMalfHxCondensateValue(0.0),
+    mHxWetHtcFactor       (0.0),
+    mHxWetFlowFactor      (0.0),
+    mHxEvaporationCoeff   (0.0),
+    mSlurperFlowMassDry   (0.0),
+    mSlurperFlowMassWet   (0.0),
+    mWsMassExponent       (0.0),
+    mWsMaxCondensate      (0.0),
+    mWsDriveRatio         (0.0),
+    mWsEvaporationCoeff   (0.0),
+    mSlurperFlowFactor    (0.0),
+    mWsPowerCurveCoeff    (0.0),
+    mWsTorqueFactor       (0.0),
+    mWsMotorSpeed         (0.0),
+    mWsCondensateMass     (0.0),
+    mHxCondensateMass     (0.0),
+    mTransferFlowRate     (0.0),
+    mSlurperState         (PAUSED_DRY),
+    mSlurperFlowRate      (0.0),
+    mWsDrumSpeed          (0.0),
+    mWsEvaporationRate    (0.0),
+    mWsDeltaPressure      (0.0),
+    mTransferTemperature  (0.0),
+    mTransferPressure     (0.0),
+    mWsMotorTorque        (0.0),
+    mLiquidOverflow       (false)
+{
+    // nothing to do
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default destructs this GUNNS Fluid Condensing Heat Exchanger & Separator.
 ///////////////////////////////////////////////////////////////////////////////////////////////////

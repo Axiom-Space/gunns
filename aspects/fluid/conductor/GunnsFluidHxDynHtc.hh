@@ -141,6 +141,8 @@ class GunnsFluidHxDynHtc : public GunnsFluidHeatExchanger
     public:
         /// @brief  Default constructs this Heat Exchanger With Dynamic HTC.
         GunnsFluidHxDynHtc();
+        /// @brief  Override constructs this Heat Exchanger With Dynamic HTC.
+        GunnsFluidHxDynHtc(const GunnsFluidHxDynHtcConfigData& configData);
         /// @brief  Default destructs this Heat Exchanger With Dynamic HTC.
         virtual ~GunnsFluidHxDynHtc();
         /// @brief  Initializes this Heat Exchanger With Dynamic HTC with config and input data.

@@ -120,6 +120,8 @@ class GunnsFluidCondensingHx : public  GunnsFluidConductor
 
         /// @brief    Default constructs this Condensing Heat Exchanger.
         GunnsFluidCondensingHx();
+        /// @brief    Override constructs this Condensing Heat Exchanger.
+        GunnsFluidCondensingHx(const GunnsFluidCondensingHxConfigData& configData);
         /// @brief    Default destructs this Condensing Heat Exchanger.
         virtual ~GunnsFluidCondensingHx();
         /// @brief    Initializes this Condensing Heat Exchanger with configuration and

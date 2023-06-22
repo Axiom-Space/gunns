@@ -133,6 +133,8 @@ class GunnsFluidCondensingHxSeparator : public  GunnsFluidCondensingHx
 
         /// @brief    Default constructs this Condensing Heat Exchanger & Separator.
         GunnsFluidCondensingHxSeparator();
+        /// @brief    Override constructs this Condensing Heat Exchanger & Separator.
+        GunnsFluidCondensingHxSeparator(const GunnsFluidCondensingHxSeparatorConfigData& configData);
         /// @brief    Default destructs this Condensing Heat Exchanger & Separator.
         virtual ~GunnsFluidCondensingHxSeparator();
         /// @brief    Initializes this Condensing Heat Exchanger & Separator with configuration and
