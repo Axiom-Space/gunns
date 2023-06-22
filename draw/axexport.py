@@ -924,8 +924,6 @@ for node in nodeList:
             capacitiveNodes[str(node[0])].attrib['label'] = str(nodeCount)
             capNodeRenum = True
     nodeCount = nodeCount + 1
-if capNodeRenum:
-    sys.exit(console.abort('capicitive nodes re-ordered! Please rerun gexport.'))
 
 # Shape data updates
 for shapeLib in shapeLibs.shapeLibs:
@@ -1183,6 +1181,8 @@ if updatedSubNetIfsNodeCount:
 xmlUtils.formatXml(root)
 tree.write(outputPathFile, xml_declaration=False)
 print('  ...saved updates to ' + inputFile + '.')
+if capNodeRenum:
+    sys.exit(console.abort('capicitive nodes re-ordered! Please rerun gexport.'))
 
 # Skip generating the network class code in the maintenance option.
 if 'false' != options.maintenance:
