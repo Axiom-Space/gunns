@@ -1181,8 +1181,6 @@ if updatedSubNetIfsNodeCount:
 xmlUtils.formatXml(root)
 tree.write(outputPathFile, xml_declaration=False)
 print('  ...saved updates to ' + inputFile + '.')
-if capNodeRenum:
-    sys.exit(console.abort('capicitive nodes re-ordered! Please rerun gexport.'))
 
 # Skip generating the network class code in the maintenance option.
 if 'false' != options.maintenance:
@@ -1414,6 +1412,10 @@ if fluid_network:
         thisCompounds.append(('Masses', masses))
         theCompounds.append(thisCompounds)
     data_model['compounds'] = theCompounds
+
+# Exit on capacitive node reordering
+if capNodeRenum:
+    sys.exit(console.abort('capicitive nodes re-ordered! Please rerun gexport.'))
 
 # Instantiate the output templates
     data_model['networkType'] = 'Fluid'
