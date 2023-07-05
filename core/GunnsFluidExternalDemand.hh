@@ -142,6 +142,9 @@ class GunnsFluidExternalDemand : public GunnsFluidPotential
         /// @brief Default Constructor
         GunnsFluidExternalDemand();
 
+        /// @brief Override Constructor
+        GunnsFluidExternalDemand(const GunnsFluidExternalDemandConfigData& configData);
+
         /// @brief Default Destructor
         virtual ~GunnsFluidExternalDemand();
 

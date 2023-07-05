@@ -178,6 +178,58 @@ GunnsFluidExternalDemand::GunnsFluidExternalDemand()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @details  Override GUNNS Fluid External Demand Constructor
+////////////////////////////////////////////////////////////////////////////////////////////////////
+GunnsFluidExternalDemand::GunnsFluidExternalDemand(const GunnsFluidExternalDemandConfigData& configData)
+    :
+    GunnsFluidPotential   (),
+    mFilterMinConductivity(0),
+    mFilterMinDeltaP      (0),
+    mTransformMap         (0),
+    mAvgDemand            (0.0),
+    mAvgSupplyP           (0.0),
+    mAvgSupplyDeltaP      (0.0),
+    mEstimatedCapacitance (0.0),
+    mFilterCapacitanceGain(0.0),
+    mSupplyCapacitance    (0.0),
+    mSupplyPressure       (0.0),
+    mSupplyTemperature    (0.0),
+    mSupplyMassFractions  (0),
+    mSupplyTcMoleFractions(0),
+    mDemandFlux           (0.0),
+    mDemandTemperature    (0.0),
+    mDemandMassFractions  (0),
+    mDemandTcMoleFractions(0)
+{
+    /// - Allocate memory and build the transform map array.
+    delete [] mTransformMap;
+    mTransformMap = new int[configData.mExternalConfig->mNTypes + 1];
+
+    GunnsFluidUtils::buildTransformMap(mTransformMap, configData.mExternalConfig,
+            configData.mExternalConfig, configData.mConvertToType);
+
+    /// - Allocate memory for the read & write data mass fraction arrays.
+    TS_DELETE_ARRAY(mSupplyMassFractions);
+    TS_DELETE_ARRAY(mDemandMassFractions);
+    TS_NEW_PRIM_ARRAY_EXT(mSupplyMassFractions, configData.mExternalConfig->mNTypes,  double, std::string(configData.mName) + ".mSupplyMassFractions");
+    TS_NEW_PRIM_ARRAY_EXT(mDemandMassFractions, configData.mExternalConfig->mNTypes, double, std::string(configData.mName) + ".mDemandMassFractions");
+
+    /// - Allocate memory for the supply trace compounds mole fraction array.  Note this remains
+    ///   un-allocated if the network has no trace compounds config or zero compounds in the config.
+    ///   The demand trace compounds mole fraction array points directly to the node's array.
+    const GunnsFluidTraceCompoundsConfigData* tcConfig = configData.mExternalConfig->mTraceCompounds;
+    if (tcConfig) {
+        const int nTc = tcConfig->mNTypes;
+        if (nTc > 0) {
+            TS_DELETE_ARRAY(mSupplyTcMoleFractions);
+            TS_NEW_PRIM_ARRAY_EXT(mSupplyTcMoleFractions, nTc, double, std::string(configData.mName) + ".mSupplyTcMoleFractions");
+        }
+        TS_DELETE_ARRAY(mSupplyTcMoleFractions);
+        TS_NEW_PRIM_ARRAY_EXT(mSupplyTcMoleFractions, configData.mExternalConfig->mTraceCompounds->mNTypes,  double, std::string(configData.mName) + ".mSupplyTcMoleFractions");
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default GUNNS Fluid External Demand Destructor
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 GunnsFluidExternalDemand::~GunnsFluidExternalDemand()

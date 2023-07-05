@@ -141,3 +141,8 @@ class FluidNetworkBodyTemplate(BasicNetworkBodyTemplate):
     r =('        netSolver.initializeFluidNodes(netNodeList);\n')
     return r
 
+  def linkConstruct(self, link):
+    if ('Hx' in link[0]) or ('HeatEx' in link[0]) or ('Distrib' in link[0]) or ('Extern' in link[0]):
+      return ('    ' + link[1] + '(netConfig.' + link[1] + ')')
+    else:
+      return ('    ' + link[1] + '()')

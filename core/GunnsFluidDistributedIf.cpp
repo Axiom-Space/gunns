@@ -340,6 +340,59 @@ GunnsFluidDistributedIf::GunnsFluidDistributedIf()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @details  Override GUNNS Fluid Distributed Interface Link Constructor.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+GunnsFluidDistributedIf::GunnsFluidDistributedIf(const GunnsFluidDistributedIfConfigData& configData)
+    :
+    GunnsFluidLink(NPORTS),
+    mInData                (),
+    mOutData               (),
+    mIsPairMaster          (false),
+    mUseEnthalpy           (false),
+    mDemandOption          (false),
+    mCapacitorLink         (0),
+    mModingCapacitanceRatio(0.0),
+    mDemandFilterConstA    (0.0),
+    mDemandFilterConstB    (0.0),
+    mForceDemandMode       (false),
+    mForceSupplyMode       (false),
+    mInDataLastDemandMode  (false),
+    mFramesSinceFlip       (0),
+    mSupplyVolume          (0.0),
+    mEffectiveConductivity (0.0),
+    mSourcePressure        (0.0),
+    mDemandFlux            (0.0),
+    mLoopLatency           (0),
+    mDemandFluxGain        (0.0),
+    mSuppliedCapacitance   (0.0),
+    mTempMassFractions     (0),
+    mTempMoleFractions     (0),
+    mTempTcMoleFractions   (0),
+    mOtherIfs              (),
+    mFluidState            ()
+{
+    /// - Allocate memory and build the temporary mass and mole fractions arrays.  We allocate
+    ///   persistent arrays now to save allocation time during run.
+    const unsigned int nTypes = configData.mNumFluidOverride;
+    delete [] mTempTcMoleFractions;
+    delete [] mTempMoleFractions;
+    delete [] mTempMassFractions;
+    mTempMassFractions = new double[nTypes];
+    mTempMoleFractions = new double[nTypes];
+    for (unsigned int i = 0; i < nTypes; ++i) {
+        mTempMassFractions[i] = 0.0;
+        mTempMoleFractions[i] = 0.0;
+    }
+    unsigned int nTc = configData.mNumFluidOverride;
+    if (nTc > 0) {
+        mTempTcMoleFractions = new double[nTc];
+        for (unsigned int i = 0; i < nTc; ++i) {
+            mTempTcMoleFractions[i] = 0.0;
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default GUNNS Fluid Distributed Interface Link Destructor.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 GunnsFluidDistributedIf::~GunnsFluidDistributedIf()

@@ -219,6 +219,8 @@ class GunnsFluidDistributedIf : public GunnsFluidLink
         GunnsFluidDistributedIfData mOutData; /**< (--) Data to the other paired link output to the interface. */
         /// @brief Default Constructor.
         GunnsFluidDistributedIf();
+        /// @brief Override Constructor.
+        GunnsFluidDistributedIf(const GunnsFluidDistributedIfConfigData& configData);
         /// @brief Default Destructor.
         virtual ~GunnsFluidDistributedIf();
         /// @brief Initializes the link, with input data.
