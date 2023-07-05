@@ -134,6 +134,9 @@ class GunnsFluidExternalSupply : public GunnsFluidSource
         /// @brief Default Constructor
         GunnsFluidExternalSupply();
 
+        /// @brief Override Constructor
+        GunnsFluidExternalSupply(const GunnsFluidExternalSupplyConfigData& configData);
+
         /// @brief Default Destructor
         virtual ~GunnsFluidExternalSupply();
 

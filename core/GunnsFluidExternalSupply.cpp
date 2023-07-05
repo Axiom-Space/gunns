@@ -136,7 +136,7 @@ GunnsFluidExternalSupplyInputData::~GunnsFluidExternalSupplyInputData()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @details Constructs the Link
+/// @details Default constructs the Link
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 GunnsFluidExternalSupply::GunnsFluidExternalSupply()
     :
@@ -154,6 +154,51 @@ GunnsFluidExternalSupply::GunnsFluidExternalSupply()
     mDemandTcMoleFractions(0)
 {
     // nothing to do
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @details Override constructs the Link
+////////////////////////////////////////////////////////////////////////////////////////////////////
+GunnsFluidExternalSupply::GunnsFluidExternalSupply(const GunnsFluidExternalSupplyConfigData& configData)
+    :
+    GunnsFluidSource      (),
+    mUseNetworkCapacitance(0.0),
+    mTransformMap         (0),
+    mSupplyCapacitance    (0.0),
+    mSupplyPressure       (0.0),
+    mSupplyTemperature    (0.0),
+    mSupplyMassFractions  (0),
+    mSupplyTcMoleFractions(0),
+    mDemandFlux           (0.0),
+    mDemandTemperature    (0.0),
+    mDemandMassFractions  (0),
+    mDemandTcMoleFractions(0)
+{
+    delete [] mTransformMap;
+    mTransformMap = new int[configData.mExternalConfig->mNTypes + 1];
+
+    GunnsFluidUtils::buildTransformMap(mTransformMap, configData.mExternalConfig,
+            configData.mExternalConfig, configData.mConvertToType);
+
+    /// - Allocate memory for the read & write data mass fraction arrays.
+    TS_DELETE_ARRAY(mSupplyMassFractions);
+    TS_DELETE_ARRAY(mDemandMassFractions);
+    TS_NEW_PRIM_ARRAY_EXT(mSupplyMassFractions, configData.mExternalConfig->mNTypes, double, std::string(configData.mName) + ".mSupplyMassFractions");
+    TS_NEW_PRIM_ARRAY_EXT(mDemandMassFractions, configData.mExternalConfig->mNTypes,  double, std::string(configData.mName) + ".mDemandMassFractions");
+
+    /// - Allocate memory for the demand trace compounds mole fraction array.  Note this remains
+    ///   un-allocated if the network has no trace compounds config or zero compounds in the config.
+    ///   The supply trace compounds mole fraction array points directly to the node's array.
+    const GunnsFluidTraceCompoundsConfigData* tcConfig = configData.mExternalConfig->mTraceCompounds;
+    if (tcConfig) {
+        const int nTc = tcConfig->mNTypes;
+        if (nTc > 0) {
+            TS_DELETE_ARRAY(mDemandTcMoleFractions);
+            TS_NEW_PRIM_ARRAY_EXT(mDemandTcMoleFractions, nTc, double, std::string(configData.mName) + ".mDemandTcMoleFractions");
+        }
+        TS_DELETE_ARRAY(mSupplyTcMoleFractions);
+        TS_NEW_PRIM_ARRAY_EXT(mSupplyTcMoleFractions, configData.mExternalConfig->mTraceCompounds->mNTypes,  double, std::string(configData.mName) + ".mSupplyTcMoleFractions");
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

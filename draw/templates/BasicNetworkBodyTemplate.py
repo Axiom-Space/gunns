@@ -44,6 +44,9 @@ class BasicNetworkBodyTemplate:
   def blockSolverInitializeNodes(self):
     r = ('        netSolver.initializeNodes(netNodeList);\n')
     return r
+  
+  def linkConstruct(self, link):
+    return ('    ' + link[1] + '()')
 
   def render(self):
     r =('/**\n')
@@ -193,12 +196,9 @@ class BasicNetworkBodyTemplate:
         r = r + (
         '    ' + jumperPlug[1] + '(name + ".' + jumperPlug[1] + '"),\n')
     r = r+('    // Links\n')
-    for link in self.data['links'][:-1]:
-      if 'Hx' in link[0] or 'HeatEx' in link[0]: r = r+('    ' + link[1] + '(netConfig.' + link[1] + '),\n')
-      else: r = r+('    ' + link[1] + '(),\n')
-    for link in self.data['links'][-1:]:
-      if 'Hx' in link[0] or 'HeatEx' in link[0]: r = r+('    ' + link[1] + '(netConfig.' + link[1] + ')\n')
-      else: r = r+('    ' + link[1] + '()\n')
+    for link in self.data['links']:
+      r += self.linkConstruct(link)
+      r += '\n' if link == self.data['links'][-1] else ',\n'
     r = r+('{\n')
     if ('gunnSight' in self.data.keys()) and self.data['gunnSight']:
       r = r + (
