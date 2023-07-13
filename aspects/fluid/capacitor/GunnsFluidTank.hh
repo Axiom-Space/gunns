@@ -137,6 +137,8 @@ class GunnsFluidTank : public  GunnsFluidCapacitor
         double         getTemperature() const;
         /// @brief  Returns the temperature of tank node (K).
         double         getPreviousPressure() const;
+        /// @brief  Returns the density of the tank node (kg/m^3).
+        double         getDensity() const;
         /// @brief  Returns the previous pressure of tank node (kPa).
         double         getDpdt() const;
         /// @brief  Returns the constituent partial pressures.
@@ -181,6 +183,7 @@ class GunnsFluidTank : public  GunnsFluidCapacitor
         float   mSurfaceArea;                        /**<    (m2)       trick_chkpnt_io(**) Inner surface area of tank shell */
         float   mShellRadius;                        /**<    (m)        trick_chkpnt_io(**) Distance from tank shell to center */
         double  mPreviousPressure;                   /**<    (kPa)                          Previous pressure in the node */
+        double  mDensity;                            /**<    (kg/m^3)                       Density in the node */
         double  mDpdt;                               /**<    (kPa/s)                        Delta-Pressure / delta-time */
         double  mDpdtFilterGain;                     /**<    (--)       trick_chkpnt_io(**) Gain for the dP/dt filter (0-1) */
         double* mPartialPressure;                    /**<    (kPa)      trick_chkpnt_io(**) Constituent partial pressures */
@@ -267,6 +270,16 @@ inline double GunnsFluidTank::getTemperature() const
 inline double GunnsFluidTank::getPreviousPressure() const
 {
     return mPreviousPressure;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @return   double (kg/m^3) Density.
+///
+/// @details  This method returns the density of the tank node.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline double GunnsFluidTank::getDensity() const
+{
+    return mDensity;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

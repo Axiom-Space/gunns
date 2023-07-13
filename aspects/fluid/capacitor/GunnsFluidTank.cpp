@@ -157,6 +157,7 @@ GunnsFluidTank::GunnsFluidTank()
     mSurfaceArea(0.0),
     mShellRadius(0.0),
     mPreviousPressure(0.0),
+    mDensity(0.0),
     mDpdt(0.0),
     mDpdtFilterGain(0.0),
     mPartialPressure(0),
@@ -238,6 +239,7 @@ void GunnsFluidTank::initialize(const GunnsFluidTankConfigData& configData,
     mShellTemperature  = inputData.mShellTemperature;
     mBiasHeatFlux      = inputData.mBiasHeatFlux;
     mPreviousPressure  = mNodes[0]->getPotential();
+    mDensity           = mNodes[0]->getContent()->getDensity();
     mDpdt              = 0.0;
     mDpdtFilterGain    = configData.mDpdtFilterGain;
     mEditFluxTarget    = configData.mEditFluxTarget;
@@ -660,6 +662,7 @@ void GunnsFluidTank::processOutputs()
         mMassFraction[i] = mNodes[0]->getContent()->getMassFraction(mInternalFluid->getType(i));
         mMoleFraction[i] = mNodes[0]->getContent()->getMoleFraction(mInternalFluid->getType(i));
         mTemperature     = mNodes[0]->getContent()->getTemperature();
+        mDensity         = mNodes[0]->getContent()->getDensity();
     }
 }
 
