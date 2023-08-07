@@ -1,5 +1,5 @@
-#ifndef GunnsFluidMetabolic2_EXISTS
-#define GunnsFluidMetabolic2_EXISTS
+#ifndef GunnsFluidMetabolic3_EXISTS
+#define GunnsFluidMetabolic3_EXISTS
 
 /**
 @file
@@ -52,16 +52,16 @@ ASSUMPTIONS AND LIMITATIONS:
 /// @details  The sole purpose of this class is to provide a data structure for the Metabolic
 ///           configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidMetabolic2ConfigData : public GunnsFluidSourceConfigData
+class GunnsFluidMetabolic3ConfigData : public GunnsFluidSourceConfigData
 {
     public:
         /// @brief    Default constructs this Metabolic configuration data with arguments.
-        GunnsFluidMetabolic2ConfigData(const std::string& name  = "",
+        GunnsFluidMetabolic3ConfigData(const std::string& name  = "",
                                        GunnsNodeList*     nodes = 0);
         /// @brief    Default destructs this Metabolic configuration data.
-        virtual ~GunnsFluidMetabolic2ConfigData();
+        virtual ~GunnsFluidMetabolic3ConfigData();
         /// @brief    Copy constructs this Metabolic configuration data.
-        GunnsFluidMetabolic2ConfigData(const GunnsFluidMetabolic2ConfigData& that);
+        GunnsFluidMetabolic3ConfigData(const GunnsFluidMetabolic3ConfigData& that);
         double mO2ConsumptionRate_Nominal;                              /**<    (kg/s) trick_chkpnt_io(**) Oxygen consumption rate for a crew member in nominal state. */
         double mO2ConsumptionRate_Sleep;                                /**<    (kg/s) trick_chkpnt_io(**) Oxygen consumption rate for a crew member in sleep state. */
         double mO2ConsumptionRate_Recovery0;                            /**<    (kg/s) trick_chkpnt_io(**) Oxygen consumption rate for a crew member in recovery0 state. */
@@ -129,7 +129,7 @@ class GunnsFluidMetabolic2ConfigData : public GunnsFluidSourceConfigData
         ////////////////////////////////////////////////////////////////////////////////////////////
         /// @details  Assignment operator unavailable since declared private and not implemented.
         ////////////////////////////////////////////////////////////////////////////////////////////
-        GunnsFluidMetabolic2ConfigData& operator =(const GunnsFluidMetabolic2ConfigData&);
+        GunnsFluidMetabolic3ConfigData& operator =(const GunnsFluidMetabolic3ConfigData&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,7 +138,7 @@ class GunnsFluidMetabolic2ConfigData : public GunnsFluidSourceConfigData
 /// @details  The sole purpose of this class is to provide a data structure for the Metabolic
 ///           input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidMetabolic2InputData : public GunnsFluidSourceInputData
+class GunnsFluidMetabolic3InputData : public GunnsFluidSourceInputData
 {
     public:
         double mNNominal;    /**< (--) Number of crew members in NOMINAL state. */
@@ -154,7 +154,7 @@ class GunnsFluidMetabolic2InputData : public GunnsFluidSourceInputData
         double mNResistive2; /**< (--) Number of crew members in RESISTIVE_2 state. */
         double mNResistive3; /**< (--) Number of crew members in RESISTIVE_3 state. */
         /// @brief    Default constructs this Metabolic input data with arguments.
-        GunnsFluidMetabolic2InputData(const bool   malfBlockageFlag  = false,
+        GunnsFluidMetabolic3InputData(const bool   malfBlockageFlag  = false,
                                       const double malfBlockageValue = 0.0,
                                       const double flowDemand        = 0.0,
                                       const double nNominal          = 0.0,
@@ -170,14 +170,14 @@ class GunnsFluidMetabolic2InputData : public GunnsFluidSourceInputData
                                       const double nResistive2       = 0.0,
                                       const double nResistive3       = 0.0);
         /// @brief    Copy constructs this Metabolic input data.
-        GunnsFluidMetabolic2InputData(const GunnsFluidMetabolic2InputData& that);
+        GunnsFluidMetabolic3InputData(const GunnsFluidMetabolic3InputData& that);
         /// @brief    Default destructs this Metabolic input data.
-        ~GunnsFluidMetabolic2InputData();
+        ~GunnsFluidMetabolic3InputData();
     private:
         ////////////////////////////////////////////////////////////////////////////////////////////
         /// @details  Assignment operator unavailable since declared private and not implemented.
         ////////////////////////////////////////////////////////////////////////////////////////////
-        GunnsFluidMetabolic2InputData& operator=(const GunnsFluidMetabolic2InputData&);
+        GunnsFluidMetabolic3InputData& operator=(const GunnsFluidMetabolic3InputData&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,9 +195,9 @@ class GunnsFluidMetabolic2InputData : public GunnsFluidSourceInputData
 ///           Fluid constituent types GUNNS_O2, GUNNS_H2O, GUNNS_CO2 are required to be in the
 ///           network.  All other fluid and trace compound types are optional.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class GunnsFluidMetabolic2 : public GunnsFluidSource
+class GunnsFluidMetabolic3 : public GunnsFluidSource
 {
-    TS_MAKE_SIM_COMPATIBLE(GunnsFluidMetabolic2);
+    TS_MAKE_SIM_COMPATIBLE(GunnsFluidMetabolic3);
     public:
         /// @brief    Enumeration of the types of metabolic states.
         enum MetabolicType {
@@ -215,14 +215,14 @@ class GunnsFluidMetabolic2 : public GunnsFluidSource
             RESISTIVE_3  = 11, ///< Resistive 45-60 min
             NO_METABOLIC = 12  ///< Invalid or number of metabolic states - Keep this last!
         };
-        double mNCrew[GunnsFluidMetabolic2::NO_METABOLIC];              /**<    (--)                       Array of number of crew members in each metabolic state. */
+        double mNCrew[GunnsFluidMetabolic3::NO_METABOLIC];              /**<    (--)                       Array of number of crew members in each metabolic state. */
         /// @brief    Default constructs this Metabolic model.
-        GunnsFluidMetabolic2();
+        GunnsFluidMetabolic3();
         /// @brief    Default destructs this Metabolic model.
-        virtual ~GunnsFluidMetabolic2();
+        virtual ~GunnsFluidMetabolic3();
         /// @brief    Initializes this Metabolic model with configuration and input data.
-        void initialize(const GunnsFluidMetabolic2ConfigData& configData,
-                        const GunnsFluidMetabolic2InputData&  inputData,
+        void initialize(const GunnsFluidMetabolic3ConfigData& configData,
+                        const GunnsFluidMetabolic3InputData&  inputData,
                         std::vector<GunnsBasicLink*>&         networkLinks,
                         const int                             port0,
                         const int                             port1);
@@ -253,10 +253,10 @@ class GunnsFluidMetabolic2 : public GunnsFluidSource
         /// @brief    Returns CH4 production rate for this cycle.
         double getProducedCH4() const;
     protected:
-        double mO2ConsumptionRate[GunnsFluidMetabolic2::NO_METABOLIC];  /**<    (kg/s) trick_chkpnt_io(**) Array of Oxygen consumption rate for a crew member in each metabolic state. */
-        double mCO2ProductionRate[GunnsFluidMetabolic2::NO_METABOLIC];  /**<    (kg/s) trick_chkpnt_io(**) Array of Carbon dioxide production rate for a crew member in each metabolic state. */
-        double mH2OProductionRate[GunnsFluidMetabolic2::NO_METABOLIC];  /**<    (kg/s) trick_chkpnt_io(**) Array of Water production rate for a crew member in each metabolic state. */
-        double mHeatProductionRate[GunnsFluidMetabolic2::NO_METABOLIC]; /**<    (W)    trick_chkpnt_io(**) Array of Heat production rate for a crew member in each metabolic state. */
+        double mO2ConsumptionRate[GunnsFluidMetabolic3::NO_METABOLIC];  /**<    (kg/s) trick_chkpnt_io(**) Array of Oxygen consumption rate for a crew member in each metabolic state. */
+        double mCO2ProductionRate[GunnsFluidMetabolic3::NO_METABOLIC];  /**<    (kg/s) trick_chkpnt_io(**) Array of Carbon dioxide production rate for a crew member in each metabolic state. */
+        double mH2OProductionRate[GunnsFluidMetabolic3::NO_METABOLIC];  /**<    (kg/s) trick_chkpnt_io(**) Array of Water production rate for a crew member in each metabolic state. */
+        double mHeatProductionRate[GunnsFluidMetabolic3::NO_METABOLIC]; /**<    (W)    trick_chkpnt_io(**) Array of Heat production rate for a crew member in each metabolic state. */
         double mCH4OProductionRate;                                     /**<    (kg/s) trick_chkpnt_io(**) Methanol production rate for a crew member in all states. */
         double mC2H6OProductionRate;                                    /**<    (kg/s) trick_chkpnt_io(**) Ethanol production rate for a crew member in all states. */
         double mC4H10OProductionRate;                                   /**<    (kg/s) trick_chkpnt_io(**) 1-Butanol production rate for a crew member in all states. */
@@ -311,12 +311,12 @@ class GunnsFluidMetabolic2 : public GunnsFluidSource
         int    mTcH2;                                                   /**< *o (--)   trick_chkpnt_io(**) Index of Hydrogen in trace compounds. */
         int    mTcCH4;                                                  /**< *o (--)   trick_chkpnt_io(**) Index of Methane in trace compounds. */
         /// @brief    Validates the initialization inputs of this Metabolic model.
-        void   validate(const GunnsFluidMetabolic2InputData&  inputData) const;
+        void   validate(const GunnsFluidMetabolic3InputData&  inputData) const;
         /// @brief Virtual method for derived links to perform their restart functions.
         virtual void restartModel();
         /// @brief    Initializes the derived attributes of this Metabolic model.
-        void   derive(const GunnsFluidMetabolic2ConfigData& configData,
-                      const GunnsFluidMetabolic2InputData&  inputData);
+        void   derive(const GunnsFluidMetabolic3ConfigData& configData,
+                      const GunnsFluidMetabolic3InputData&  inputData);
         /// @brief    Looks up the index of the given fluid type in the network.
         int    findFluidIndex(const FluidProperties::FluidType type);
         /// @brief    Looks up the index of the given trace compound type in the network.
@@ -336,11 +336,11 @@ class GunnsFluidMetabolic2 : public GunnsFluidSource
         ////////////////////////////////////////////////////////////////////////////////////////////
         /// @details  Copy constructor unavailable since declared private and not implemented.
         ////////////////////////////////////////////////////////////////////////////////////////////
-        GunnsFluidMetabolic2(const GunnsFluidMetabolic2&);
+        GunnsFluidMetabolic3(const GunnsFluidMetabolic3&);
         ////////////////////////////////////////////////////////////////////////////////////////////
         /// @details  Assignment operator unavailable since declared private and not implemented.
         ////////////////////////////////////////////////////////////////////////////////////////////
-        GunnsFluidMetabolic2& operator=(const GunnsFluidMetabolic2&);
+        GunnsFluidMetabolic3& operator=(const GunnsFluidMetabolic3&);
 };
 
 /// @}
@@ -350,7 +350,7 @@ class GunnsFluidMetabolic2 : public GunnsFluidSource
 ///
 /// @details  Getter method returns the number of crew array
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline const double* GunnsFluidMetabolic2::getNCrew() const
+inline const double* GunnsFluidMetabolic3::getNCrew() const
 {
     return mNCrew;
 }
@@ -360,7 +360,7 @@ inline const double* GunnsFluidMetabolic2::getNCrew() const
 ///
 /// @details  Getter method returns O2 consumption rate for this cycle
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::getConsumedO2() const
+inline double GunnsFluidMetabolic3::getConsumedO2() const
 {
     return mConsumedO2;
 }
@@ -370,7 +370,7 @@ inline double GunnsFluidMetabolic2::getConsumedO2() const
 ///
 /// @details  Getter method returns CO2 production rate for this cycle
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::getProducedCO2() const
+inline double GunnsFluidMetabolic3::getProducedCO2() const
 {
     return mProducedCO2;
 }
@@ -380,7 +380,7 @@ inline double GunnsFluidMetabolic2::getProducedCO2() const
 ///
 /// @details  Getter method returns H2O production rate for this cycle
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::getProducedH2O() const
+inline double GunnsFluidMetabolic3::getProducedH2O() const
 {
     return mProducedH2O;
 }
@@ -390,7 +390,7 @@ inline double GunnsFluidMetabolic2::getProducedH2O() const
 ///
 /// @details  Getter method returns heat production rate for this cycle
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::getProducedHeat() const
+inline double GunnsFluidMetabolic3::getProducedHeat() const
 {
     return mProducedHeat;
 }
@@ -400,7 +400,7 @@ inline double GunnsFluidMetabolic2::getProducedHeat() const
 ///
 /// @details  Getter method returns NH3 production rate for this cycle
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::getProducedNH3() const
+inline double GunnsFluidMetabolic3::getProducedNH3() const
 {
     return mProducedNH3;
 }
@@ -410,7 +410,7 @@ inline double GunnsFluidMetabolic2::getProducedNH3() const
 ///
 /// @details  Getter method returns CO production rate for this cycle
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::getProducedCO() const
+inline double GunnsFluidMetabolic3::getProducedCO() const
 {
     return mProducedCO;
 }
@@ -420,7 +420,7 @@ inline double GunnsFluidMetabolic2::getProducedCO() const
 ///
 /// @details  Getter method returns H2 production rate for this cycle
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::getProducedH2() const
+inline double GunnsFluidMetabolic3::getProducedH2() const
 {
     return mProducedH2;
 }
@@ -430,7 +430,7 @@ inline double GunnsFluidMetabolic2::getProducedH2() const
 ///
 /// @details  Getter method returns CH4 production rate for this cycle
 ////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::getProducedCH4() const
+inline double GunnsFluidMetabolic3::getProducedCH4() const
 {
     return mProducedCH4;
 }
@@ -438,7 +438,7 @@ inline double GunnsFluidMetabolic2::getProducedCH4() const
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Zeroes individual fluid constituent rates.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline void GunnsFluidMetabolic2::resetRates()
+inline void GunnsFluidMetabolic3::resetRates()
 {
     mConsumedO2     = 0.0;
     mProducedCO2    = 0.0;
@@ -472,7 +472,7 @@ inline void GunnsFluidMetabolic2::resetRates()
 ///           the product of the given number of crew and the compound's rate per crew, otherwise
 ///           returns zero.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline double GunnsFluidMetabolic2::computeProductionRate(const int indexFluid, const int indexTc,
+inline double GunnsFluidMetabolic3::computeProductionRate(const int indexFluid, const int indexTc,
                                                           const double crew, const double rate) const
 {
     double result = 0.0;
@@ -492,7 +492,7 @@ inline double GunnsFluidMetabolic2::computeProductionRate(const int indexFluid, 
 ///
 /// @note     The tc pointer must not be NULL, as this method doesn't check it.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline void GunnsFluidMetabolic2::setTraceMass(GunnsFluidTraceCompounds* tc, const int index,
+inline void GunnsFluidMetabolic3::setTraceMass(GunnsFluidTraceCompounds* tc, const int index,
                                                const double rate)
 {
     if (index > -1) {

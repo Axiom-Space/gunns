@@ -29,7 +29,7 @@ LIBRARY DEPENDENCY:
 /// @details  Default constructs this GUNNS Fluid Metabolic link model configuration data with
 ///           arguments and obviously invalid default values.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidMetabolic2ConfigData::GunnsFluidMetabolic2ConfigData(const std::string& name,
+GunnsFluidMetabolic3ConfigData::GunnsFluidMetabolic3ConfigData(const std::string& name,
                                                                GunnsNodeList*     nodes)
     :
     GunnsFluidSourceConfigData(name, nodes),
@@ -128,28 +128,36 @@ GunnsFluidMetabolic2ConfigData::GunnsFluidMetabolic2ConfigData(const std::string
 
     /// - Initialize default rates to "Life Support Baseline Values and Assumptions Document"
     ///   Table 3.25, columns 6 & 7.  Convert (kg/min to kg/s).
-    mH2OProductionRate_Nominal    = ( 11.77e-4 +  0.0    ) / UnitConversion::SEC_PER_MIN;
-    mH2OProductionRate_Sleep      = (  6.3e-4  +  0.0    ) / UnitConversion::SEC_PER_MIN;
-    mH2OProductionRate_Recovery0  = ( 83.83e-4 + 15.16e-4) / UnitConversion::SEC_PER_MIN;
-    mH2OProductionRate_Recovery1  = ( 40.29e-4 +  0.36e-4) / UnitConversion::SEC_PER_MIN;
-    mH2OProductionRate_Recovery2  = ( 27.44e-4 +  0.0    ) / UnitConversion::SEC_PER_MIN;
-    mH2OProductionRate_Recovery3  = ( 20.4e-4  +  0.0    ) / UnitConversion::SEC_PER_MIN;
-    mH2OProductionRate_Exercise0  = ( 46.16e-4 +  1.56e-4) / UnitConversion::SEC_PER_MIN;
-    mH2OProductionRate_Exercise1  = (128.42e-4 + 33.52e-4) / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Nominal     = (1.33  + 0.00)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Sleep       = (1.08  + 0.00)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Recovery0   = (2.07  + 0.00)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Recovery1   = (1.79  + 0.00)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Recovery2   = (2.20  + 0.00)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Recovery3   = (1.86  + 0.00)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Aerobic0    = (6.99  + 1.34)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Aerobic1    = (13.48 + 11.82) * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Resistive0  = (11.60 + 11.86) * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Resistive1  = (8.44  + 2.18)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Resistive2  = (6.66  + 0.78)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
+    mH2OProductionRate_Resistive3  = (5.93  + 0.45)  * UnitConversion::KILO_PER_UNIT / UnitConversion::SEC_PER_MIN;
 
     /// - Initialize default rates to "Life Support Baseline Values and Assumptions Document"
     ///   Table 3.25, column 3.  Convert (kJ/hr to W).
-    mHeatProductionRate_Nominal     = 329.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
-    mHeatProductionRate_Sleep       = 224.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
-    mHeatProductionRate_Recovery0  = 568.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
-    mHeatProductionRate_Recovery1  = 488.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
-    mHeatProductionRate_Recovery2  = 466.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
-    mHeatProductionRate_Recovery3  = 455.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
-    mHeatProductionRate_Exercise0  = 514.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
-    mHeatProductionRate_Exercise1  = 624.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Nominal     = 306.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Sleep       = 160.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Recovery0   = 298.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Recovery1   = 301.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Recovery2   = 295.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Recovery3   = 300.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Aerobic0    = 482.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Aerobic1    = 467.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Resistive0  = 417.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Resistive1  = 347.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Resistive2  = 338.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
+    mHeatProductionRate_Resistive3  = 340.0 * UnitConversion::UNIT_PER_KILO / UnitConversion::SEC_PER_HR;
 
     /// - Initialize trace compound rates to "Life Support Baseline Values and Assumptions
-    /// - Document" Table 4.4.  Convert (mg/d to kg/s).
+    /// - Document" Table 4.3.  Convert (mg/d to kg/s).
     mCH4OProductionRate   =   0.9  * UnitConversion::MEGA_PER_UNIT / UnitConversion::SEC_PER_DAY;
     mC2H6OProductionRate  =   4.3  * UnitConversion::MEGA_PER_UNIT / UnitConversion::SEC_PER_DAY;
     mC4H10OProductionRate =   0.5  * UnitConversion::MEGA_PER_UNIT / UnitConversion::SEC_PER_DAY;
@@ -171,8 +179,8 @@ GunnsFluidMetabolic2ConfigData::GunnsFluidMetabolic2ConfigData(const std::string
 ///
 /// @details  Copy constructs this GUNNS Fluid Metabolic link model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidMetabolic2ConfigData::GunnsFluidMetabolic2ConfigData(
-                                                         const GunnsFluidMetabolic2ConfigData& that)
+GunnsFluidMetabolic3ConfigData::GunnsFluidMetabolic3ConfigData(
+                                                         const GunnsFluidMetabolic3ConfigData& that)
     :
     GunnsFluidSourceConfigData(that),
     mO2ConsumptionRate_Nominal(that.mO2ConsumptionRate_Nominal),
@@ -181,32 +189,48 @@ GunnsFluidMetabolic2ConfigData::GunnsFluidMetabolic2ConfigData(
     mO2ConsumptionRate_Recovery1(that.mO2ConsumptionRate_Recovery1),
     mO2ConsumptionRate_Recovery2(that.mO2ConsumptionRate_Recovery2),
     mO2ConsumptionRate_Recovery3(that.mO2ConsumptionRate_Recovery3),
-    mO2ConsumptionRate_Exercise0(that.mO2ConsumptionRate_Exercise0),
-    mO2ConsumptionRate_Exercise1(that.mO2ConsumptionRate_Exercise1),
+    mO2ConsumptionRate_Aerobic0(that.mO2ConsumptionRate_Aerobic0),
+    mO2ConsumptionRate_Aerobic1(that.mO2ConsumptionRate_Aerobic1),
+    mO2ConsumptionRate_Resistive0(that.mO2ConsumptionRate_Resistive0),
+    mO2ConsumptionRate_Resistive1(that.mO2ConsumptionRate_Resistive1),
+    mO2ConsumptionRate_Resistive2(that.mO2ConsumptionRate_Resistive2),
+    mO2ConsumptionRate_Resistive3(that.mO2ConsumptionRate_Resistive3),
     mCO2ProductionRate_Nominal(that.mCO2ProductionRate_Nominal),
     mCO2ProductionRate_Sleep(that.mCO2ProductionRate_Sleep),
     mCO2ProductionRate_Recovery0(that.mCO2ProductionRate_Recovery0),
     mCO2ProductionRate_Recovery1(that.mCO2ProductionRate_Recovery1),
     mCO2ProductionRate_Recovery2(that.mCO2ProductionRate_Recovery2),
     mCO2ProductionRate_Recovery3(that.mCO2ProductionRate_Recovery3),
-    mCO2ProductionRate_Exercise0(that.mCO2ProductionRate_Exercise0),
-    mCO2ProductionRate_Exercise1(that.mCO2ProductionRate_Exercise1),
+    mCO2ProductionRate_Aerobic0(that.mCO2ProductionRate_Aerobic0),
+    mCO2ProductionRate_Aerobic1(that.mCO2ProductionRate_Aerobic1),
+    mCO2ProductionRate_Resistive0(that.mCO2ProductionRate_Resistive0),
+    mCO2ProductionRate_Resistive1(that.mCO2ProductionRate_Resistive1),
+    mCO2ProductionRate_Resistive2(that.mCO2ProductionRate_Resistive2),
+    mCO2ProductionRate_Resistive3(that.mCO2ProductionRate_Resistive3),
     mH2OProductionRate_Nominal(that.mH2OProductionRate_Nominal),
     mH2OProductionRate_Sleep(that.mH2OProductionRate_Sleep),
     mH2OProductionRate_Recovery0(that.mH2OProductionRate_Recovery0),
     mH2OProductionRate_Recovery1(that.mH2OProductionRate_Recovery1),
     mH2OProductionRate_Recovery2(that.mH2OProductionRate_Recovery2),
     mH2OProductionRate_Recovery3(that.mH2OProductionRate_Recovery3),
-    mH2OProductionRate_Exercise0(that.mH2OProductionRate_Exercise0),
-    mH2OProductionRate_Exercise1(that.mH2OProductionRate_Exercise1),
+    mH2OProductionRate_Aerobic0(that.mH2OProductionRate_Aerobic0),
+    mH2OProductionRate_Aerobic1(that.mH2OProductionRate_Aerobic1),
+    mH2OProductionRate_Resistive0(that.mH2OProductionRate_Resistive0),
+    mH2OProductionRate_Resistive1(that.mH2OProductionRate_Resistive1),
+    mH2OProductionRate_Resistive2(that.mH2OProductionRate_Resistive2),
+    mH2OProductionRate_Resistive3(that.mH2OProductionRate_Resistive3),
     mHeatProductionRate_Nominal(that.mHeatProductionRate_Nominal),
     mHeatProductionRate_Sleep(that.mHeatProductionRate_Sleep),
     mHeatProductionRate_Recovery0(that.mHeatProductionRate_Recovery0),
     mHeatProductionRate_Recovery1(that.mHeatProductionRate_Recovery1),
     mHeatProductionRate_Recovery2(that.mHeatProductionRate_Recovery2),
     mHeatProductionRate_Recovery3(that.mHeatProductionRate_Recovery3),
-    mHeatProductionRate_Exercise0(that.mHeatProductionRate_Exercise0),
-    mHeatProductionRate_Exercise1(that.mHeatProductionRate_Exercise1),
+    mHeatProductionRate_Aerobic0(that.mHeatProductionRate_Aerobic0),
+    mHeatProductionRate_Aerobic1(that.mHeatProductionRate_Aerobic1),
+    mHeatProductionRate_Resistive0(that.mHeatProductionRate_Resistive0),
+    mHeatProductionRate_Resistive1(that.mHeatProductionRate_Resistive1),
+    mHeatProductionRate_Resistive2(that.mHeatProductionRate_Resistive2),
+    mHeatProductionRate_Resistive3(that.mHeatProductionRate_Resistive3),
     mCH4OProductionRate(that.mCH4OProductionRate),
     mC2H6OProductionRate(that.mC2H6OProductionRate),
     mC4H10OProductionRate(that.mC4H10OProductionRate),
@@ -228,7 +252,7 @@ GunnsFluidMetabolic2ConfigData::GunnsFluidMetabolic2ConfigData(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default destructs this GUNNS Fluid Metabolic link model configuration data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidMetabolic2ConfigData::~GunnsFluidMetabolic2ConfigData()
+GunnsFluidMetabolic3ConfigData::~GunnsFluidMetabolic3ConfigData()
 {
     // nothing to do
 }
@@ -243,13 +267,17 @@ GunnsFluidMetabolic2ConfigData::~GunnsFluidMetabolic2ConfigData()
 /// @param[in]    nRecovery1         (--)    Number of crew members in RECOVERY_1 state.
 /// @param[in]    nRecovery2         (--)    Number of crew members in RECOVERY_2 state.
 /// @param[in]    nRecovery3         (--)    Number of crew members in RECOVERY_3 state.
-/// @param[in]    nExercise0         (--)    Number of crew members in EXERCISE_0 state.
-/// @param[in]    nExercise1         (--)    Number of crew members in EXERCISE_1 state.
+/// @param[in]    nAerobic0          (--)    Number of crew members in AEROBIC_0 state.
+/// @param[in]    nAerobic1          (--)    Number of crew members in AEROBIC_1 state.
+/// @param[in]    nResistive0        (--)    Number of crew members in RESISTIVE_0 state.
+/// @param[in]    nResistive1        (--)    Number of crew members in RESISTIVE_1 state.
+/// @param[in]    nResistive2        (--)    Number of crew members in RESISTIVE_2 state.
+/// @param[in]    nResistive3        (--)    Number of crew members in RESISTIVE_3 state.
 ///
 /// @details  Default constructs this GUNNS Fluid Metabolic link model input data with arguments
 ///           and obviously invalid default values.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidMetabolic2InputData::GunnsFluidMetabolic2InputData(const bool   malfBlockageFlag,
+GunnsFluidMetabolic3InputData::GunnsFluidMetabolic3InputData(const bool   malfBlockageFlag,
                                                              const double malfBlockageValue,
                                                              const double flowDemand,
                                                              const double nNominal,
@@ -258,8 +286,12 @@ GunnsFluidMetabolic2InputData::GunnsFluidMetabolic2InputData(const bool   malfBl
                                                              const double nRecovery1,
                                                              const double nRecovery2,
                                                              const double nRecovery3,
-                                                             const double nExercise0,
-                                                             const double nExercise1)
+                                                             const double nAerobic0,
+                                                             const double nAerobic1,
+                                                             const double nResistive0,
+                                                             const double nResistive1,
+                                                             const double nResistive2,
+                                                             const double nResistive3)
     :
     GunnsFluidSourceInputData(malfBlockageFlag, malfBlockageValue, flowDemand),
     mNNominal(nNominal),
@@ -268,8 +300,12 @@ GunnsFluidMetabolic2InputData::GunnsFluidMetabolic2InputData(const bool   malfBl
     mNRecovery1(nRecovery1),
     mNRecovery2(nRecovery2),
     mNRecovery3(nRecovery3),
-    mNExercise0(nExercise0),
-    mNExercise1(nExercise1)
+    mNAerobic0(nAerobic0),
+    mNAerobic1(nAerobic1),
+    mNResistive0(nResistive0),
+    mNResistive1(nResistive1),
+    mNResistive2(nResistive2),
+    mNResistive3(nResistive3)
 {
     // nothing to do
 }
@@ -279,7 +315,7 @@ GunnsFluidMetabolic2InputData::GunnsFluidMetabolic2InputData(const bool   malfBl
 ///
 /// @details  Copy constructs this GUNNS Fluid Metabolic link model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidMetabolic2InputData::GunnsFluidMetabolic2InputData(const GunnsFluidMetabolic2InputData& that)
+GunnsFluidMetabolic3InputData::GunnsFluidMetabolic3InputData(const GunnsFluidMetabolic3InputData& that)
     :
     GunnsFluidSourceInputData(that),
     mNNominal(that.mNNominal),
@@ -288,8 +324,12 @@ GunnsFluidMetabolic2InputData::GunnsFluidMetabolic2InputData(const GunnsFluidMet
     mNRecovery1(that.mNRecovery1),
     mNRecovery2(that.mNRecovery2),
     mNRecovery3(that.mNRecovery3),
-    mNExercise0(that.mNExercise0),
-    mNExercise1(that.mNExercise1)
+    mNAerobic0(that.mNAerobic0),
+    mNAerobic1(that.mNAerobic1),
+    mNResistive0(that.mNResistive0),
+    mNResistive1(that.mNResistive1),
+    mNResistive2(that.mNResistive2),
+    mNResistive3(that.mNResistive3)
 {
     // nothing to do
 }
@@ -297,7 +337,7 @@ GunnsFluidMetabolic2InputData::GunnsFluidMetabolic2InputData(const GunnsFluidMet
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default destructs this GUNNS Fluid Metabolic link model input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidMetabolic2InputData::~GunnsFluidMetabolic2InputData()
+GunnsFluidMetabolic3InputData::~GunnsFluidMetabolic3InputData()
 {
     // nothing to do
 }
@@ -308,7 +348,7 @@ GunnsFluidMetabolic2InputData::~GunnsFluidMetabolic2InputData()
 ///
 /// @details  Default constructs this GUNNS Fluid Metabolic link model with obviously invalid data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidMetabolic2::GunnsFluidMetabolic2()
+GunnsFluidMetabolic3::GunnsFluidMetabolic3()
     :
     GunnsFluidSource(),
     mNCrew(),
@@ -376,7 +416,7 @@ GunnsFluidMetabolic2::GunnsFluidMetabolic2()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Default destructs this GUNNS Fluid Metabolic link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsFluidMetabolic2::~GunnsFluidMetabolic2()
+GunnsFluidMetabolic3::~GunnsFluidMetabolic3()
 {
     // nothing to do
 }
@@ -394,8 +434,8 @@ GunnsFluidMetabolic2::~GunnsFluidMetabolic2()
 ///
 /// @details  Initializes this GUNNS Fluid Metabolic link model with configuration and input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic2::initialize(const GunnsFluidMetabolic2ConfigData& configData,
-                                      const GunnsFluidMetabolic2InputData&  inputData,
+void GunnsFluidMetabolic3::initialize(const GunnsFluidMetabolic3ConfigData& configData,
+                                      const GunnsFluidMetabolic3InputData&  inputData,
                                       std::vector<GunnsBasicLink*>&         links,
                                       const int                             port0,
                                       const int                             port1)
@@ -425,7 +465,7 @@ void GunnsFluidMetabolic2::initialize(const GunnsFluidMetabolic2ConfigData& conf
 ///
 /// @details  Validates the initialization of this GUNNS Fluid Metabolic link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic2::validate(const GunnsFluidMetabolic2InputData&  inputData) const
+void GunnsFluidMetabolic3::validate(const GunnsFluidMetabolic3InputData&  inputData) const
 {
     /// - Throw an exception on negative number of crew members in NOMINAL state.
     if (inputData.mNNominal < 0.0) {
@@ -463,23 +503,47 @@ void GunnsFluidMetabolic2::validate(const GunnsFluidMetabolic2InputData&  inputD
                     "Number of crew members in RECOVERY_3 state < 0.0.");
     }
 
-    /// - Throw an exception on negative number of crew members in EXERCISE_0 state.
-    if (inputData.mNExercise0 < 0.0) {
+    /// - Throw an exception on negative number of crew members in AEROBIC_0 state.
+    if (inputData.mNAerobic0 < 0.0) {
         GUNNS_ERROR(TsInitializationException, "Invalid Input Data",
-                    "Number of crew members in EXERCISE_0 state < 0.0.");
+                    "Number of crew members in AEROBIC_0 state < 0.0.");
     }
 
-    /// - Throw an exception on negative number of crew members in EXERCISE_1 state.
-    if (inputData.mNExercise1 < 0.0) {
+    /// - Throw an exception on negative number of crew members in AEROBIC_1 state.
+    if (inputData.mNAerobic1 < 0.0) {
         GUNNS_ERROR(TsInitializationException, "Invalid Input Data",
-                    "Number of crew members in EXERCISE_1 state < 0.0.");
+                    "Number of crew members in AEROBIC_1 state < 0.0.");
+    }
+
+    /// - Throw an exception on negative number of crew members in RESISTIVE_0 state.
+    if (inputData.mNResistive0 < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Input Data",
+                    "Number of crew members in RESISTIVE_0 state < 0.0.");
+    }
+
+    /// - Throw an exception on negative number of crew members in RESISTIVE_1 state.
+    if (inputData.mNResistive1 < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Input Data",
+                    "Number of crew members in RESISTIVE_1 state < 0.0.");
+    }
+
+    /// - Throw an exception on negative number of crew members in RESISTIVE_2 state.
+    if (inputData.mNResistive2 < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Input Data",
+                    "Number of crew members in RESISTIVE_2 state < 0.0.");
+    }
+
+    /// - Throw an exception on negative number of crew members in RESISTIVE_3 state.
+    if (inputData.mNResistive3 < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Input Data",
+                    "Number of crew members in RESISTIVE_3 state < 0.0.");
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  Derived classes should call their base class implementation too.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic2::restartModel()
+void GunnsFluidMetabolic3::restartModel()
 {
     /// - Reset the base class.
     GunnsFluidSource::restartModel();
@@ -513,44 +577,60 @@ void GunnsFluidMetabolic2::restartModel()
 ///
 /// @details  Initializes the derived attributes of this GUNNS Fluid Metabolic link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic2::derive(const GunnsFluidMetabolic2ConfigData& configData,
-                                  const GunnsFluidMetabolic2InputData&  inputData)
+void GunnsFluidMetabolic3::derive(const GunnsFluidMetabolic3ConfigData& configData,
+                                  const GunnsFluidMetabolic3InputData&  inputData)
 {
-    mO2ConsumptionRate[GunnsFluidMetabolic2::NOMINAL]  = configData.mO2ConsumptionRate_Nominal;
-    mO2ConsumptionRate[GunnsFluidMetabolic2::SLEEP]  = configData.mO2ConsumptionRate_Sleep;
-    mO2ConsumptionRate[GunnsFluidMetabolic2::RECOVERY_0]  = configData.mO2ConsumptionRate_Recovery0;
-    mO2ConsumptionRate[GunnsFluidMetabolic2::RECOVERY_1]  = configData.mO2ConsumptionRate_Recovery1;
-    mO2ConsumptionRate[GunnsFluidMetabolic2::RECOVERY_2]  = configData.mO2ConsumptionRate_Recovery2;
-    mO2ConsumptionRate[GunnsFluidMetabolic2::RECOVERY_3]  = configData.mO2ConsumptionRate_Recovery3;
-    mO2ConsumptionRate[GunnsFluidMetabolic2::EXERCISE_0]  = configData.mO2ConsumptionRate_Exercise0;
-    mO2ConsumptionRate[GunnsFluidMetabolic2::EXERCISE_1]  = configData.mO2ConsumptionRate_Exercise1;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::NOMINAL]  = configData.mO2ConsumptionRate_Nominal;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::SLEEP]  = configData.mO2ConsumptionRate_Sleep;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::RECOVERY_0]  = configData.mO2ConsumptionRate_Recovery0;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::RECOVERY_1]  = configData.mO2ConsumptionRate_Recovery1;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::RECOVERY_2]  = configData.mO2ConsumptionRate_Recovery2;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::RECOVERY_3]  = configData.mO2ConsumptionRate_Recovery3;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::AEROBIC_0]   = configData.mO2ConsumptionRate_Aerobic0;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::AEROBIC_1]   = configData.mO2ConsumptionRate_Aerobic1;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::RESISTIVE_0] = configData.mO2ConsumptionRate_Resistive0;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::RESISTIVE_1] = configData.mO2ConsumptionRate_Resistive1;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::RESISTIVE_2] = configData.mO2ConsumptionRate_Resistive2;
+    mO2ConsumptionRate[GunnsFluidMetabolic3::RESISTIVE_3] = configData.mO2ConsumptionRate_Resistive3;
 
-    mCO2ProductionRate[GunnsFluidMetabolic2::NOMINAL]  = configData.mCO2ProductionRate_Nominal;
-    mCO2ProductionRate[GunnsFluidMetabolic2::SLEEP]  = configData.mCO2ProductionRate_Sleep;
-    mCO2ProductionRate[GunnsFluidMetabolic2::RECOVERY_0]  = configData.mCO2ProductionRate_Recovery0;
-    mCO2ProductionRate[GunnsFluidMetabolic2::RECOVERY_1]  = configData.mCO2ProductionRate_Recovery1;
-    mCO2ProductionRate[GunnsFluidMetabolic2::RECOVERY_2]  = configData.mCO2ProductionRate_Recovery2;
-    mCO2ProductionRate[GunnsFluidMetabolic2::RECOVERY_3]  = configData.mCO2ProductionRate_Recovery3;
-    mCO2ProductionRate[GunnsFluidMetabolic2::EXERCISE_0]  = configData.mCO2ProductionRate_Exercise0;
-    mCO2ProductionRate[GunnsFluidMetabolic2::EXERCISE_1]  = configData.mCO2ProductionRate_Exercise1;
+    mCO2ProductionRate[GunnsFluidMetabolic3::NOMINAL]  = configData.mCO2ProductionRate_Nominal;
+    mCO2ProductionRate[GunnsFluidMetabolic3::SLEEP]  = configData.mCO2ProductionRate_Sleep;
+    mCO2ProductionRate[GunnsFluidMetabolic3::RECOVERY_0]  = configData.mCO2ProductionRate_Recovery0;
+    mCO2ProductionRate[GunnsFluidMetabolic3::RECOVERY_1]  = configData.mCO2ProductionRate_Recovery1;
+    mCO2ProductionRate[GunnsFluidMetabolic3::RECOVERY_2]  = configData.mCO2ProductionRate_Recovery2;
+    mCO2ProductionRate[GunnsFluidMetabolic3::RECOVERY_3]  = configData.mCO2ProductionRate_Recovery3;
+    mCO2ProductionRate[GunnsFluidMetabolic3::AEROBIC_0]   = configData.mCO2ProductionRate_Aerobic0;
+    mCO2ProductionRate[GunnsFluidMetabolic3::AEROBIC_1]   = configData.mCO2ProductionRate_Aerobic1;
+    mCO2ProductionRate[GunnsFluidMetabolic3::RESISTIVE_0] = configData.mCO2ProductionRate_Resistive0;
+    mCO2ProductionRate[GunnsFluidMetabolic3::RESISTIVE_1] = configData.mCO2ProductionRate_Resistive1;
+    mCO2ProductionRate[GunnsFluidMetabolic3::RESISTIVE_2] = configData.mCO2ProductionRate_Resistive2;
+    mCO2ProductionRate[GunnsFluidMetabolic3::RESISTIVE_3] = configData.mCO2ProductionRate_Resistive3;
 
-    mH2OProductionRate[GunnsFluidMetabolic2::NOMINAL]  = configData.mH2OProductionRate_Nominal;
-    mH2OProductionRate[GunnsFluidMetabolic2::SLEEP]  = configData.mH2OProductionRate_Sleep;
-    mH2OProductionRate[GunnsFluidMetabolic2::RECOVERY_0]  = configData.mH2OProductionRate_Recovery0;
-    mH2OProductionRate[GunnsFluidMetabolic2::RECOVERY_1]  = configData.mH2OProductionRate_Recovery1;
-    mH2OProductionRate[GunnsFluidMetabolic2::RECOVERY_2]  = configData.mH2OProductionRate_Recovery2;
-    mH2OProductionRate[GunnsFluidMetabolic2::RECOVERY_3]  = configData.mH2OProductionRate_Recovery3;
-    mH2OProductionRate[GunnsFluidMetabolic2::EXERCISE_0]  = configData.mH2OProductionRate_Exercise0;
-    mH2OProductionRate[GunnsFluidMetabolic2::EXERCISE_1]  = configData.mH2OProductionRate_Exercise1;
+    mH2OProductionRate[GunnsFluidMetabolic3::NOMINAL]  = configData.mH2OProductionRate_Nominal;
+    mH2OProductionRate[GunnsFluidMetabolic3::SLEEP]  = configData.mH2OProductionRate_Sleep;
+    mH2OProductionRate[GunnsFluidMetabolic3::RECOVERY_0]  = configData.mH2OProductionRate_Recovery0;
+    mH2OProductionRate[GunnsFluidMetabolic3::RECOVERY_1]  = configData.mH2OProductionRate_Recovery1;
+    mH2OProductionRate[GunnsFluidMetabolic3::RECOVERY_2]  = configData.mH2OProductionRate_Recovery2;
+    mH2OProductionRate[GunnsFluidMetabolic3::RECOVERY_3]  = configData.mH2OProductionRate_Recovery3;
+    mH2OProductionRate[GunnsFluidMetabolic3::AEROBIC_0]   = configData.mH2OProductionRate_Aerobic0;
+    mH2OProductionRate[GunnsFluidMetabolic3::AEROBIC_1]   = configData.mH2OProductionRate_Aerobic1;
+    mH2OProductionRate[GunnsFluidMetabolic3::RESISTIVE_0] = configData.mH2OProductionRate_Resistive0;
+    mH2OProductionRate[GunnsFluidMetabolic3::RESISTIVE_1] = configData.mH2OProductionRate_Resistive1;
+    mH2OProductionRate[GunnsFluidMetabolic3::RESISTIVE_2] = configData.mH2OProductionRate_Resistive2;
+    mH2OProductionRate[GunnsFluidMetabolic3::RESISTIVE_3] = configData.mH2OProductionRate_Resistive3;
 
-    mHeatProductionRate[GunnsFluidMetabolic2::NOMINAL]  = configData.mHeatProductionRate_Nominal;
-    mHeatProductionRate[GunnsFluidMetabolic2::SLEEP]  = configData.mHeatProductionRate_Sleep;
-    mHeatProductionRate[GunnsFluidMetabolic2::RECOVERY_0]  = configData.mHeatProductionRate_Recovery0;
-    mHeatProductionRate[GunnsFluidMetabolic2::RECOVERY_1]  = configData.mHeatProductionRate_Recovery1;
-    mHeatProductionRate[GunnsFluidMetabolic2::RECOVERY_2]  = configData.mHeatProductionRate_Recovery2;
-    mHeatProductionRate[GunnsFluidMetabolic2::RECOVERY_3]  = configData.mHeatProductionRate_Recovery3;
-    mHeatProductionRate[GunnsFluidMetabolic2::EXERCISE_0]  = configData.mHeatProductionRate_Exercise0;
-    mHeatProductionRate[GunnsFluidMetabolic2::EXERCISE_1]  = configData.mHeatProductionRate_Exercise1;
+    mHeatProductionRate[GunnsFluidMetabolic3::NOMINAL]  = configData.mHeatProductionRate_Nominal;
+    mHeatProductionRate[GunnsFluidMetabolic3::SLEEP]  = configData.mHeatProductionRate_Sleep;
+    mHeatProductionRate[GunnsFluidMetabolic3::RECOVERY_0]  = configData.mHeatProductionRate_Recovery0;
+    mHeatProductionRate[GunnsFluidMetabolic3::RECOVERY_1]  = configData.mHeatProductionRate_Recovery1;
+    mHeatProductionRate[GunnsFluidMetabolic3::RECOVERY_2]  = configData.mHeatProductionRate_Recovery2;
+    mHeatProductionRate[GunnsFluidMetabolic3::RECOVERY_3]  = configData.mHeatProductionRate_Recovery3;
+    mHeatProductionRate[GunnsFluidMetabolic3::AEROBIC_0]   = configData.mHeatProductionRate_Aerobic0;
+    mHeatProductionRate[GunnsFluidMetabolic3::AEROBIC_1]   = configData.mHeatProductionRate_Aerobic1;
+    mHeatProductionRate[GunnsFluidMetabolic3::RESISTIVE_0] = configData.mHeatProductionRate_Resistive0;
+    mHeatProductionRate[GunnsFluidMetabolic3::RESISTIVE_1] = configData.mHeatProductionRate_Resistive1;
+    mHeatProductionRate[GunnsFluidMetabolic3::RESISTIVE_2] = configData.mHeatProductionRate_Resistive2;
+    mHeatProductionRate[GunnsFluidMetabolic3::RESISTIVE_3] = configData.mHeatProductionRate_Resistive3;
 
     mCH4OProductionRate     = configData.mCH4OProductionRate;
     mC2H6OProductionRate    = configData.mC2H6OProductionRate;
@@ -567,14 +647,18 @@ void GunnsFluidMetabolic2::derive(const GunnsFluidMetabolic2ConfigData& configDa
     mH2ProductionRate       = configData.mH2ProductionRate;
     mCH4ProductionRate      = configData.mCH4ProductionRate;
 
-    mNCrew[GunnsFluidMetabolic2::NOMINAL]               = inputData.mNNominal;
-    mNCrew[GunnsFluidMetabolic2::SLEEP]                 = inputData.mNSleep;
-    mNCrew[GunnsFluidMetabolic2::RECOVERY_0]            = inputData.mNRecovery0;
-    mNCrew[GunnsFluidMetabolic2::RECOVERY_1]            = inputData.mNRecovery1;
-    mNCrew[GunnsFluidMetabolic2::RECOVERY_2]            = inputData.mNRecovery2;
-    mNCrew[GunnsFluidMetabolic2::RECOVERY_3]            = inputData.mNRecovery3;
-    mNCrew[GunnsFluidMetabolic2::EXERCISE_0]            = inputData.mNExercise0;
-    mNCrew[GunnsFluidMetabolic2::EXERCISE_1]            = inputData.mNExercise1;
+    mNCrew[GunnsFluidMetabolic3::NOMINAL]               = inputData.mNNominal;
+    mNCrew[GunnsFluidMetabolic3::SLEEP]                 = inputData.mNSleep;
+    mNCrew[GunnsFluidMetabolic3::RECOVERY_0]            = inputData.mNRecovery0;
+    mNCrew[GunnsFluidMetabolic3::RECOVERY_1]            = inputData.mNRecovery1;
+    mNCrew[GunnsFluidMetabolic3::RECOVERY_2]            = inputData.mNRecovery2;
+    mNCrew[GunnsFluidMetabolic3::RECOVERY_3]            = inputData.mNRecovery3;
+    mNCrew[GunnsFluidMetabolic3::AEROBIC_0]             = inputData.mNAerobic0;
+    mNCrew[GunnsFluidMetabolic3::AEROBIC_1]             = inputData.mNAerobic1;
+    mNCrew[GunnsFluidMetabolic3::RESISTIVE_0]           = inputData.mNResistive0;
+    mNCrew[GunnsFluidMetabolic3::RESISTIVE_1]           = inputData.mNResistive1;
+    mNCrew[GunnsFluidMetabolic3::RESISTIVE_2]           = inputData.mNResistive2;
+    mNCrew[GunnsFluidMetabolic3::RESISTIVE_3]           = inputData.mNResistive3;
 
     resetRates();
 
@@ -613,7 +697,7 @@ void GunnsFluidMetabolic2::derive(const GunnsFluidMetabolic2ConfigData& configDa
 /// @details  Finds and returns the index of the given fluid constituent in this network's fluid
 ///           config, or -1 if the constituent is not in this network.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int GunnsFluidMetabolic2::findFluidIndex(const FluidProperties::FluidType type)
+int GunnsFluidMetabolic3::findFluidIndex(const FluidProperties::FluidType type)
 {
     int result = -1;
 
@@ -638,7 +722,7 @@ int GunnsFluidMetabolic2::findFluidIndex(const FluidProperties::FluidType type)
 /// @details  Finds and returns the index of the given compound in this network's trace compounds
 ///           config, or -1 if the trace compound is not in this network.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int GunnsFluidMetabolic2::findTraceCompoundIndex(const ChemicalCompound::Type type)
+int GunnsFluidMetabolic3::findTraceCompoundIndex(const ChemicalCompound::Type type)
 {
     int result = -1;
 
@@ -667,7 +751,7 @@ int GunnsFluidMetabolic2::findTraceCompoundIndex(const ChemicalCompound::Type ty
 ///
 /// @details  Updates the flow demand for this GUNNS Fluid Metabolic link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic2::updateState(const double dt)
+void GunnsFluidMetabolic3::updateState(const double dt)
 {
     if (dt < DBL_EPSILON) {
         /// - Zero out the flow demand if time step is negligible.
@@ -677,7 +761,7 @@ void GunnsFluidMetabolic2::updateState(const double dt)
         /// - Compute produced/consumed metabolic rates of the primary fluids & heat.
         resetRates();
         double totalCrew = 0.0;
-        for (int i = 0; i < GunnsFluidMetabolic2::NO_METABOLIC; ++i) {
+        for (int i = 0; i < GunnsFluidMetabolic3::NO_METABOLIC; ++i) {
             totalCrew += mNCrew[i];
             mConsumedO2   += mNCrew[i] * mO2ConsumptionRate[i];
             mProducedHeat += mNCrew[i] * mHeatProductionRate[i];
@@ -731,7 +815,7 @@ void GunnsFluidMetabolic2::updateState(const double dt)
 /// @details  Updates the atmosphere for the consumed O2 and produced CO2, H20 and heat based on
 ///           the number of crew members in each metabolic state.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic2::updateFluid(const double dt       __attribute__((unused)),
+void GunnsFluidMetabolic3::updateFluid(const double dt       __attribute__((unused)),
                                        const double flowrate __attribute__((unused)))
 {
     /// - Skip jf flow demand is negligible.
@@ -772,7 +856,7 @@ void GunnsFluidMetabolic2::updateFluid(const double dt       __attribute__((unus
 /// @details  Updates the internal fluid's trace compounds object with all produced trace compounds
 ///           for transport to the node.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic2::updateTraceCompounds()
+void GunnsFluidMetabolic3::updateTraceCompounds()
 {
     if (GunnsFluidTraceCompounds* tc = mInternalFluid->getTraceCompounds()) {
         setTraceMass(tc, mTcCH4O,   mProducedCH4O);
@@ -808,7 +892,7 @@ void GunnsFluidMetabolic2::updateTraceCompounds()
 ///           as the toState, then the total # of crew are decreased by number, all from the
 ///           fromState.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic2::transition(const double        number,
+void GunnsFluidMetabolic3::transition(const double        number,
                                       const MetabolicType fromState,
                                       const MetabolicType toState)
 {
@@ -837,7 +921,7 @@ void GunnsFluidMetabolic2::transition(const double        number,
 /// @details  Checks the requested port & node arguments for validity against rules that apply to
 ///           a Gunns Fluid Metabolic link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-bool GunnsFluidMetabolic2::checkSpecificPortRules(const int port, const int node) const
+bool GunnsFluidMetabolic3::checkSpecificPortRules(const int port, const int node) const
 {
     bool result = true;
 
