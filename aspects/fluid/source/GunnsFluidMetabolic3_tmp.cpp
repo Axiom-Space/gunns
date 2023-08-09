@@ -13,7 +13,7 @@ LIBRARY DEPENDENCY:
     (aspects/fluid/fluid/GunnsFluidTraceCompounds.o))
 */
 
-#include "GunnsFluidMetabolic3.hh"
+#include "GunnsFluidMetabolic3_tmp.hh"
 #include "aspects/fluid/fluid/GunnsFluidTraceCompounds.hh"
 #include "properties/ChemicalCompound.hh"
 #include "math/MsMath.hh"
