@@ -207,7 +207,7 @@ GunnsFluidHxDynHtc::GunnsFluidHxDynHtc()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 GunnsFluidHxDynHtc::GunnsFluidHxDynHtc(const GunnsFluidHxDynHtcConfigData& configData)
     :
-    GunnsFluidHeatExchanger(configData.mNumSegs),
+    GunnsFluidHeatExchanger(configData),
     mSegsDynHtc(0)
 {
     if (configData.mNumSegs > 0) {

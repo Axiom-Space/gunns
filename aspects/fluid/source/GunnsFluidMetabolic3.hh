@@ -226,8 +226,12 @@ class GunnsFluidMetabolic3 : public GunnsFluidSource
                         std::vector<GunnsBasicLink*>&         networkLinks,
                         const int                             port0,
                         const int                             port1);
-        /// @brief    Updates the state of this Metabolic.
-        virtual void updateState(const double dt);
+        /// @brief    Step method for updating this Metabolic.
+        virtual void step(const double dt);
+        /// @brief    Method for computing the flows across the link.
+        virtual void computeFlows(const double dt);
+        /// @brief    Method for transporting the flows across the link.
+        virtual void transportFlows(const double dt);
         /// @brief    Updates the internal fluid of this Metabolic model.
         virtual void updateFluid(const double dt, const double flowrate);
         /// @brief    Transitions crew members between metabolic states.

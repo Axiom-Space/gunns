@@ -751,8 +751,14 @@ int GunnsFluidMetabolic3::findTraceCompoundIndex(const ChemicalCompound::Type ty
 ///
 /// @details  Updates the flow demand for this GUNNS Fluid Metabolic link model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidMetabolic3::updateState(const double dt)
+void GunnsFluidMetabolic3::step(const double dt)
 {
+    /// - Process user commands to dynamically re-map ports.
+    processUserPortCommand();
+
+    /// - Call the virtual updateState method so that any derived class may modify the behavior.
+    updateState(dt);
+
     if (dt < DBL_EPSILON) {
         /// - Zero out the flow demand if time step is negligible.
        mFlowDemand = 0.0;
@@ -804,6 +810,81 @@ void GunnsFluidMetabolic3::updateState(const double dt)
             mFlowDemand = flowDemand;
         }
     }
+    
+    /// - Call the virtual getFlowDemand method so that any derived class can control the flow rate.
+    mFlowRate = getFlowDemand();
+
+    /// - Call the virtual getFlowDemand method so that any derived class can control the flow rate.
+    mFlowRate = getFlowDemand();
+
+    /// - Reduce the actual flow rate by the blockage malfunction if it is active.
+    if (mMalfBlockageFlag) {
+        mFlowRate *= (1.0 - mMalfBlockageValue);
+    }
+
+    /// - Convert the mass flow rate demand to molar flow rate based on the molecular weight of the
+    ///   source fluid.  Molar flow rate is zeroed in TC-only mode since there will be no affect on
+    ///   bulk fluid in the node.
+    const double sourceMWeight = mInternalFluid->getMWeight();
+    if (sourceMWeight < DBL_EPSILON) {
+        mFlux = 0.0;
+    } else {
+        mFlux = mFlowRate / sourceMWeight;
+    }
+
+    buildSource();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in] dt (s) Integration time step
+///
+/// @details  Computes the potential drop and port direction across the link.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void GunnsFluidMetabolic3::computeFlows(const double dt __attribute__((unused)))
+{
+    /// - Calculate potential drop.  Since the source of the node is assumed to be Ground with
+    ///   potential = 0, flows into the node cause a potential rise and therefore negative potential
+    ///   drop.
+    if (mFlux < 0.0) {
+        mPotentialDrop =  mPotentialVector[0];
+    } else {
+        mPotentialDrop = -mPotentialVector[0];
+    }
+
+    /// - Set port flow directions and schedule flow from source nodes.
+    if (fabs(mFlux) > DBL_EPSILON) {
+        mPortDirections[0] = SINK;
+    } else {
+        mPortDirections[0] = NONE;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in] dt (s) Integration time step
+///
+/// @details  transports the flows across the link.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void GunnsFluidMetabolic3::transportFlows(const double dt)
+{
+    /// - Calculate true volumetric flow rate from the mass flow rate, using the density of the
+    ///   internal fluid.
+    const double sourceDensity = mInternalFluid->getDensity();
+    if (sourceDensity > DBL_EPSILON) {
+        mVolFlowRate = mFlowRate / sourceDensity;
+    } else {
+        mVolFlowRate = 0.0;
+    }
+
+    /// - Calculate hydraulic power.
+    computePower();
+
+    /// - Call the virtual updateFluid method to allow derived classes to further modify the
+    ///   internal fluid before it is transported.
+    updateFluid(dt, mFlowRate);
+
+    /// - Transport the internal fluid to/from the attached node.
+    transportFluid(true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
