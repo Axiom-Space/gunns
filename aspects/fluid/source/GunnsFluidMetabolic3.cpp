@@ -814,9 +814,6 @@ void GunnsFluidMetabolic3::step(const double dt)
     /// - Call the virtual getFlowDemand method so that any derived class can control the flow rate.
     mFlowRate = getFlowDemand();
 
-    /// - Call the virtual getFlowDemand method so that any derived class can control the flow rate.
-    mFlowRate = getFlowDemand();
-
     /// - Reduce the actual flow rate by the blockage malfunction if it is active.
     if (mMalfBlockageFlag) {
         mFlowRate *= (1.0 - mMalfBlockageValue);
