@@ -61,5 +61,12 @@
     "h": 40,
     "aspect": "fixed",
     "title": "Metabolics v3"
+  },
+  {
+    "xml": "&lt;mxGraphModel&gt;&lt;root&gt;&lt;mxCell id=\"0\"/&gt;&lt;mxCell id=\"1\" parent=\"0\"/&gt;&lt;object label=\"\" About=\"Lossless Source\" Ports=\"0=in, 1=out\" i00.malfBlockageFlag=\"false\" i01.malfBlockageValue=\"0.0\" i02.sourceFlux=\"0.0\" id=\"2\"&gt;&amp;#xa;      &lt;gunns type=\"Link\" subtype=\"ax/GunnsLosslessSource\" numPorts=\"2\" reqPorts=\"0,1\"/&gt;&lt;mxCell style=\"verticalLabelPosition=bottom;align=center;fillColor=#ffffff;html=1;verticalAlign=top;strokeWidth=1;shape=stencil(rVXBcoMgEP0arh0FzfTasW1uuWT6AdSQylTBQUyavw8CToNWArHHfYtv3+6bXQEqugq3BMAEdy0pJUCvAMITFhR/1gqGKlMZECYmZLghBtl+7HZ7hex5L0r7uJOCf5MzPUj7GWUVEVSa7NlgG02F3kDyAgbaBKCi5IwpAZSzzsnc5BU3pkw6GigzzK0q0hBJhIGt1h8nutjoKTcxgO8xpXgvA2qlYbVQoZClnlFx5IJ8Cd6zw58KxWDVzBk73WwiaNK9v/cjrWvjoedRiwd3Z4kx3fATWRp+6q0/MtSUkcUOwihcEfl6FZsYCm3vwpjUzt0b8O0WKV9/twn6i0YZk+arZwKz1c5AV8VzvAiUxTN4NaTeKQeJCKNwVaD1fmSPULgqxuthKbyn8h9FTCgmu3bnYD+0a/qz2Z3VqPknauAK);fontSize=12;fontColor=#000000;strokeColor=#000000;\" vertex=\"1\" parent=\"1\"&gt;&lt;mxGeometry width=\"60\" height=\"20\" as=\"geometry\"/&gt;&lt;/mxCell&gt;&lt;/object&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;",
+    "w": 60,
+    "h": 20,
+    "aspect": "fixed",
+    "title": "Lossless Source"
   }
 ]</mxlibrary>
