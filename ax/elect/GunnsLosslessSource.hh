@@ -5,8 +5,8 @@
 @file
 @brief    GUNNS Lossless Source Link declarations
 
-@defgroup  TSM_GUNNS_CORE_LINK_BASIC_SOURCE    GUNNS Lossless Source Link
-@ingroup   TSM_GUNNS_CORE_LINK_BASIC
+@defgroup  TSM_GUNNS_ELECT_LINK_LOSSLESS_SOURCE_LINK    GUNNS Lossless Source Link
+@ingroup   TSM_GUNNS_ELECT_LINK_LOSSLESS_SOURCE
 
 @copyright Copyright 2019 United States Government as represented by the Administrator of the
            National Aeronautics and Space Administration.  All Rights Reserved.
