@@ -48,7 +48,7 @@ class GunnsLosslessSourceConfigData : public GunnsBasicSourceConfigData
   public:
     /// @brief Default constructs this Lossless Source configuration data.
     GunnsLosslessSourceConfigData(const std::string& name  = "",
-                                GunnsNodeList*     nodes = 0);
+                                  GunnsNodeList*     nodes = 0);
 
     /// @brief Default destructs this Lossless Source configuration data.
     virtual ~GunnsLosslessSourceConfigData();
@@ -73,8 +73,8 @@ class GunnsLosslessSourceInputData : public GunnsBasicSourceInputData
   public:
     /// @brief    Default constructs this Lossless Source input data.
     GunnsLosslessSourceInputData(const bool   malfBlockageFlag  = false,
-                              const double malfBlockageValue = 0.0,
-                              const double sourceFlux        = 0.0);
+                                const double malfBlockageValue = 0.0,
+                                const double sourceFlux        = 0.0);
 
     /// @brief    Default destructs this Lossless Source input data.
     virtual ~GunnsLosslessSourceInputData();

@@ -51,5 +51,6 @@ SOURCES := \
  $(wildcard $(GUNNS_HOME)/ms-utils/parsing/tinyxml/*.cpp) \
  $(wildcard $(GUNNS_HOME)/ms-utils/simulation/hs/*.cpp) \
  $(wildcard $(GUNNS_HOME)/ms-utils/simulation/timer/*.c) \
- $(wildcard $(GUNNS_HOME)/ms-utils/units/*.c)
+ $(wildcard $(GUNNS_HOME)/ms-utils/units/*.c) \
+ $(wildcard $(GUNNS_HOME)/ax/elect/*.cpp) \
  

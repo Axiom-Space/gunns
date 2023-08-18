@@ -4,7 +4,7 @@
 
  LIBRARY DEPENDENCY:
     (
-        (core/GunnsLosslessSource.o)
+        (ax/elect/GunnsLosslessSource.o)
     )
 ***************************************************************************************************/
 #include "UtGunnsLosslessSource.hh"
@@ -205,7 +205,7 @@ void UtGunnsLosslessSource::testStep()
     /// - Step again with the blockage malfunction inactive.
     mArticle->mMalfBlockageFlag  = false;
     mArticle->step(mTimeStep);
-    double expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mArticle->mSourceFlux;
+    expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mArticle->mSourceFlux;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mArticle->mSourceFlux, mArticle->mSourceVector[1], 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx, mArticle->mSourceVector[0],       DBL_EPSILON);
 

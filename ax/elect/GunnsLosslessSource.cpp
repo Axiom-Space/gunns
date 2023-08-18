@@ -14,6 +14,7 @@ GunnsLosslessSourceConfigData::GunnsLosslessSourceConfigData(const std::string& 
     : GunnsBasicSourceConfigData(name, nodes)
 {
     // nothing to do
+    return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
