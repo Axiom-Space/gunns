@@ -43,7 +43,7 @@ GunnsLosslessSourceConfigData::~GunnsLosslessSourceConfigData()
 ///
 /// @details  Default constructs this Basic Source input data.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-GunnsBasicSourceInputData::GunnsBasicSourceInputData(const bool   malfBlockageFlag,
+GunnsLosslessSourceInputData::GunnsLosslessSourceInputData(const bool   malfBlockageFlag,
                                                      const double malfBlockageValue,
                                                      const double sourceFlux)
     : GunnsBasicSourceInputData(malfBlockageFlag, malfBlockageValue, sourceFlux)
@@ -73,12 +73,32 @@ GunnsLosslessSourceInputData::~GunnsLosslessSourceInputData()
 
 
 GunnsLosslessSource::GunnsLosslessSource()
-  : GunnsLosslessSource()
+  : GunnsBasicSource()
 {
   
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in]     configData   (--) Link Config Data
+/// @param[in]     inputData    (--) Link Input Data
+/// @param[in,out] networkLinks (--) Reference to the Solver Links
+/// @param[in]     port0        (--) Port 0 Node Mapping
+/// @param[in]     port1        (--) Port 1 Node Mapping
+///
+/// @throws   TsInitializationException
+///
+/// @details This initializes the link and sets up its connectivity to the network.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void GunnsLosslessSource::initialize(const GunnsLosslessSourceConfigData& configData,
+                                  const GunnsLosslessSourceInputData&  inputData,
+                                  std::vector<GunnsBasicLink*>&     networkLinks,
+                                  const int                         port0,
+                                  const int                         port1)
+{
+  GunnsBasicSource::initialize(configData, inputData, networkLinks, port0, port1);
+}
+
 GunnsLosslessSource::~GunnsLosslessSource()
 {
-  GunnsBasicSource::~GunnsBasicSource();
+ // nothing to do
 }

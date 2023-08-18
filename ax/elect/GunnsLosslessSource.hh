@@ -93,20 +93,28 @@ class GunnsLosslessSource : public GunnsBasicSource
 {
   TS_MAKE_SIM_COMPATIBLE(GunnsLosslessSource);
 
-  /// @brief Default Constructor
-  GunnsLosslessSource();
+  public:
+    /// @brief Default Constructor
+    GunnsLosslessSource();
 
-  /// @brief Default Destructor
-  virtual ~GunnsLosslessSource();
+    /// @brief Default Destructor
+    virtual ~GunnsLosslessSource();
 
-  /// @brief Initializes the link
-  void initialize(const GunnsLosslessSourceConfigData& configData,
-                  const GunnsLosslessSourceInputData&  inputData,
-                  std::vector<GunnsBasicLink*>&     networkLinks,
-                  const int                         port0,
-                  const int                         port1);
+    /// @brief Initializes the link
+    void initialize(const GunnsLosslessSourceConfigData& configData,
+                    const GunnsLosslessSourceInputData&  inputData,
+                    std::vector<GunnsBasicLink*>&     networkLinks,
+                    const int                         port0,
+                    const int                         port1);
 
   protected:
+
+  private:
+    /// @details Define the number of ports this link class has.  All objects of the same link
+    ///          class always have the same number of ports.  We use an enum rather than a
+    ///          static const int so that we can reuse the NPORTS name and allow each class to
+    ///          define its own value.
+    enum {NPORTS = 2};
     /// @brief Builds the source vector terms of the links contribution to the network
     virtual void buildSource();
 
@@ -125,6 +133,10 @@ class GunnsLosslessSource : public GunnsBasicSource
 inline void GunnsLosslessSource::buildSource()
 {
     mSourceVector[1] =  mFlux;
+    if (mPotentialVector[0] == 0.0) {
+      mPotentialVector[0] = __DBL_EPSILON__;
+      // mOverrideVector[0] = true;
+    }
     mSourceVector[0] =  -1*(mPotentialVector[1]/mPotentialVector[0])*mFlux;
 }
 
