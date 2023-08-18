@@ -134,12 +134,17 @@ class GunnsLosslessSource : public GunnsBasicSource
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 inline void GunnsLosslessSource::buildSource()
 {
-    mSourceVector[1] =  mFlux;
+  /**
+   * Unlike GunnsBasicSource, this link tries to satisfy the eqn
+   * Pot_in*Flux_in = Pot_out*Flux_out
+   * If the potential on input is 0, we divide by DBL_EPSILON instead
+  */
+    mSourceVector[1] =  mSourceFlux;
     if (mPotentialVector[0] == 0.0) {
       mPotentialVector[0] = __DBL_EPSILON__;
       // mOverrideVector[0] = true;
     }
-    mSourceVector[0] =  -1*(mPotentialVector[1]/mPotentialVector[0])*mFlux;
+    mSourceVector[0] =  -1*(mPotentialVector[1]/mPotentialVector[0])*mSourceFlux;
 }
 
 #endif
