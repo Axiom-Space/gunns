@@ -99,6 +99,14 @@ void GunnsLosslessSource::initialize(const GunnsLosslessSourceConfigData& config
   GunnsBasicSource::initialize(configData, inputData, networkLinks, port0, port1);
 }
 
+/// @brief Computes mPower for the aspect-specific implementation
+void GunnsLosslessSource::computePower() {
+    // mPotentialVector should always be (+)
+    double powerOut = mPotentialVector[1]*mSourceVector[1]; // mSourceVector[1] should always be (+)
+    double powerIn  = mPotentialVector[0]*mSourceVector[0]; // mSourceVector[0] should always be (-)
+    mPower = powerIn + powerOut;
+}
+
 GunnsLosslessSource::~GunnsLosslessSource()
 {
  // nothing to do

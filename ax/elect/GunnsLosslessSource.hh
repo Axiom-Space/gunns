@@ -108,6 +108,8 @@ class GunnsLosslessSource : public GunnsBasicSource
                     const int                         port1);
 
   protected:
+  /// @brief Computes mPower given potentials and fluxes at each port (should be near 0.0)
+  virtual void computePower();
 
   private:
     /// @details Define the number of ports this link class has.  All objects of the same link
