@@ -13,15 +13,13 @@ GunnsBMSSpotterConfigData::GunnsBMSSpotterConfigData(const std::string& name,
                                                     GunnsElectBattery* battery,
                                                     GunnsElectConverterInput* bmsUpIn,
                                                     GunnsElectConverterOutput* bmsUpOut,
-                                                    GunnsElectConverterInput* bmsDownIn,
-                                                    GunnsElectConverterOutput* bmsDownOut)
+                                                    GunnsLosslessSource*       battSource)
     :
     GunnsNetworkSpotterConfigData(name),
     mBattery(battery),
     mBmsUpIn(bmsUpIn),
     mBmsUpOut(bmsUpOut),
-    mBmsDownIn(bmsDownIn),
-    mBmsDownOut(bmsDownOut)
+    mBattSource(battSource)
 {
     // nothing to do
 }
@@ -63,8 +61,7 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
     mBattery = config->mBattery;
     mBmsUpIn = config->mBmsUpIn;
     mBmsUpOut = config->mBmsUpOut;
-    mBmsDownIn = config->mBmsDownIn;
-    mBmsDownOut = config->mBmsDownOut;
+    mBattSource = config->mBattSource;
 
     mNetFluxFromBatt = input->mStartingNetFluxFromBatt;
     mLowSocCutoff = input->mLowSocCutoff;

@@ -30,6 +30,8 @@
 #include "aspects/electrical/Converter/GunnsElectConverterOutput.hh"
 #include "aspects/electrical/Batt/GunnsElectBattery.hh"
 
+#include "ax/elect/GunnsLosslessSource.hh"
+
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,15 +44,14 @@ class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
         GunnsElectBattery*          mBattery;
         GunnsElectConverterInput*   mBmsUpIn;
         GunnsElectConverterOutput*  mBmsUpOut;
-        GunnsElectConverterInput*   mBmsDownIn;
-        GunnsElectConverterOutput*  mBmsDownOut;
+        GunnsLosslessSource*        mBattSource;
+        
 
         GunnsBMSSpotterConfigData(const std::string& name,
                                     GunnsElectBattery*         battery,
-                                    GunnsElectConverterInput* bmsUpIn,
+                                    GunnsElectConverterInput*  bmsUpIn,
                                     GunnsElectConverterOutput* bmsUpOut,
-                                    GunnsElectConverterInput* bmsDownIn,
-                                    GunnsElectConverterOutput* bmsDownOut);
+                                    GunnsLosslessSource*       battSource);
         virtual ~GunnsBMSSpotterConfigData() {;}
 };
 
@@ -137,8 +138,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         
         GunnsElectConverterInput*   mBmsUpIn;
         GunnsElectConverterOutput*  mBmsUpOut;
-        GunnsElectConverterInput*   mBmsDownIn;
-        GunnsElectConverterOutput*  mBmsDownOut;
+        GunnsLosslessSource*        mBattSource;
 
         double      mNetFluxFromBatt;
         double      mLowSocCutoff;
