@@ -142,7 +142,8 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
 
 void GunnsBMSSpotter::stepPostSolver(const double dt) {
     // 
-    if (((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) && mBattSource->getFluxDemand() > 0.0))
+    if (((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
+        && mBattSource->getFluxDemand() > 0.0))
     {
         std::cerr << "Both Up or Down Conv pairs enabled. Disabling charging" << std::endl;
         disableCharging();
@@ -159,6 +160,7 @@ void GunnsBMSSpotter::enableCharging() {
 void GunnsBMSSpotter::disableCharging() {
    mBattSource->setFluxDemand(0.0);
 }
+
 void GunnsBMSSpotter::enableDischarging() {
     disableCharging();
     mBmsUpIn->setEnabled(true);
@@ -170,33 +172,14 @@ void GunnsBMSSpotter::disableDischarging() {
 }
 
 bool GunnsBMSSpotter::isCharging() {
-    return (mBattSource->getFluxDemand());
+    return (mBattSource->getFluxDemand() > 0.0);
 }
 bool GunnsBMSSpotter::isDischarging() {
     return (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled());
 }
-bool GunnsBMSSpotter::isInvalidBoth() {
-    throw "Not Implemented";
-/// TODO_ Tristan Mansfield Not sure if this is ever necessary now
 
-    // return (
-    //     // Check if all are enabled -- can only charge OR discharge at once
-    //     (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled()) &&
-    //     (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled())
-    // );
-}
-bool GunnsBMSSpotter::isInvalidExclusive() {
-    throw "Not Implemented";
-/// TODO_ Tristan Mansfield Not sure if this is ever necessary now
-
-    // return (
-    //     // Is just one side of up-conv or down-conv enabled?
-    //     (mBmsUpIn->getEnabled() ^ mBmsUpOut->getEnabled()) ||
-    //     (mBmsDownIn->getEnabled() ^ mBmsDownOut->getEnabled())
-    // );
-}
 bool GunnsBMSSpotter::isInvalid() {
-    return isInvalidBoth() || isInvalidExclusive();
+    return (mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) && mBattSource->getFluxDemand() > 0.0;
 }
 
 void GunnsBMSSpotter::updateStatus() {
@@ -211,4 +194,8 @@ void GunnsBMSSpotter::updateStatus() {
 
 void GunnsBMSSpotter::addFlux(const double dt) {
     mNetFluxFromBatt += (dt*mBattery->getFlux()); // mFlux should already account for direction
+}
+
+void GunnsBMSSpotter::updateChargeCurrent(const double newCurrent) {
+    mDefaultChargeCurrent = newCurrent;
 }

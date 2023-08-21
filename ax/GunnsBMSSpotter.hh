@@ -123,11 +123,10 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
 
         bool isCharging();
         bool isDischarging();
-        bool isInvalidBoth();
-        bool isInvalidExclusive();
         bool isInvalid();
 
         void updateStatus();
+        void updateChargeCurrent(const double newCurrent);
 
         GunnsElectBattery*          mBattery;
 
