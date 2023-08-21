@@ -121,12 +121,12 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
     }
 
     // Bad Hysteresis here
-    if ((mBattery->getSoc() <= 0.30) && (mStatus != BmsStatus::CHARGING)) {
+    if ((mBattery->getSoc() <= mLowSocCutoff) && (mStatus != BmsStatus::CHARGING)) {
         disableDischarging();
         enableCharging();
         updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
         std::cerr << returnStatus() << std::endl;
-    } else if ((mBattery->getSoc() >= 0.80) && mStatus != BmsStatus::DISCHARGING) {
+    } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
         disableCharging();
         enableDischarging();
         updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
