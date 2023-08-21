@@ -64,8 +64,9 @@ class GunnsBMSSpotterInputData : public GunnsNetworkSpotterInputData
         double mStartingNetFluxFromBatt;
         double      mLowSocCutoff;
         double      mHighSocCutoff;
+        double      mDefaultChargeCurrent;
 
-        GunnsBMSSpotterInputData(double startingFluxFromBatt, double lowSocCutoff, double highSocCutoff);
+        GunnsBMSSpotterInputData(double startingFluxFromBatt, double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent);
         virtual ~GunnsBMSSpotterInputData() {;}
 };
 
@@ -143,6 +144,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         double      mNetFluxFromBatt;
         double      mLowSocCutoff;
         double      mHighSocCutoff;
+        double      mDefaultChargeCurrent;
 
         double      mTotalDischargeTime;
         double      mTotalChargeTime;

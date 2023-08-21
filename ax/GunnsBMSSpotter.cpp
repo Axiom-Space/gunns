@@ -25,17 +25,19 @@ GunnsBMSSpotterConfigData::GunnsBMSSpotterConfigData(const std::string& name,
 }
 
 GunnsBMSSpotterInputData::GunnsBMSSpotterInputData(double startingFluxFromBatt, 
-        double lowSocCutoff, double highSocCutoff) // 
+        double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent) // 
     : GunnsNetworkSpotterInputData()
     , mStartingNetFluxFromBatt(startingFluxFromBatt)
     , mLowSocCutoff(lowSocCutoff)
     , mHighSocCutoff(highSocCutoff)
+    , mDefaultChargeCurrent(defaultChargeCurrent)
 {
     // nothing to do
 }
 
 GunnsBMSSpotter::GunnsBMSSpotter()
     : GunnsNetworkSpotter()
+    , mDefaultChargeCurrent(0.0)
     , mTotalDischargeTime(0.0)
     , mTotalChargeTime(0.0)
     , mCurrentStateTime(0.0)
@@ -78,11 +80,11 @@ const GunnsBMSSpotterConfigData* GunnsBMSSpotter::validateConfig(const GunnsNetw
         GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data",
                     "Bad config data pointer type.");
     }
-    /// - Do your other data validation as appropriate.
-    if ((result->mBmsUpIn == result->mBmsDownIn) || (result->mBmsUpOut == result->mBmsDownOut)) {
-        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data",
-                    "Input or Output Converter pair not unique.");
-    }
+    // /// - Do your other data validation as appropriate.
+    // if ((result->mBmsUpIn == result->mBmsDownIn) || (result->mBmsUpOut == result->mBmsDownOut)) {
+    //     GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data",
+    //                 "Input or Output Converter pair not unique.");
+    // }
     return result;
 }
 
@@ -111,12 +113,11 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
     // 5. Profit ???
 
     // FIXME_ Check if both channels are on
-    if ((mBmsUpIn->getEnabled() && mBmsDownIn->getEnabled()) || 
-        (mBmsUpOut->getEnabled() && mBmsDownOut->getEnabled()))
+    if ((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
+        && mBattSource->getFluxDemand() > 0.0)
     {
-        std::cerr << "Both Up or Down Conv pairs enabled. Disabling down-conv" << std::endl;
-        mBmsDownIn->setEnabled(false);
-        mBmsDownOut->setEnabled(false);
+        std::cerr << "Both Up or Down Conv pairs enabled. Disabling charging" << std::endl;
+        disableCharging();
     }
 
     // Bad Hysteresis here
@@ -132,20 +133,19 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
         std::cerr << returnStatus() << std::endl;
     }
 
-    // try to keep transformer down out voltage equal to battery voltage?
-    if (mStatus == BmsStatus::CHARGING) { // mSourcePotential is set at end of GunnsElectBattery::updateState()
-        mBmsDownOut->setSetpoint(mBattery->getSourcePotential());
-    }
+    // // try to keep transformer down out voltage equal to battery voltage?
+    // if (mStatus == BmsStatus::CHARGING) { // mSourcePotential is set at end of GunnsElectBattery::updateState()
+    //     mBmsDownOut->setSetpoint(mBattery->getSourcePotential());
+    // }
 
 }
 
 void GunnsBMSSpotter::stepPostSolver(const double dt) {
     // 
-    if (((mBmsUpIn->getEnabled() && mBmsDownIn->getEnabled()) || (mBmsUpOut->getEnabled() && mBmsDownOut->getEnabled())))
+    if (((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) && mBattSource->getFluxDemand() > 0.0))
     {
-        std::cerr << "Both Up or Down Conv pairs enabled. Disabling down-conv" << std::endl;
-        mBmsDownIn->setEnabled(false);
-        mBmsDownOut->setEnabled(false);
+        std::cerr << "Both Up or Down Conv pairs enabled. Disabling charging" << std::endl;
+        disableCharging();
     }
 
     addFlux(dt);
@@ -153,13 +153,11 @@ void GunnsBMSSpotter::stepPostSolver(const double dt) {
 
 void GunnsBMSSpotter::enableCharging() {
     disableDischarging();
-    mBmsDownIn->setEnabled(true);
-    mBmsDownOut->setEnabled(true);
+    mBattSource->setFluxDemand(mDefaultChargeCurrent);
 
 }
 void GunnsBMSSpotter::disableCharging() {
-    mBmsDownIn->setEnabled(false);
-    mBmsDownOut->setEnabled(false);
+   mBattSource->setFluxDemand(0.0);
 }
 void GunnsBMSSpotter::enableDischarging() {
     disableCharging();
@@ -172,24 +170,30 @@ void GunnsBMSSpotter::disableDischarging() {
 }
 
 bool GunnsBMSSpotter::isCharging() {
-    return (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled());
+    return (mBattSource->getFluxDemand());
 }
 bool GunnsBMSSpotter::isDischarging() {
     return (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled());
 }
 bool GunnsBMSSpotter::isInvalidBoth() {
-    return (
-        // Check if all are enabled -- can only charge OR discharge at once
-        (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled()) &&
-        (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled())
-    );
+    throw "Not Implemented";
+/// TODO_ Tristan Mansfield Not sure if this is ever necessary now
+
+    // return (
+    //     // Check if all are enabled -- can only charge OR discharge at once
+    //     (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled()) &&
+    //     (mBmsDownIn->getEnabled() && mBmsDownOut->getEnabled())
+    // );
 }
 bool GunnsBMSSpotter::isInvalidExclusive() {
-    return (
-        // Is just one side of up-conv or down-conv enabled?
-        (mBmsUpIn->getEnabled() ^ mBmsUpOut->getEnabled()) ||
-        (mBmsDownIn->getEnabled() ^ mBmsDownOut->getEnabled())
-    );
+    throw "Not Implemented";
+/// TODO_ Tristan Mansfield Not sure if this is ever necessary now
+
+    // return (
+    //     // Is just one side of up-conv or down-conv enabled?
+    //     (mBmsUpIn->getEnabled() ^ mBmsUpOut->getEnabled()) ||
+    //     (mBmsDownIn->getEnabled() ^ mBmsDownOut->getEnabled())
+    // );
 }
 bool GunnsBMSSpotter::isInvalid() {
     return isInvalidBoth() || isInvalidExclusive();
