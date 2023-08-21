@@ -188,9 +188,10 @@ void UtGunnsLosslessSource::testStep()
 
     mArticle->step(mTimeStep);
 
-    /// - during step the source Vector will be equal to the source flux times the blockage malf.
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mArticle->mSourceFlux * 0.5,
-                                 mArticle->mSourceVector[1], DBL_EPSILON);
+    /// - Not using the malfunction flag now, may change this in the future
+    // /// - during step the source Vector will be equal to the source flux times the blockage malf.
+    // CPPUNIT_ASSERT_DOUBLES_EQUAL(mArticle->mSourceFlux * 0.5,
+    //                              mArticle->mSourceVector[1], DBL_EPSILON);
 
     /** This is the change from GunnsBasicSource
      * Potential*flux = "Power"
@@ -199,15 +200,26 @@ void UtGunnsLosslessSource::testStep()
      * flux_in = (Pot_out/Pot_in)*flux_out
      */
     double expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mArticle->mSourceFlux;
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx * 0.5,
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx,
                                  mArticle->mSourceVector[0],            DBL_EPSILON);
 
-    /// - Step again with the blockage malfunction inactive.
-    mArticle->mMalfBlockageFlag  = false;
+
+    mNodes[0].resetFlows();
+    mNodes[1].resetFlows();
+
+    /// - Initialize the nodes potentials at something more interesting
+    mNodes[0].setPotential(600.0);
+    mNodes[1].setPotential(135.0);
+    mArticle->mPotentialVector[0] = 600.0;
+    mArticle->mPotentialVector[1] = 135.0;
+
     mArticle->step(mTimeStep);
+
     expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mArticle->mSourceFlux;
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mArticle->mSourceFlux, mArticle->mSourceVector[1], 0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx, mArticle->mSourceVector[0],       DBL_EPSILON);
+    std::cout << "Expected Influx: " << expected_influx << std::endl;
+    std::cout << "mSourceVector[0]: " << mArticle->mSourceVector[0] << std::endl;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx,
+                                 mArticle->mSourceVector[0],            DBL_EPSILON);
 
     std::cout << "... Pass";
 }
@@ -235,8 +247,9 @@ void UtGunnsLosslessSource::testComputeFlows()
     /// - Check potential drop and power across the link is updated
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mNodes[0].getPotential() - mNodes[1].getPotential(),
             mArticle->mPotentialDrop, DBL_EPSILON);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-mInitialDemand * mArticle->mPotentialDrop,
-            mArticle->mPower, DBL_EPSILON);
+
+    /// - The power across this link should always be near 0.0
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mPower, DBL_EPSILON);
 
     /// - Check flux is transported to/from the nodes
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInitialDemand, mNodes[1].getInflux(),  0.0);
