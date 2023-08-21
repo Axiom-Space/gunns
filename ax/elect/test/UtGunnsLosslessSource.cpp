@@ -216,8 +216,6 @@ void UtGunnsLosslessSource::testStep()
     mArticle->step(mTimeStep);
 
     expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mArticle->mSourceFlux;
-    std::cout << "Expected Influx: " << expected_influx << std::endl;
-    std::cout << "mSourceVector[0]: " << mArticle->mSourceVector[0] << std::endl;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx,
                                  mArticle->mSourceVector[0],            DBL_EPSILON);
 
