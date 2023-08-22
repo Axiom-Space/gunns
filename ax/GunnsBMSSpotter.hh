@@ -128,12 +128,18 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         void updateStatus();
         void updateChargeCurrent(const double newCurrent);
 
-        GunnsElectBattery*          mBattery;
+        GunnsElectBattery* mBattery;
+
+        BmsStatus mNextCommandedStatus;
+        bool      mOverrideStatus;
 
 
     protected:
         const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
         const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
+        
+        void applyUpdatedStatus();
+
     private:
         
         GunnsElectConverterInput*   mBmsUpIn;

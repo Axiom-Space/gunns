@@ -112,31 +112,51 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
     // 4. Set mStatus last thing in PreSolver
     // 5. Profit ???
 
+    /// - Update spotter mode from user input
+    if (mOverrideStatus) {
+      switch(mNextCommandedStatus) {
+        case DISABLED:
+          disableDischarging();
+          disableCharging();
+          break;
+        case DISCHARGING:
+          enableDischarging();
+          break;
+        case CHARGING:
+          enableCharging();
+          break;
+        case TRIPPED:
+          throw "Not yet Implemented mNextCommandedStatus = TRIPPED";
+          break;
+        case INVALID:
+          throw "Not yet Implemented mNextCommandedStatus = INVALID";
+          break;
+      }
+      updateStatus();
+      /// - NOTE_ There should be like, a 'no change' to reset to?
+      mOverrideStatus = false;
+    }
+
     // FIXME_ Check if both channels are on
     if ((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
-        && mBattSource->getFluxDemand() > 0.0)
+      && mBattSource->getFluxDemand() > 0.0)
     {
-        std::cerr << "Both Up or Down Conv pairs enabled. Disabling charging" << std::endl;
-        disableCharging();
+      std::cerr << "Both Up or Down Conv pairs enabled. Disabling charging" << std::endl;
+      disableCharging();
     }
 
     // Bad Hysteresis here
     if ((mBattery->getSoc() <= mLowSocCutoff) && (mStatus != BmsStatus::CHARGING)) {
-        disableDischarging();
-        enableCharging();
-        updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
-        std::cerr << returnStatus() << std::endl;
+      disableDischarging();
+      enableCharging();
+      updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
+      std::cerr << returnStatus() << std::endl;
     } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
-        disableCharging();
-        enableDischarging();
-        updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
-        std::cerr << returnStatus() << std::endl;
+      disableCharging();
+      enableDischarging();
+      updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
+      std::cerr << returnStatus() << std::endl;
     }
-
-    // // try to keep transformer down out voltage equal to battery voltage?
-    // if (mStatus == BmsStatus::CHARGING) { // mSourcePotential is set at end of GunnsElectBattery::updateState()
-    //     mBmsDownOut->setSetpoint(mBattery->getSourcePotential());
-    // }
 
 }
 
