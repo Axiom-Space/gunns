@@ -130,8 +130,6 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
   protected:
     const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
     const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
-    
-    void applyUpdatedStatus();
 
   private:
     GunnsElectConverterInput*   mBmsUpIn;
