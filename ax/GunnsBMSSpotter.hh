@@ -44,7 +44,7 @@ class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
         GunnsElectBattery*          mBattery;
         GunnsElectConverterInput*   mBmsUpIn;
         GunnsElectConverterOutput*  mBmsUpOut;
-        GunnsLosslessSource*        mBattSource;
+        GunnsLosslessSource*        mBatterySource;
         
 
         GunnsBMSSpotterConfigData(const std::string& name,
@@ -65,8 +65,9 @@ class GunnsBMSSpotterInputData : public GunnsNetworkSpotterInputData
         double      mLowSocCutoff;
         double      mHighSocCutoff;
         double      mDefaultChargeCurrent;
+        bool        mAutoThresholdsEnabled;
 
-        GunnsBMSSpotterInputData(double startingFluxFromBatt, double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent);
+        GunnsBMSSpotterInputData(double startingFluxFromBatt, double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent, bool autoThresholdsEnabled);
         virtual ~GunnsBMSSpotterInputData() {;}
 };
 
@@ -144,7 +145,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         
         GunnsElectConverterInput*   mBmsUpIn;
         GunnsElectConverterOutput*  mBmsUpOut;
-        GunnsLosslessSource*        mBattSource;
+        GunnsLosslessSource*        mBatterySource;
 
         double      mNetFluxFromBatt;
         double      mLowSocCutoff;
@@ -154,6 +155,8 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
         double      mTotalDischargeTime;
         double      mTotalChargeTime;
         double      mCurrentStateTime;
+
+        bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if bool -> auto enable charging/discharging based on battery SoC */
 
         BmsStatus   mStatus;
 

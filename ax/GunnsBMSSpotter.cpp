@@ -13,24 +13,26 @@ GunnsBMSSpotterConfigData::GunnsBMSSpotterConfigData(const std::string& name,
                                                     GunnsElectBattery* battery,
                                                     GunnsElectConverterInput* bmsUpIn,
                                                     GunnsElectConverterOutput* bmsUpOut,
-                                                    GunnsLosslessSource*       battSource)
+                                                    GunnsLosslessSource*       batterySource)
     :
     GunnsNetworkSpotterConfigData(name),
     mBattery(battery),
     mBmsUpIn(bmsUpIn),
     mBmsUpOut(bmsUpOut),
-    mBattSource(battSource)
+    mBatterySource(batterySource)
 {
     // nothing to do
 }
 
 GunnsBMSSpotterInputData::GunnsBMSSpotterInputData(double startingFluxFromBatt, 
-        double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent) // 
+        double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent,
+        bool autoThresholdsEnabled) // 
     : GunnsNetworkSpotterInputData()
     , mStartingNetFluxFromBatt(startingFluxFromBatt)
     , mLowSocCutoff(lowSocCutoff)
     , mHighSocCutoff(highSocCutoff)
     , mDefaultChargeCurrent(defaultChargeCurrent)
+    , mAutoThresholdsEnabled(autoThresholdsEnabled)
 {
     // nothing to do
 }
@@ -42,6 +44,7 @@ GunnsBMSSpotter::GunnsBMSSpotter()
     , mTotalChargeTime(0.0)
     , mCurrentStateTime(0.0)
     , mStatus(BmsStatus::DISCHARGING)
+    , mAutoThresholdsEnabled(true)
 {
     // Nothing to do
 }
@@ -63,11 +66,13 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
     mBattery = config->mBattery;
     mBmsUpIn = config->mBmsUpIn;
     mBmsUpOut = config->mBmsUpOut;
-    mBattSource = config->mBattSource;
+    mBatterySource = config->mBatterySource;
 
     mNetFluxFromBatt = input->mStartingNetFluxFromBatt;
     mLowSocCutoff = input->mLowSocCutoff;
     mHighSocCutoff = input->mHighSocCutoff;
+    mDefaultChargeCurrent = input->mDefaultChargeCurrent;
+    mAutoThresholdsEnabled = input->mAutoThresholdsEnabled;
 
     /// - Set the init flag.
     mInitFlag = true;
@@ -139,31 +144,32 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
 
     // FIXME_ Check if both channels are on
     if ((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
-      && mBattSource->getFluxDemand() > 0.0)
+      && mBatterySource->getFluxDemand() > 0.0)
     {
       std::cerr << "Both Up or Down Conv pairs enabled. Disabling charging" << std::endl;
       disableCharging();
     }
 
-    // Bad Hysteresis here
-    if ((mBattery->getSoc() <= mLowSocCutoff) && (mStatus != BmsStatus::CHARGING)) {
-      disableDischarging();
-      enableCharging();
-      updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
-      std::cerr << returnStatus() << std::endl;
-    } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
-      disableCharging();
-      enableDischarging();
-      updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
-      std::cerr << returnStatus() << std::endl;
+    // Bad Hysteresis here -- automatically charge/discharge based on SoC
+    if (mAutoThresholdsEnabled) {
+      if ((mBattery->getSoc() <= mLowSocCutoff) && (mStatus != BmsStatus::CHARGING)) {
+        disableDischarging();
+        enableCharging();
+        updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
+        std::cerr << returnStatus() << std::endl;
+      } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
+        disableCharging();
+        enableDischarging();
+        updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
+        std::cerr << returnStatus() << std::endl;
+      }
     }
-
 }
 
 void GunnsBMSSpotter::stepPostSolver(const double dt) {
     // 
     if (((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
-        && mBattSource->getFluxDemand() > 0.0))
+        && mBatterySource->getFluxDemand() > 0.0))
     {
         std::cerr << "Both Up or Down Conv pairs enabled. Disabling charging" << std::endl;
         disableCharging();
@@ -174,11 +180,11 @@ void GunnsBMSSpotter::stepPostSolver(const double dt) {
 
 void GunnsBMSSpotter::enableCharging() {
     disableDischarging();
-    mBattSource->setFluxDemand(mDefaultChargeCurrent);
+    mBatterySource->setFluxDemand(mDefaultChargeCurrent);
 
 }
 void GunnsBMSSpotter::disableCharging() {
-   mBattSource->setFluxDemand(0.0);
+   mBatterySource->setFluxDemand(0.0);
 }
 
 void GunnsBMSSpotter::enableDischarging() {
@@ -192,14 +198,14 @@ void GunnsBMSSpotter::disableDischarging() {
 }
 
 bool GunnsBMSSpotter::isCharging() {
-    return (mBattSource->getFluxDemand() > 0.0);
+    return (mBatterySource->getFluxDemand() > 0.0);
 }
 bool GunnsBMSSpotter::isDischarging() {
     return (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled());
 }
 
 bool GunnsBMSSpotter::isInvalid() {
-    return (mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) && mBattSource->getFluxDemand() > 0.0;
+    return (mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) && mBatterySource->getFluxDemand() > 0.0;
 }
 
 void GunnsBMSSpotter::updateStatus() {
