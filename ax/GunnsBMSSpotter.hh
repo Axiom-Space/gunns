@@ -12,15 +12,8 @@
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/* FORWARD WORK: -> Why am I thinking this hard about this before I even talk to Avionics?
- *   1. Internal variable to track total charging / discharging / disabled time 
- *   2. Internal variable to track how long current charge/discharge/disable time lasted
- *      a. Used to check when we're allowed to switch on/off
- *      b. 
- *   3. 
- *   1. 
- *   1. 
- *
+/* FORWARD WORK: -> 
+ * 1.
  */
 
 
