@@ -12,15 +12,8 @@
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/* FORWARD WORK: -> Why am I thinking this hard about this before I even talk to Avionics?
- *   1. Internal variable to track total charging / discharging / disabled time 
- *   2. Internal variable to track how long current charge/discharge/disable time lasted
- *      a. Used to check when we're allowed to switch on/off
- *      b. 
- *   3. 
- *   1. 
- *   1. 
- *
+/* FORWARD WORK: -> 
+ * 1.
  */
 
 
@@ -30,6 +23,8 @@
 #include "aspects/electrical/Converter/GunnsElectConverterOutput.hh"
 #include "aspects/electrical/Batt/GunnsElectBattery.hh"
 
+#include "ax/elect/GunnsLosslessSource.hh"
+
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,21 +32,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
 {
-    public:
+  public:
 
-        GunnsElectBattery*          mBattery;
-        GunnsElectConverterInput*   mBmsUpIn;
-        GunnsElectConverterOutput*  mBmsUpOut;
-        GunnsElectConverterInput*   mBmsDownIn;
-        GunnsElectConverterOutput*  mBmsDownOut;
+    GunnsElectBattery*          mBattery;
+    GunnsElectConverterInput*   mBmsUpIn;
+    GunnsElectConverterOutput*  mBmsUpOut;
+    GunnsLosslessSource*        mBatterySource;
+    
 
-        GunnsBMSSpotterConfigData(const std::string& name,
-                                    GunnsElectBattery*         battery,
-                                    GunnsElectConverterInput* bmsUpIn,
-                                    GunnsElectConverterOutput* bmsUpOut,
-                                    GunnsElectConverterInput* bmsDownIn,
-                                    GunnsElectConverterOutput* bmsDownOut);
-        virtual ~GunnsBMSSpotterConfigData() {;}
+    GunnsBMSSpotterConfigData(const std::string& name,
+                              GunnsElectBattery*         battery,
+                              GunnsElectConverterInput*  bmsUpIn,
+                              GunnsElectConverterOutput* bmsUpOut,
+                              GunnsLosslessSource*       battSource);
+    virtual ~GunnsBMSSpotterConfigData() {;}
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,13 +53,15 @@ class GunnsBMSSpotterConfigData : public GunnsNetworkSpotterConfigData
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class GunnsBMSSpotterInputData : public GunnsNetworkSpotterInputData
 {
-    public:
-        double mStartingNetFluxFromBatt;
-        double      mLowSocCutoff;
-        double      mHighSocCutoff;
+  public:
+    double  mStartingNetFluxFromBatt;
+    double  mLowSocCutoff;
+    double  mHighSocCutoff;
+    double  mDefaultChargeCurrent;
+    bool    mAutoThresholdsEnabled;
 
-        GunnsBMSSpotterInputData(double startingFluxFromBatt, double lowSocCutoff, double highSocCutoff);
-        virtual ~GunnsBMSSpotterInputData() {;}
+    GunnsBMSSpotterInputData(double startingFluxFromBatt, double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent, bool autoThresholdsEnabled);
+    virtual ~GunnsBMSSpotterInputData() {;}
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,84 +69,87 @@ class GunnsBMSSpotterInputData : public GunnsNetworkSpotterInputData
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class GunnsBMSSpotter : public GunnsNetworkSpotter
 {
-    TS_MAKE_SIM_COMPATIBLE(GunnsBMSSpotter);
-    public:
-        /// @brief  Enumeration of BMS States
-        enum BmsStatus {
-            DISABLED        = 0,
-            DISCHARGING     = 1,
-            CHARGING        = 2,
-            TRIPPED         = 3,
-            INVALID         = 4,
-        };
+  TS_MAKE_SIM_COMPATIBLE(GunnsBMSSpotter);
+  public:
+    /// @brief  Enumeration of BMS States
+    enum BmsStatus {
+      DISABLED        = 0,
+      DISCHARGING     = 1,
+      CHARGING        = 2,
+      TRIPPED         = 3,
+      INVALID         = 4,
+    };
 
-        std::string returnStatus() {
-            switch (this->mStatus)
-            {
-            case BmsStatus::DISABLED:
-                return "DISABLED";
-                break;
-            case BmsStatus::DISCHARGING:
-                return "DISCHARGING";
-                break;
-            case BmsStatus::CHARGING:
-                return "CHARGING";
-                break;
-            case BmsStatus::TRIPPED:
-                return "TRIPPED";
-                break;
-            case BmsStatus::INVALID:
-                return "INVALID";
-                break;
-            default:
-                break;
-            }
-        }
-        
-        GunnsBMSSpotter();
-        virtual     ~GunnsBMSSpotter() {;}
-        virtual void initialize(const GunnsNetworkSpotterConfigData* configData,
-                                const GunnsNetworkSpotterInputData*  inputData);
-        virtual void stepPreSolver(const double dt);
-        virtual void stepPostSolver(const double dt);
+    std::string returnStatus() {
+      switch (this->mStatus){
+      case BmsStatus::DISABLED:
+        return "DISABLED";
+        break;
+      case BmsStatus::DISCHARGING:
+        return "DISCHARGING";
+        break;
+      case BmsStatus::CHARGING:
+        return "CHARGING";
+        break;
+      case BmsStatus::TRIPPED:
+        return "TRIPPED";
+        break;
+      case BmsStatus::INVALID:
+        return "INVALID";
+        break;
+      default:
+        break;
+      }
+    }
+    
+    GunnsBMSSpotter();
+    virtual     ~GunnsBMSSpotter() {;}
+    virtual void initialize(const GunnsNetworkSpotterConfigData* configData,
+                            const GunnsNetworkSpotterInputData*  inputData);
+    virtual void stepPreSolver(const double dt);
+    virtual void stepPostSolver(const double dt);
 
-        void enableCharging();
-        void disableCharging();
-        void enableDischarging();
-        void disableDischarging();
+    void enableCharging();
+    void disableCharging();
+    void enableDischarging();
+    void disableDischarging();
 
-        bool isCharging();
-        bool isDischarging();
-        bool isInvalidBoth();
-        bool isInvalidExclusive();
-        bool isInvalid();
+    bool isCharging();
+    bool isDischarging();
+    bool isInvalid();
 
-        void updateStatus();
+    void updateStatus();
+    void updateChargeCurrent(const double newCurrent);
 
-        GunnsElectBattery*          mBattery;
+    GunnsElectBattery* mBattery;
+
+    BmsStatus mNextCommandedStatus;
+    bool      mOverrideStatus;
 
 
-    protected:
-        const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
-        const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
-    private:
-        
-        GunnsElectConverterInput*   mBmsUpIn;
-        GunnsElectConverterOutput*  mBmsUpOut;
-        GunnsElectConverterInput*   mBmsDownIn;
-        GunnsElectConverterOutput*  mBmsDownOut;
+  protected:
+    const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
+    const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
 
-        double      mNetFluxFromBatt;
-        double      mLowSocCutoff;
-        double      mHighSocCutoff;
+  private:
+    GunnsElectConverterInput*   mBmsUpIn;
+    GunnsElectConverterOutput*  mBmsUpOut;
+    GunnsLosslessSource*        mBatterySource;
 
-        double      mTotalDischargeTime;
-        double      mTotalChargeTime;
-        double      mCurrentStateTime;
+    double      mNetFluxFromBatt;
+    double      mLowSocCutoff;
+    double      mHighSocCutoff;
+    double      mDefaultChargeCurrent;
 
-        BmsStatus   mStatus;
+    double      mTotalDischargeTime;
+    double      mTotalChargeTime;
+    double      mCurrentStateTime;
 
-        void addFlux(const double dt);
+    bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if bool -> auto enable charging/discharging based on battery SoC */
+
+    BmsStatus   mStatus;
+
+    void addFlux(const double dt);
 
 };
 
