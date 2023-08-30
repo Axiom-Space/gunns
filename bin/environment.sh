@@ -15,4 +15,4 @@ else
 export TRICK_HOME=$TRICK_DIR/trick
 export GUNNS_TRICK_HOME="${TRICK_HOME}"
 export GUNNS_HOME=$(dirname $(dirname $(readlink -f $BASH_SOURCE)))
-. $GUNNS_HOME/bin/bashrc
+source ./bashrc

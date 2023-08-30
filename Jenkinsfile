@@ -21,7 +21,7 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 sh '''#!/bin/bash
-                    source ./bin/environment.sh
+                    cd bin; source environment.sh; cd ..
                     ./bin/run_jenkins_unit_tests.sh
                    '''
             }
