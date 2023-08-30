@@ -19,9 +19,9 @@
 
 #include "core/GunnsNetworkSpotter.hh"
 #include "core/GunnsBasicConductor.hh"
-#include "aspects/electrical/Converter/GunnsElectConverterInput.hh"
-#include "aspects/electrical/Converter/GunnsElectConverterOutput.hh"
-#include "aspects/electrical/Batt/GunnsElectBattery.hh"
+#include "aspects/electrical/SolarArray/GunnsElectPvArray.hh"
+#include "aspects/electrical/SolarArray/GunnsElectPvRegConv.hh"
+#include "aspects/electrical/Switch/SwitchElect.hh"
 
 #include "ax/elect/GunnsLosslessSource.hh"
 
@@ -34,17 +34,17 @@ class GunnsPVSpotterConfigData : public GunnsNetworkSpotterConfigData
 {
   public:
 
-    GunnsElectBattery*          mBattery;
-    GunnsElectConverterInput*   mBmsUpIn;
-    GunnsElectConverterOutput*  mBmsUpOut;
-    GunnsLosslessSource*        mBatterySource;
+    GunnsElectPvArray*     mArray;
+    GunnsElectPvRegConv*   mReg;
+    SwitchElect*                   mSwitch;
+    GunnsLosslessSource*   mSource;
     
 
     GunnsPVSpotterConfigData(const std::string& name,
-                              GunnsElectBattery*         battery,
-                              GunnsElectConverterInput*  bmsUpIn,
-                              GunnsElectConverterOutput* bmsUpOut,
-                              GunnsLosslessSource*       battSource);
+                              GunnsElectPvArray*    array,
+                              GunnsElectPvRegConv*  reg,
+                              SwitchElect*          sswitch,
+                              GunnsLosslessSource*  source);
     virtual ~GunnsPVSpotterConfigData() {;}
 };
 
@@ -72,30 +72,22 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
   TS_MAKE_SIM_COMPATIBLE(GunnsPVSpotter);
   public:
     /// @brief  Enumeration of BMS States
-    enum BmsStatus {
-      DISABLED        = 0,
-      DISCHARGING     = 1,
-      CHARGING        = 2,
-      TRIPPED         = 3,
-      INVALID         = 4,
+    enum PVStatus {
+      DISABLED    = 0,
+      MANUAL      = 1,
+      AUTOMATIC   = 2,
     };
 
     std::string returnStatus() {
       switch (this->mStatus){
-      case BmsStatus::DISABLED:
+      case PVStatus::DISABLED:
         return "DISABLED";
         break;
-      case BmsStatus::DISCHARGING:
-        return "DISCHARGING";
+      case PVStatus::MANUAL:
+        return "MANUAL";
         break;
-      case BmsStatus::CHARGING:
-        return "CHARGING";
-        break;
-      case BmsStatus::TRIPPED:
-        return "TRIPPED";
-        break;
-      case BmsStatus::INVALID:
-        return "INVALID";
+      case PVStatus::AUTOMATIC:
+        return "AUTOMATIC";
         break;
       default:
         break;
@@ -114,16 +106,16 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     void enableDischarging();
     void disableDischarging();
 
-    bool isCharging();
-    bool isDischarging();
-    bool isInvalid();
+    bool isAutomatic();
+    bool isManual();
+    PVStatus isInvalid();
 
     void updateStatus();
     void updateChargeCurrent(const double newCurrent);
 
-    GunnsElectBattery* mBattery;
+    GunnsElectPvArray* mArray;
 
-    BmsStatus mNextCommandedStatus;
+    PVStatus mNextCommandedStatus;
     bool      mOverrideStatus;
 
 
@@ -132,9 +124,9 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     const GunnsPVSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
 
   private:
-    GunnsElectConverterInput*   mBmsUpIn;
-    GunnsElectConverterOutput*  mBmsUpOut;
-    GunnsLosslessSource*        mBatterySource;
+    GunnsElectPvRegConv*   mReg;
+    SwitchElect*           mSwitch;
+    GunnsLosslessSource*   mSource;
 
     double      mNetFluxFromBatt;
     double      mLowSocCutoff;
@@ -145,9 +137,9 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     double      mTotalChargeTime;
     double      mCurrentStateTime;
 
-    bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if bool -> auto enable charging/discharging based on battery SoC */
+    bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if bool -> auto enable charging/discharging based on array SoC */
 
-    BmsStatus   mStatus;
+    PVStatus   mStatus;
 
     void addFlux(const double dt);
 
