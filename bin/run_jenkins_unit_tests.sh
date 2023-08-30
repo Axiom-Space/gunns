@@ -7,7 +7,8 @@
 ##########################################################
 
 # Get all the env stuff
-source $GUNNS_HOME/bin/bashrc
+export GUNNS_HOME=$(dirname $(dirname $(readlink -f $BASH_SOURCE)))
+. $GUNNS_HOME/bin/bashrc
 
 # Run all tests and return appropriate exit status & diagnostic
 tests_output=$(./test/make_all_ut.sh 2>&1)

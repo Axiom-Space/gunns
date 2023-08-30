@@ -21,8 +21,6 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 sh '''#!/bin/bash
-                    source ./bin/bashrc
-                    export JENKINS_RUN="running in jenkins"
                     ./bin/run_jenkins_unit_tests.sh
                    '''
             }
