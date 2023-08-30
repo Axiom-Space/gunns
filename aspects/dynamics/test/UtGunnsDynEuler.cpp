@@ -140,9 +140,9 @@ void UtGunnsDynEuler::testSingularity()
     quat[2] = quatOne;
 
     CPPUNIT_ASSERT_THROW(article->update(quat), TsNumericalException);
-    CPPUNIT_ASSERT(isnan(euler[0]));
-    CPPUNIT_ASSERT(isnan(euler[1]));
-    CPPUNIT_ASSERT(isnan(euler[2]));
+    CPPUNIT_ASSERT(std::isnan(euler[0]));
+    CPPUNIT_ASSERT(std::isnan(euler[1]));
+    CPPUNIT_ASSERT(std::isnan(euler[2]));
     CPPUNIT_ASSERT_EQUAL(5, article->getSingularityCondition());
 
     UT_PASS;
