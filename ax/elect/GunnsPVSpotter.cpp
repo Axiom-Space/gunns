@@ -10,15 +10,15 @@ LIBRARY DEPENDENCY:
 #include "software/exceptions/TsInitializationException.hh"
 
 GunnsPVSpotterConfigData::GunnsPVSpotterConfigData(const std::string& name,
-                                                    GunnsElectBattery* battery,
-                                                    GunnsElectConverterInput* bmsUpIn,
-                                                    GunnsElectConverterOutput* bmsUpOut,
-                                                    GunnsLosslessSource*       batterySource)
+                                                  GunnsElectPvArray*    array,
+                                                  GunnsElectPvRegConv*  reg,
+                                                  SwitchElect*          sswitch,
+                                                  GunnsLosslessSource*  source)
   : GunnsNetworkSpotterConfigData(name)
-  , mBattery(battery)
-  , mBmsUpIn(bmsUpIn)
-  , mBmsUpOut(bmsUpOut)
-  , mBatterySource(batterySource)
+  , mArray(array)
+  , mReg(reg)
+  , mSwitch(sswitch)
+  , mSource(source)
 {
     // nothing to do
 }
@@ -38,12 +38,10 @@ GunnsPVSpotterInputData::GunnsPVSpotterInputData(double startingFluxFromBatt,
 
 GunnsPVSpotter::GunnsPVSpotter()
   : GunnsNetworkSpotter()
-  , mDefaultChargeCurrent(0.0)
-  , mTotalDischargeTime(0.0)
-  , mTotalChargeTime(0.0)
-  , mCurrentStateTime(0.0)
-  , mStatus(BmsStatus::DISCHARGING)
-  , mAutoThresholdsEnabled(true)
+  , mStatus(PVStatus::DISABLED)
+  , mPVCalcCurrent(0.0)
+  , mNextCommandedStatus(PVStatus::DISABLED)
+  , mOverrideStatus(false)
 {
     // Nothing to do
 }
@@ -62,10 +60,10 @@ void GunnsPVSpotter::initialize(const GunnsNetworkSpotterConfigData* configData,
   const GunnsPVSpotterInputData*  input  = validateInput(inputData);
 
   /// - Initialize with validated config & input data.
-  mBattery = config->mBattery;
-  mBmsUpIn = config->mBmsUpIn;
-  mBmsUpOut = config->mBmsUpOut;
-  mBatterySource = config->mBatterySource;
+  mArray = config->mArray;
+  mReg = config->mReg;
+  mSwitch = config->mSwitch;
+  mSource = config->mSource;
 
   mNetFluxFromBatt = input->mStartingNetFluxFromBatt;
   mLowSocCutoff = input->mLowSocCutoff;
@@ -111,80 +109,51 @@ void GunnsPVSpotter::stepPreSolver(const double dt) {
   if (mOverrideStatus) {
     switch(mNextCommandedStatus) {
       case DISABLED:
-        disableDischarging();
-        disableCharging();
+        disableAutomaticControl();
+        disableManualControl();
         break;
-      case DISCHARGING:
-        enableDischarging();
+      case MANUAL:
+        enableManualControl();
         break;
-      case CHARGING:
-        enableCharging();
+      case AUTOMATIC:
+        enableAutomaticControl();
         break;
-      case TRIPPED:
-        throw "Not yet Implemented mNextCommandedStatus = TRIPPED";
-        break;
-      case INVALID:
-        throw "Not yet Implemented mNextCommandedStatus = INVALID";
-        break;
+      default:
+        throw "How did you set mNextCommandedStatus to something invalid?";
     }
-    updateStatus();
+    // updateStatus(); // <- Moved to end of stepPreSolver
     /// - NOTE_ There should be like, a 'no change' to reset to?
     mOverrideStatus = false;
   }
 
-  // HACK_ If both channels are on, disable charging
-  if ((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
-    && mBatterySource->getFluxDemand() > 0.0)
+  // HACK_ If both channels are on, disable MANUAL
+  if (isAutomatic() && isManual())
   {
-    std::cerr << "Both Charging and Discharging enabled on battery '" << mBattery->getName() << "' . Disabling charging" << std::endl;
-    disableCharging();
+    std::cerr << "Both Switch and Source enabled for PV: '" << mArray->getName() << "' . Disabling Source" << std::endl;
+    disableManualControl();
   }
 
-  // Basic Hysteresis here -- automatically charge/discharge based on SoC
-  if (mAutoThresholdsEnabled) {
-    if ((mBattery->getSoc() <= mLowSocCutoff) && (mStatus != BmsStatus::CHARGING)) {
-      disableDischarging();
-      enableCharging();
-      updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
-      std::cerr << "Battery '" << mBattery->getName() << "' hit low SoC threshold, switching status to: " << returnStatus() << std::endl;
-    } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
-      disableCharging();
-      enableDischarging();
-      updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
-      std::cerr << "Battery '" << mBattery->getName() << "' hit high SoC threshold, switching status to: " << returnStatus() << std::endl;
-    }
-  }
+  /// - Make mStatus reflect changes
+  updateStatus();
 }
 
 void GunnsPVSpotter::stepPostSolver(const double dt) {
-  // HACK_ If both channels are on, disable charging
-  if (((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
-    && mBatterySource->getFluxDemand() > 0.0))
-  {
-    std::cerr << "Both Charging and Discharging enabled on battery '" << mBattery->getName() << "' . Disabling charging" << std::endl;
-    disableCharging();
-  }
-
-  addFlux(dt);
+  // addFlux(dt);
 }
 
-void GunnsPVSpotter::enableCharging() {
-  disableDischarging();
-  mBatterySource->setFluxDemand(mDefaultChargeCurrent);
+void GunnsPVSpotter::enableAutomaticControl() {
+  mSwitch->setSwitchCommandedClosed(true);
 
 }
-void GunnsPVSpotter::disableCharging() {
-  mBatterySource->setFluxDemand(0.0);
+void GunnsPVSpotter::disableAutomaticControl() {
+  mSwitch->setSwitchCommandedClosed(false);
 }
 
-void GunnsPVSpotter::enableDischarging() {
-  disableCharging();
-  mBmsUpIn->setEnabled(true);
-  mBmsUpOut->setEnabled(true);
+void GunnsPVSpotter::enableManualControl() {
+  mSource->setFluxDemand(mPVCalcCurrent);
 }
-void GunnsPVSpotter::disableDischarging() {
-  mBmsUpIn->setEnabled(false);
-  mBmsUpOut->setEnabled(false);
+void GunnsPVSpotter::disableManualControl() {
+  mSource->setFluxDemand(0.0);
 }
 
 bool GunnsPVSpotter::isCharging() {
@@ -199,17 +168,13 @@ bool GunnsPVSpotter::isInvalid() {
 }
 
 void GunnsPVSpotter::updateStatus() {
-  if (isInvalid()) {
-    mStatus = BmsStatus::INVALID;
-  } else if (isCharging()) {
-    mStatus = BmsStatus::CHARGING;
-  } else if (isDischarging()) {
-    mStatus = BmsStatus::DISCHARGING;
+  if (isDisabled()) {
+    mStatus = PVStatus::DISABLED;
+  } else if (isManual()) {
+    mStatus = PVStatus::MANUAL;
+  } else if (isAutomatic()) {
+    mStatus = PVStatus::AUTOMATIC;
   }
-}
-
-void GunnsPVSpotter::addFlux(const double dt) {
-  mNetFluxFromBatt += (dt*mBattery->getFlux()); // mFlux should already account for direction
 }
 
 void GunnsPVSpotter::updateChargeCurrent(const double newCurrent) {

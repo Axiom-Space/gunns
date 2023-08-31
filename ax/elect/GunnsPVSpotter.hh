@@ -36,7 +36,7 @@ class GunnsPVSpotterConfigData : public GunnsNetworkSpotterConfigData
 
     GunnsElectPvArray*     mArray;
     GunnsElectPvRegConv*   mReg;
-    SwitchElect*                   mSwitch;
+    SwitchElect*           mSwitch;
     GunnsLosslessSource*   mSource;
     
 
@@ -51,6 +51,7 @@ class GunnsPVSpotterConfigData : public GunnsNetworkSpotterConfigData
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    PV Network Spotter Input Data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO_ Tristan Mansfield Change this one
 class GunnsPVSpotterInputData : public GunnsNetworkSpotterInputData
 {
   public:
@@ -101,14 +102,15 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     virtual void stepPreSolver(const double dt);
     virtual void stepPostSolver(const double dt);
 
-    void enableCharging();
-    void disableCharging();
-    void enableDischarging();
-    void disableDischarging();
+    void enableManualControl();
+    void disableManualControl();
+    void enableAutomaticControl();
+    void disableAutomaticControl();
+    void disable();
 
     bool isAutomatic();
     bool isManual();
-    PVStatus isInvalid();
+    bool isDisabled();
 
     void updateStatus();
     void updateChargeCurrent(const double newCurrent);
@@ -128,16 +130,8 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     SwitchElect*           mSwitch;
     GunnsLosslessSource*   mSource;
 
-    double      mNetFluxFromBatt;
-    double      mLowSocCutoff;
-    double      mHighSocCutoff;
-    double      mDefaultChargeCurrent;
-
-    double      mTotalDischargeTime;
-    double      mTotalChargeTime;
-    double      mCurrentStateTime;
-
-    bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if bool -> auto enable charging/discharging based on array SoC */
+    /// @brief  This needs to be updated constantly to weigh the max available power from this PV and the power demand from on high
+    double mPVCalcCurrent;
 
     PVStatus   mStatus;
 
