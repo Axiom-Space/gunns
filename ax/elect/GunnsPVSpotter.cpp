@@ -23,15 +23,8 @@ GunnsPVSpotterConfigData::GunnsPVSpotterConfigData(const std::string& name,
     // nothing to do
 }
 
-GunnsPVSpotterInputData::GunnsPVSpotterInputData(double startingFluxFromBatt, 
-        double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent,
-        bool autoThresholdsEnabled) // 
+GunnsPVSpotterInputData::GunnsPVSpotterInputData() // 
   : GunnsNetworkSpotterInputData()
-  , mStartingNetFluxFromBatt(startingFluxFromBatt)
-  , mLowSocCutoff(lowSocCutoff)
-  , mHighSocCutoff(highSocCutoff)
-  , mDefaultChargeCurrent(defaultChargeCurrent)
-  , mAutoThresholdsEnabled(autoThresholdsEnabled)
 {
     // nothing to do
 }
@@ -64,12 +57,6 @@ void GunnsPVSpotter::initialize(const GunnsNetworkSpotterConfigData* configData,
   mReg = config->mReg;
   mSwitch = config->mSwitch;
   mSource = config->mSource;
-
-  mNetFluxFromBatt = input->mStartingNetFluxFromBatt;
-  mLowSocCutoff = input->mLowSocCutoff;
-  mHighSocCutoff = input->mHighSocCutoff;
-  mDefaultChargeCurrent = input->mDefaultChargeCurrent;
-  mAutoThresholdsEnabled = input->mAutoThresholdsEnabled;
 
   /// - Set the init flag.
   mInitFlag = true;
@@ -138,7 +125,7 @@ void GunnsPVSpotter::stepPreSolver(const double dt) {
 }
 
 void GunnsPVSpotter::stepPostSolver(const double dt) {
-  // addFlux(dt);
+  /// Nothing to do for now
 }
 
 void GunnsPVSpotter::enableAutomaticControl() {
@@ -156,16 +143,7 @@ void GunnsPVSpotter::disableManualControl() {
   mSource->setFluxDemand(0.0);
 }
 
-bool GunnsPVSpotter::isCharging() {
-  return (mBatterySource->getFluxDemand() > 0.0);
-}
-bool GunnsPVSpotter::isDischarging() {
-  return (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled());
-}
 
-bool GunnsPVSpotter::isInvalid() {
-  return (mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) && mBatterySource->getFluxDemand() > 0.0;
-}
 
 void GunnsPVSpotter::updateStatus() {
   if (isDisabled()) {
@@ -177,6 +155,14 @@ void GunnsPVSpotter::updateStatus() {
   }
 }
 
-void GunnsPVSpotter::updateChargeCurrent(const double newCurrent) {
-  mDefaultChargeCurrent = newCurrent;
+void GunnsPVSpotter::updateSourceCurrent(double newSourceCurrent) {
+  if (newSourceCurrent < 0.0) {
+    return;
+  }
+  mPVCalcCurrent = newSourceCurrent;
+  /// If we're currently in automatic mode we don't want to change this
+  if (isManual()) {
+    mSource->setFluxDemand(mPVCalcCurrent);
+  }
+  return;
 }

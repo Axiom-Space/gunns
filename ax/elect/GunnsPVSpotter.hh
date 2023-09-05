@@ -55,13 +55,8 @@ class GunnsPVSpotterConfigData : public GunnsNetworkSpotterConfigData
 class GunnsPVSpotterInputData : public GunnsNetworkSpotterInputData
 {
   public:
-    double  mStartingNetFluxFromBatt;
-    double  mLowSocCutoff;
-    double  mHighSocCutoff;
-    double  mDefaultChargeCurrent;
-    bool    mAutoThresholdsEnabled;
 
-    GunnsPVSpotterInputData(double startingFluxFromBatt, double lowSocCutoff, double highSocCutoff, double defaultChargeCurrent, bool autoThresholdsEnabled);
+    GunnsPVSpotterInputData();
     virtual ~GunnsPVSpotterInputData() {;}
 };
 
@@ -113,12 +108,15 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     bool isDisabled();
 
     void updateStatus();
-    void updateChargeCurrent(const double newCurrent);
 
     GunnsElectPvArray* mArray;
 
     PVStatus mNextCommandedStatus;
-    bool      mOverrideStatus;
+    bool     mOverrideStatus;
+
+    /// @brief Changes mPVCalcCurrent to be equal to this, assuming it's positive
+    /// @param newSourceCurrent : The new current to source from the PVs, regardless of if it's possible
+    void updateSourceCurrent(double newSourceCurrent);
 
 
   protected:
@@ -135,7 +133,6 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
 
     PVStatus   mStatus;
 
-    void addFlux(const double dt);
 
 };
 
