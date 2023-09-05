@@ -12,8 +12,8 @@ LIBRARY DEPENDENCY:
 GunnsPVSpotterConfigData::GunnsPVSpotterConfigData(const std::string& name,
                                                   GunnsElectPvArray*    array,
                                                   GunnsElectPvRegConv*  reg,
-                                                  SwitchElect*          sswitch,
-                                                  GunnsLosslessSource*  source)
+                                                  GunnsLosslessSource*  source,
+                                                  SwitchElect*          sswitch)
   : GunnsNetworkSpotterConfigData(name)
   , mArray(array)
   , mReg(reg)
@@ -35,6 +35,7 @@ GunnsPVSpotter::GunnsPVSpotter()
   , mPVCalcCurrent(0.0)
   , mNextCommandedStatus(PVStatus::DISABLED)
   , mOverrideStatus(false)
+  , mBothEnabledLastStep(false)
 {
     // Nothing to do
 }
@@ -100,9 +101,12 @@ void GunnsPVSpotter::stepPreSolver(const double dt) {
         disableManualControl();
         break;
       case MANUAL:
+      /// FIXME_: TristanMansfieldRight now, disableAuto sets "switch commanded closed" to false, which doesn't take effect until the next timestep, so you have to toggle manual twice :(
+        disableAutomaticControl();
         enableManualControl();
         break;
       case AUTOMATIC:
+        disableManualControl();
         enableAutomaticControl();
         break;
       default:
@@ -116,9 +120,14 @@ void GunnsPVSpotter::stepPreSolver(const double dt) {
   // HACK_ If both channels are on, disable MANUAL
   if (isAutomatic() && isManual())
   {
-    std::cerr << "Both Switch and Source enabled for PV: '" << mArray->getName() << "' . Disabling Source" << std::endl;
-    disableManualControl();
-  }
+    if (mBothEnabledLastStep) {
+      std::cerr << "Both Switch and Source enabled for PV: '" << mArray->getName() << "' . Disabling Source" << std::endl;
+      disableManualControl();
+      mBothEnabledLastStep = false;
+    } else {
+      mBothEnabledLastStep = true;
+    }
+  } else {mBothEnabledLastStep = false;}
 
   /// - Make mStatus reflect changes
   updateStatus();
@@ -143,7 +152,10 @@ void GunnsPVSpotter::disableManualControl() {
   mSource->setFluxDemand(0.0);
 }
 
-
+void GunnsPVSpotter::disable() {
+  disableManualControl();
+  disableAutomaticControl();
+}
 
 void GunnsPVSpotter::updateStatus() {
   if (isDisabled()) {
@@ -166,3 +178,16 @@ void GunnsPVSpotter::updateSourceCurrent(double newSourceCurrent) {
   }
   return;
 }
+
+bool GunnsPVSpotter::isAutomatic() {
+  return mSwitch->isSwitchClosed();
+}
+
+bool GunnsPVSpotter::isManual() {
+  return mSource->getFluxDemand() != 0.0;
+}
+
+bool GunnsPVSpotter::isDisabled() {
+  return !(isAutomatic() || isManual());
+}
+

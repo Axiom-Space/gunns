@@ -43,8 +43,8 @@ class GunnsPVSpotterConfigData : public GunnsNetworkSpotterConfigData
     GunnsPVSpotterConfigData(const std::string& name,
                               GunnsElectPvArray*    array,
                               GunnsElectPvRegConv*  reg,
-                              SwitchElect*          sswitch,
-                              GunnsLosslessSource*  source);
+                              GunnsLosslessSource*  source,
+                              SwitchElect*          sswitch);
     virtual ~GunnsPVSpotterConfigData() {;}
 };
 
@@ -132,6 +132,8 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     double mPVCalcCurrent;
 
     PVStatus   mStatus;
+
+    bool mBothEnabledLastStep;
 
 
 };
