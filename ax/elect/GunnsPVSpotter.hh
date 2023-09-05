@@ -22,6 +22,7 @@
 #include "aspects/electrical/SolarArray/GunnsElectPvArray.hh"
 #include "aspects/electrical/SolarArray/GunnsElectPvRegConv.hh"
 #include "aspects/electrical/Switch/SwitchElect.hh"
+#include "aspects/electrical/Converter/GunnsElectConverterOutput.hh"
 
 #include "ax/elect/GunnsLosslessSource.hh"
 
@@ -38,13 +39,15 @@ class GunnsPVSpotterConfigData : public GunnsNetworkSpotterConfigData
     GunnsElectPvRegConv*   mReg;
     SwitchElect*           mSwitch;
     GunnsLosslessSource*   mSource;
+    GunnsElectConverterOutput* mConvOut;
     
 
     GunnsPVSpotterConfigData(const std::string& name,
                               GunnsElectPvArray*    array,
                               GunnsElectPvRegConv*  reg,
                               GunnsLosslessSource*  source,
-                              SwitchElect*          sswitch);
+                              SwitchElect*          sswitch,
+                              GunnsElectConverterOutput* convOut);
     virtual ~GunnsPVSpotterConfigData() {;}
 };
 
@@ -109,6 +112,8 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
 
     void updateStatus();
 
+    double getConvOutEff();
+
     GunnsElectPvArray* mArray;
 
     PVStatus mNextCommandedStatus;
@@ -127,6 +132,8 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     GunnsElectPvRegConv*   mReg;
     SwitchElect*           mSwitch;
     GunnsLosslessSource*   mSource;
+    GunnsElectConverterOutput* mConvOut;
+    
 
     /// @brief  This needs to be updated constantly to weigh the max available power from this PV and the power demand from on high
     double mPVCalcCurrent;

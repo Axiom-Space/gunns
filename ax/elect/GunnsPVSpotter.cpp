@@ -13,12 +13,14 @@ GunnsPVSpotterConfigData::GunnsPVSpotterConfigData(const std::string& name,
                                                   GunnsElectPvArray*    array,
                                                   GunnsElectPvRegConv*  reg,
                                                   GunnsLosslessSource*  source,
-                                                  SwitchElect*          sswitch)
+                                                  SwitchElect*          sswitch,
+                                                  GunnsElectConverterOutput* convOut)
   : GunnsNetworkSpotterConfigData(name)
   , mArray(array)
   , mReg(reg)
   , mSwitch(sswitch)
   , mSource(source)
+  , mConvOut(convOut)
 {
     // nothing to do
 }
@@ -58,6 +60,7 @@ void GunnsPVSpotter::initialize(const GunnsNetworkSpotterConfigData* configData,
   mReg = config->mReg;
   mSwitch = config->mSwitch;
   mSource = config->mSource;
+  mConvOut = config->mConvOut;
 
   /// - Set the init flag.
   mInitFlag = true;
@@ -189,5 +192,9 @@ bool GunnsPVSpotter::isManual() {
 
 bool GunnsPVSpotter::isDisabled() {
   return !(isAutomatic() || isManual());
+}
+
+double GunnsPVSpotter::getConvOutEff() {
+  return mConvOut->getConverterEfficiency();
 }
 
