@@ -115,6 +115,10 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     double getConvOutEff();
 
     GunnsElectPvArray* mArray;
+    GunnsElectPvRegConv*   mReg;
+    SwitchElect*           mSwitch;
+    GunnsLosslessSource*   mSource;
+    GunnsElectConverterOutput* mConvOut;
 
     PVStatus mNextCommandedStatus;
     bool     mOverrideStatus;
@@ -129,11 +133,6 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
     const GunnsPVSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
 
   private:
-    GunnsElectPvRegConv*   mReg;
-    SwitchElect*           mSwitch;
-    GunnsLosslessSource*   mSource;
-    GunnsElectConverterOutput* mConvOut;
-    
 
     /// @brief  This needs to be updated constantly to weigh the max available power from this PV and the power demand from on high
     double mPVCalcCurrent;
