@@ -109,25 +109,7 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
 
   /// - Update spotter mode from user input
   if (mOverrideStatus) {
-    switch(mNextCommandedStatus) {
-      case DISABLED:
-        disableDischarging();
-        disableCharging();
-        break;
-      case DISCHARGING:
-        enableDischarging();
-        break;
-      case CHARGING:
-        enableCharging();
-        break;
-      case TRIPPED:
-        throw "Not yet Implemented mNextCommandedStatus = TRIPPED";
-        break;
-      case INVALID:
-        throw "Not yet Implemented mNextCommandedStatus = INVALID";
-        break;
-    }
-    updateStatus();
+    updateStatus(mNextCommandedStatus);
     /// - NOTE_ There should be like, a 'no change' to reset to?
     mOverrideStatus = false;
   }
@@ -145,12 +127,12 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
     if ((mBattery->getSoc() <= mLowSocCutoff) && (mStatus != BmsStatus::CHARGING)) {
       disableDischarging();
       enableCharging();
-      updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
+      updateStatusVar(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
       std::cerr << "Battery '" << mBattery->getName() << "' hit low SoC threshold, switching status to: " << returnStatus() << std::endl;
     } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
       disableCharging();
       enableDischarging();
-      updateStatus(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
+      updateStatusVar(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
       std::cerr << "Battery '" << mBattery->getName() << "' hit high SoC threshold, switching status to: " << returnStatus() << std::endl;
     }
   }
@@ -190,6 +172,7 @@ void GunnsBMSSpotter::disableDischarging() {
 bool GunnsBMSSpotter::isCharging() {
   return (mBatterySource->getFluxDemand() > 0.0);
 }
+
 bool GunnsBMSSpotter::isDischarging() {
   return (mBmsUpIn->getEnabled() && mBmsUpOut->getEnabled());
 }
@@ -198,7 +181,7 @@ bool GunnsBMSSpotter::isInvalid() {
   return (mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) && mBatterySource->getFluxDemand() > 0.0;
 }
 
-void GunnsBMSSpotter::updateStatus() {
+void GunnsBMSSpotter::updateStatusVar() {
   if (isInvalid()) {
     mStatus = BmsStatus::INVALID;
   } else if (isCharging()) {
@@ -214,4 +197,26 @@ void GunnsBMSSpotter::addFlux(const double dt) {
 
 void GunnsBMSSpotter::updateChargeCurrent(const double newCurrent) {
   mDefaultChargeCurrent = newCurrent;
+}
+
+void GunnsBMSSpotter::updateStatus(BmsStatus mode) {
+  switch(mode) {
+      case DISABLED:
+        disableDischarging();
+        disableCharging();
+        break;
+      case DISCHARGING:
+        enableDischarging();
+        break;
+      case CHARGING:
+        enableCharging();
+        break;
+      case TRIPPED:
+        throw "Not yet Implemented mNextCommandedStatus = TRIPPED";
+        break;
+      case INVALID:
+        throw "Not yet Implemented mNextCommandedStatus = INVALID";
+        break;
+    }
+    updateStatusVar();
 }

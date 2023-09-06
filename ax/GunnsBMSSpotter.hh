@@ -118,13 +118,17 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     bool isDischarging();
     bool isInvalid();
 
-    void updateStatus();
+    void updateStatusVar();
     void updateChargeCurrent(const double newCurrent);
 
     GunnsElectBattery* mBattery;
 
     BmsStatus mNextCommandedStatus;
     bool      mOverrideStatus;
+
+    void updateStatus(BmsStatus mode);
+
+    
 
 
   protected:
