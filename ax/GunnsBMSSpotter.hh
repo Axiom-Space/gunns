@@ -129,6 +129,8 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     void updateStatus(BmsStatus mode);
     BmsStatus getStatus();
     
+    double      mLowSocCutoff;
+    double      mHighSocCutoff;
 
 
   protected:
@@ -141,8 +143,6 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     GunnsLosslessSource*        mBatterySource;
 
     double      mNetFluxFromBatt;
-    double      mLowSocCutoff;
-    double      mHighSocCutoff;
     double      mDefaultChargeCurrent;
 
     double      mTotalDischargeTime;
