@@ -127,7 +127,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     bool      mOverrideStatus;
 
     void updateStatus(BmsStatus mode);
-
+    BmsStatus getStatus();
     
 
 

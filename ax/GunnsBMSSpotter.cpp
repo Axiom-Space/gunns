@@ -8,6 +8,7 @@ LIBRARY DEPENDENCY:
 
 #include "ax/GunnsBMSSpotter.hh"
 #include "software/exceptions/TsInitializationException.hh"
+#include "GunnsBMSSpotter.hh"
 
 GunnsBMSSpotterConfigData::GunnsBMSSpotterConfigData(const std::string& name,
                                                     GunnsElectBattery* battery,
@@ -219,4 +220,9 @@ void GunnsBMSSpotter::updateStatus(BmsStatus mode) {
         break;
     }
     updateStatusVar();
+}
+
+GunnsBMSSpotter::BmsStatus GunnsBMSSpotter::getStatus()
+{
+  return mStatus;
 }
