@@ -362,6 +362,8 @@ class DefinedFluidProperties {
         TsBilinearInterpolatorReverse mPressureN2Real;     /**< (--) N2 real-gas pressure table */
         TsBilinearInterpolator mDensityO2Real;             /**< (--) O2 real-gas density table */
         TsBilinearInterpolatorReverse mPressureO2Real;     /**< (--) O2 real-gas pressure table */
+        TsBilinearInterpolator mDensityCH4Real;            /**< (--) CH4 real-gas density table */
+        TsBilinearInterpolatorReverse mPressureCH4Real;    /**< (--) CH4 real-gas pressure table */
         TsBilinearInterpolator mDensityH2Real;             /**< (--) H2 real-gas density table */
         TsBilinearInterpolatorReverse mPressureH2Real;     /**< (--) H2 real-gas pressure table */
         QuadraticFit      mSaturationPressureN2O4;         /**< (--) N2O4 saturation pressure curve fit */
