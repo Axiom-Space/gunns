@@ -37,8 +37,6 @@ PROGRAMMERS:
 #include "software/SimCompatibility/TsSimCompatibility.hh"
 #include "core/GunnsBasicSource.hh"
 
-#include <iostream>
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    Lossless Source Configuration Data
 ///

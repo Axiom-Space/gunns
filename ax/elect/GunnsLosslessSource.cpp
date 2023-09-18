@@ -101,7 +101,6 @@ void GunnsLosslessSource::initialize(const GunnsLosslessSourceConfigData& config
 
 /// @brief Computes mPower for the aspect-specific implementation
 void GunnsLosslessSource::computePower() {
-    std::cout << "my computePower()" << std::endl;
     // mPotentialVector should always be (+)
     double powerOut = mPotentialVector[1]*mSourceVector[1]; // mSourceVector[1] should always be (+)
     double powerIn  = mPotentialVector[0]*mSourceVector[0]; // mSourceVector[0] should always be (-)
@@ -114,7 +113,6 @@ void GunnsLosslessSource::computePower() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void GunnsLosslessSource::transportFlux()
 {
-    std::cout << "my transportFlux()" << std::endl;
     /**
      * mNodes[0].flux = mNodes[1].flux*mNodes[1].potential/mNodes[0].potential
     */
@@ -134,7 +132,6 @@ void GunnsLosslessSource::transportFlux()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void GunnsLosslessSource::computeFlows(const double dt)
 {
-    std::cout << "My computeFlows" << std::endl;
     mPotentialDrop = getDeltaPotential();
     computePower();
     transportFlux();

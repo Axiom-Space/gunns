@@ -232,9 +232,7 @@ void UtGunnsLosslessSource::testComputeFlows()
     /// - Initialize default test article with nominal initialization data
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
 
-    // HACK_ What should the link do if there's 0V on the output? Seems like there should be 0 current too?
-
-
+    // NOTE_ What should the link do if there's 0V on the output? Seems like there should be 0 current too?
     {
     /// - Test 1: 100V input, 0V output
     /// - Initialize the nodes potentials
