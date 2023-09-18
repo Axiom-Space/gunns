@@ -107,6 +107,27 @@ void GunnsLosslessSource::computePower() {
     mPower = powerIn + powerOut;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @details  Makes calls to accumulate flux in the input & output terms of the receiving and
+///           sending nodes, respectively.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void GunnsLosslessSource::transportFlux()
+{
+    std::cout << "my transportFlux()" << std::endl;
+    /**
+     * mNodes[0].flux = mNodes[1].flux*mNodes[1].potential/mNodes[0].potential
+    */
+    double fluxOnInputNode = mSourceFlux*mNodes[1]->getPotential()/mNodes[0]->getPotential();
+    if (mSourceFlux > 0.0) {
+        mNodes[0]->collectOutflux(fluxOnInputNode);
+        mNodes[1]->collectInflux (mSourceFlux);
+
+    } else if (mSourceFlux < 0.0) {
+        mNodes[1]->collectOutflux(-mSourceFlux);
+        mNodes[0]->collectInflux (-1*fluxOnInputNode);
+    }
+}
+
 GunnsLosslessSource::~GunnsLosslessSource()
 {
  // nothing to do

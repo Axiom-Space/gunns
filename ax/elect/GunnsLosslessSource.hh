@@ -37,6 +37,8 @@ PROGRAMMERS:
 #include "software/SimCompatibility/TsSimCompatibility.hh"
 #include "core/GunnsBasicSource.hh"
 
+#include <iostream>
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    Lossless Source Configuration Data
 ///
@@ -110,6 +112,8 @@ class GunnsLosslessSource : public GunnsBasicSource
   protected:
   /// @brief Computes mPower given potentials and fluxes at each port (should be near 0.0)
   virtual void computePower();
+  /// @brief GunnsBasicLink::transportFlux doesn't work for us
+  virtual void transportFlux();
 
   private:
     /// @details Define the number of ports this link class has.  All objects of the same link
