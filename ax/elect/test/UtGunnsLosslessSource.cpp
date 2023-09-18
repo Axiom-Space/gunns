@@ -232,11 +232,16 @@ void UtGunnsLosslessSource::testComputeFlows()
     /// - Initialize default test article with nominal initialization data
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
 
+    // HACK_ What should the link do if there's 0V on the output? Seems like there should be 0 current too?
+
+
+    {
+    /// - Test 1: 100V input, 0V output
     /// - Initialize the nodes potentials
     mNodes[0].setPotential(100.0);
-    mNodes[1].setPotential(  1.0);
+    mNodes[1].setPotential(  0.0);
     mArticle->mPotentialVector[0] = 100.0;
-    mArticle->mPotentialVector[1] =   1.0;
+    mArticle->mPotentialVector[1] =   0.0;
     mArticle->mMalfBlockageFlag = false;
 
     mArticle->step(mTimeStep);
@@ -252,9 +257,45 @@ void UtGunnsLosslessSource::testComputeFlows()
     /// - Check flux is transported to/from the nodes
     double expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mInitialDemand;
     double expected_outflux = mInitialDemand;
-    // FIXME_ Tristan Mansfield the flux into mNodes[1] should equal mInitialDemand but not mNodes[0].getOutflux()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_outflux, mNodes[1].getInflux(),  0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx, mNodes[0].getOutflux(), 0.0);
+    }
+
+    mNodes[0].resetFlows();
+    mNodes[1].resetFlows();
+
+
+    {
+    /// - Test 2: 100V input, 13V output
+    /// - Initialize the nodes potentials
+    mNodes[0].setPotential(100.0);
+    mNodes[1].setPotential(  13.0);
+    mArticle->mPotentialVector[0] = 100.0;
+    mArticle->mPotentialVector[1] =  13.0;
+    mArticle->mMalfBlockageFlag = false;
+
+    mArticle->step(mTimeStep);
+    mArticle->computeFlows(mTimeStep);
+
+    /// - Check potential drop and power across the link is updated
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mNodes[0].getPotential() - mNodes[1].getPotential(),
+            mArticle->mPotentialDrop, DBL_EPSILON);
+
+    /// - The power across this link should always be near 0.0
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mPower, DBL_EPSILON);
+
+    /**
+     * 0.5A*13V = 6.5W
+     * 6.5W/100V = 0.0065A
+     * mNodes[0].getOutflux() should give us 0.0065
+    */
+
+    /// - Check flux is transported to/from the nodes
+    double expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mInitialDemand;
+    double expected_outflux = mInitialDemand;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_outflux, mNodes[1].getInflux(),  0.0); // Exact Assignment
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx, mNodes[0].getOutflux(), DBL_EPSILON); // Calculated Value
+    }
 
     std::cout << "... Pass";
 }
