@@ -234,9 +234,9 @@ void UtGunnsLosslessSource::testComputeFlows()
 
     /// - Initialize the nodes potentials
     mNodes[0].setPotential(100.0);
-    mNodes[1].setPotential(  0.0);
+    mNodes[1].setPotential(  1.0);
     mArticle->mPotentialVector[0] = 100.0;
-    mArticle->mPotentialVector[1] =   0.0;
+    mArticle->mPotentialVector[1] =   1.0;
     mArticle->mMalfBlockageFlag = false;
 
     mArticle->step(mTimeStep);
@@ -250,9 +250,11 @@ void UtGunnsLosslessSource::testComputeFlows()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mPower, DBL_EPSILON);
 
     /// - Check flux is transported to/from the nodes
+    double expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mInitialDemand;
+    double expected_outflux = mInitialDemand;
     // FIXME_ Tristan Mansfield the flux into mNodes[1] should equal mInitialDemand but not mNodes[0].getOutflux()
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mInitialDemand, mNodes[1].getInflux(),  0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mInitialDemand, mNodes[0].getOutflux(), 0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_outflux, mNodes[1].getInflux(),  0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx, mNodes[0].getOutflux(), 0.0);
 
     std::cout << "... Pass";
 }
