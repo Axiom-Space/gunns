@@ -132,6 +132,12 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     double      mLowSocCutoff;
     double      mHighSocCutoff;
 
+    /**
+     * @brief Returns this GunnsBMSSpotter's `mDefaultChargeCurrent` term
+     * @return This GunnsBMSSpotter's `mDefaultChargeCurrent` term
+    */
+    double getChargeCurrent();
+
 
   protected:
     const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);

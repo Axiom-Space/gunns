@@ -78,7 +78,12 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
   mInitFlag = true;
 }
 
-const GunnsBMSSpotterConfigData* GunnsBMSSpotter::validateConfig(const GunnsNetworkSpotterConfigData* config)
+double GunnsBMSSpotter::getChargeCurrent()
+{
+  return mDefaultChargeCurrent;
+}
+
+const GunnsBMSSpotterConfigData *GunnsBMSSpotter::validateConfig(const GunnsNetworkSpotterConfigData *config)
 {
   const GunnsBMSSpotterConfigData* result = dynamic_cast<const GunnsBMSSpotterConfigData*>(config);
   if (!result) {
