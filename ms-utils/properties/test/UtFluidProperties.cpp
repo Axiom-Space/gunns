@@ -1127,7 +1127,7 @@ void UtFluidProperties::testSaturationCurveConsistency()
                                    21.0, 207.0, 308.0, 309.0, 400.0,
                                   401.0, 402.0, 310.0,  60.0,  20.0,
                                   150.0, 311.0, 312.0, 313.0, 314.0,
-                                  315.0, 316.0};
+                                  315.0, 316.0, 108.0};
 
     for (int i = 0; i  < FluidProperties::NO_FLUID; i++) {
         FluidProperties::FluidType type = static_cast<FluidProperties::FluidType>(i);

@@ -111,7 +111,7 @@ class FluidProperties {
             GUNNS_NTO          = 29,  ///<  nitrogen tetroxide (liquid)
             GUNNS_MMH          = 30,  ///<  monomethylhydrazine (liquid)
             GUNNS_HYDRAZINE    = 31,  ///<  anhydrous hydrazine (liquid)
-            GUNNS_CH4_REAL_GAS = 32, ///<  methane (real-gas compressibility)
+            GUNNS_CH4_REAL_GAS = 32,  ///<  methane (real-gas compressibility)
             NO_FLUID           = 33   ///<  Invalid or number of fluids - Keep this last!
         };
         ////////////////////////////////////////////////////////////////////////////////////////////
