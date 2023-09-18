@@ -39,7 +39,7 @@ static double autoDelta(
         int sig_figs)
 {
     // Exit if the expected value is garbage
-    if (isnan(param) || isinf(param)) {
+    if (std::isnan(param) || std::isinf(param)) {
         return param;
     }
 

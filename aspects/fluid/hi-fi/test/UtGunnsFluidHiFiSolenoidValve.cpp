@@ -179,6 +179,7 @@ void UtGunnsFluidHiFiSolenoidValve::tearDown()
     delete tFluidInput2;
     delete tFluidInput1;
     delete tFluidConfig;
+    delete[] fractions;
     delete tFluidProperties;
 };
 
