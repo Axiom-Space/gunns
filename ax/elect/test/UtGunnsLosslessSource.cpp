@@ -250,6 +250,7 @@ void UtGunnsLosslessSource::testComputeFlows()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mPower, DBL_EPSILON);
 
     /// - Check flux is transported to/from the nodes
+    // FIXME_ Tristan Mansfield the flux into mNodes[1] should equal mInitialDemand but not mNodes[0].getOutflux()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInitialDemand, mNodes[1].getInflux(),  0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInitialDemand, mNodes[0].getOutflux(), 0.0);
 
