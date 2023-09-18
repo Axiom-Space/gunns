@@ -21,7 +21,7 @@ from IndivNetworkBuilding import IndivNetworkBuilder
 thisScript = os.path.basename(__file__)
 
 ## All networks that are eligible to be built.
-tNetworks = ['structureTherm', 'smTherm', 'h1Therm']
+tNetworks = ['simplifiedStructureTherm', 'smStructureTherm', 'h1StructureTherm']
 
 ## Upper-level paths.
 tStructureHome = os.environ["SIM_HOME"] + "/models/gunns/" + "Structure/"
