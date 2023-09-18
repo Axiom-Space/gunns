@@ -255,7 +255,7 @@ void UtGunnsLosslessSource::testComputeFlows()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, mArticle->mPower, DBL_EPSILON);
 
     /// - Check flux is transported to/from the nodes
-    double expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mInitialDemand;
+    double expected_influx = mNodes[1].getPotential()/mNodes[0].getPotential()*mInitialDemand;
     double expected_outflux = mInitialDemand;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_outflux, mNodes[1].getInflux(),  0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx, mNodes[0].getOutflux(), 0.0);
@@ -291,7 +291,7 @@ void UtGunnsLosslessSource::testComputeFlows()
     */
 
     /// - Check flux is transported to/from the nodes
-    double expected_influx = -1*mNodes[1].getPotential()/mNodes[0].getPotential()*mInitialDemand;
+    double expected_influx = mNodes[1].getPotential()/mNodes[0].getPotential()*mInitialDemand;
     double expected_outflux = mInitialDemand;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_outflux, mNodes[1].getInflux(),  0.0); // Exact Assignment
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_influx, mNodes[0].getOutflux(), DBL_EPSILON); // Calculated Value
