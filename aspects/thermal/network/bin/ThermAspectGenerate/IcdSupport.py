@@ -25,7 +25,7 @@ class IcdSettings():
     def __init__(self):
         
         self.mPtcsRate = "PTCS_RATE"
-        self.mPtcsSimObject = "Structure_SimObj structure_SimObj"
+        self.mPtcsSimObject = "Ptcs_SimObj ptcs_SimObj"
         
         ## Dictionary for Category WRITE jobs.
         ## Determines the category of ICD job that each PTCS link writes.

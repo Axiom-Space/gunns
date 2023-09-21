@@ -42,11 +42,11 @@ tSymPath = tPtcsHome + "symbols/"
 tSymFiles = [tSymPath + "symbolsCap.xml", tSymPath + "symbolsCond.xml", tSymPath + "symbolsMisc.xml"]
 
 ## Name and path of ptcs enumeration header to generate
-tEnumFile = os.environ["ICD_HOME"] + "/enum/StructureEnum.hh"
+tEnumFile = os.environ["ICD_HOME"] + "/enum/PtcsEnum.hh"
 
 ## Name of icd file and path of trickView file
-tIcdFile = os.environ["ICD_HOME"] + "/STRUCTURE_ICD.txt"
-tTvPath = os.environ["SIM_HOME"] + "/SIM_AxH1/Modified_data/trick_tv_files/structure/TV_icd_%s.tv"
+tIcdFile = os.environ["ICD_HOME"] + "/PTCS_ICD.txt"
+tTvPath = os.environ["SIM_HOME"] + "/SIM_AxH1/Modified_data/trick_tv_files/ptcs/TV_icd_%s.tv"
 
 ## Uniform ICD variables
 tIcdSys = "gunns"
