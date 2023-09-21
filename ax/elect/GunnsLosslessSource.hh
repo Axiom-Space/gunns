@@ -108,8 +108,15 @@ class GunnsLosslessSource : public GunnsBasicSource
                     const int                         port1);
 
   protected:
+  /// @brief Calculates flow across the link
+  /// - This was only written to make the link use GunnsLossessSource::transportFlux
+  virtual void computeFlows(const double dt);
+
   /// @brief Computes mPower given potentials and fluxes at each port (should be near 0.0)
   virtual void computePower();
+
+  /// @brief Influx / Outflux on nodes does not = mFlux
+  virtual void transportFlux();
 
   private:
     /// @details Define the number of ports this link class has.  All objects of the same link
