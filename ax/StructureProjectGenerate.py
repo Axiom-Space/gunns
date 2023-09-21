@@ -21,25 +21,24 @@ from IndivNetworkBuilding import IndivNetworkBuilder
 thisScript = os.path.basename(__file__)
 
 ## All networks that are eligible to be built.
-tNetworks = ['simplifiedStructureTherm', 'smStructureTherm', 'h1StructureTherm']
+tNetworks = ['simplified', 'sm', 'h1']
 
 ## Upper-level paths.
-tStructureHome = os.environ["SIM_HOME"] + "/models/gunns/" + "Structure/"
-tAspectRegistry = tStructureHome + "aspect_registry/"
-tPtcsModules = tStructureHome + "therm/"
+tPtcsHome = os.environ["SIM_HOME"] + "/models/gunns/Ptcs/therm/"
+tAspectRegistry = tPtcsHome + "%s/" + "aspect_registry/"
 
 ## File name specifics
 tRegisPath = tAspectRegistry + "ThermRegistry_%s.xml"
-tTdPath = tStructureHome + "therm/TdNetworkConfig_%s.xml"
-tNodePath = tPtcsModules + "ThermNodes_%s.xml"
-tCondPath = tPtcsModules + "ThermLinksCond_%s.xml"
-tRadPath = tPtcsModules + "ThermLinksRad_%s.xml"
+tTdPath = tAspectRegistry + "TdNetworkConfig_%s.xml"
+tNodePath = tPtcsHome + "%s/ThermNodes_%s.xml"
+tCondPath = tPtcsHome + "%s/ThermLinksCond_%s.xml"
+tRadPath = tPtcsHome + "%s/ThermLinksRad_%s.xml"
 tHtrPath = tAspectRegistry + "HtrRegistry_%s.xml"
 tPanPath = tAspectRegistry + "PanelRegistry_%s.xml"
-tEtcPath = tPtcsModules + "ThermLinksEtc_%s.xml"
+tEtcPath = tPtcsHome + "%s/ThermLinksEtc_%s.xml"
 
 ## Path and names of symbols files, used to create a dictionary of symbols used in the ThermRegistry
-tSymPath = tStructureHome + "aspect_registry/symbols/"
+tSymPath = tPtcsHome + "symbols/"
 tSymFiles = [tSymPath + "symbolsCap.xml", tSymPath + "symbolsCond.xml", tSymPath + "symbolsMisc.xml"]
 
 ## Name and path of ptcs enumeration header to generate
@@ -67,7 +66,7 @@ if __name__ == "__main__":
     ## Name of top-level script that creates the ThermAspectBuilder that creates this object.
     thermAspectConfig.cCallingScript = thisScript
     ## Path to repository home.
-    thermAspectConfig.cHome = tStructureHome
+    thermAspectConfig.cHome = tPtcsHome
     ## Assumption to use for any specific heat values (Cp) not provided directly.
     thermAspectConfig.cAssumedCp = 896.0
     ## Set ICD file
@@ -100,25 +99,25 @@ if __name__ == "__main__":
     
         #Files to read ............................................
         ## Path and file name of Thermal Aspect Registry file.
-        indivNetworkConfig.cRegisFile = tRegisPath % network
+        indivNetworkConfig.cRegisFile = tRegisPath % (network, network)
         ## Path and file name of Thermal Desktop file (TdNetworkConfig).
-        indivNetworkConfig.cTdFile = tTdPath % network
+        indivNetworkConfig.cTdFile = tTdPath % (network, network)
 
 
         ## Path and file name of HtrRegistry file.
-        indivNetworkConfig.cHtrFile = tHtrPath % network
+        indivNetworkConfig.cHtrFile = tHtrPath % (network, network)
         ## Path and file name of ThermalPanel registry/config file.
-        indivNetworkConfig.cPanFile = tPanPath % network     
+        indivNetworkConfig.cPanFile = tPanPath % (network, network)     
         
         #Files to generate ........................................
         ## Path and file name of Node configuration file.
-        indivNetworkConfig.cNodeFile = tNodePath % network
+        indivNetworkConfig.cNodeFile = tNodePath % (network, network)
         ## Path and file name of Conduction configuration file.
-        indivNetworkConfig.cCondFile = tCondPath % network
+        indivNetworkConfig.cCondFile = tCondPath % (network, network)
         ## Path and file name of Radiation configuration file.
-        indivNetworkConfig.cRadFile = tRadPath % network
+        indivNetworkConfig.cRadFile = tRadPath % (network, network)
         ## Path and file name of Et.Cetera (just potentials, really) configuration file.
-        indivNetworkConfig.cEtcFile = tEtcPath % network
+        indivNetworkConfig.cEtcFile = tEtcPath % (network, network)
         ## Path and file name of TrickView file. Each network produces its own TrickView file.
         indivNetworkConfig.cTvFile = tTvPath % network
             
