@@ -57,18 +57,18 @@ class IcdSettings():
         ## simVarName Write dictionary.
         ## Determines the PTCS member variable where data being written to the bus originates.
         self.mSvnWrite = {}
-        self.mSvnWrite['capacitor'] = ".mCapacitanceLinks[%s].mTemperature"
-        self.mSvnWrite['potential'] = ".mPotentialLinks[%s].mHeatFluxIntoNode"
-        self.mSvnWrite['source']    = ".mSources[%s].mAvgPortTemperature"
+        self.mSvnWrite['capacitor'] = ".therm.mCapacitanceLinks[%s].mTemperature"
+        self.mSvnWrite['potential'] = ".therm.mPotentialLinks[%s].mHeatFluxIntoNode"
+        self.mSvnWrite['source']    = ".therm.mSources[%s].mAvgPortTemperature"
         
         ## simVarName Read dictionary.
         ## Determines the destination of data from another subsystem is written onto a PTCS link.
         self.mSvnRead = {}
-        self.mSvnRead['capacitor']  = ".mCapacitanceLinks[%s].mExternalHeatFlux[%i]"
-        self.mSvnRead['potential']  = ".mPotentialLinks[%s].mSourcePotential"
-        self.mSvnRead['radiation']  = ".mRadiationLinks[%s].mViewScalar"
-        self.mSvnRead['panel']      = ".mPanels[%s].mIncidentHeatFluxPerArea"
-        self.mSvnRead['source']     = ".mSources[%s].mDemandedFlux"
+        self.mSvnRead['capacitor']  = ".therm.mCapacitanceLinks[%s].mExternalHeatFlux[%i]"
+        self.mSvnRead['potential']  = ".therm.mPotentialLinks[%s].mSourcePotential"
+        self.mSvnRead['radiation']  = ".therm.mRadiationLinks[%s].mViewScalar"
+        self.mSvnRead['panel']      = ".therm.mPanels[%s].mIncidentHeatFluxPerArea"
+        self.mSvnRead['source']     = ".therm.mSources[%s].mDemandedFlux"
         
         notSet = "[must explicitly be set]"
         
