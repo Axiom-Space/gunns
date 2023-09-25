@@ -124,7 +124,7 @@ void GunnsPVSpotter::stepPreSolver(const double dt) {
   if (isAutomatic() && isManual())
   {
     if (mBothEnabledLastStep) {
-      message_publish(MESSAGE_TYPE::MSG_ERROR, "Both Switch and Source enabled for PV: '%s' . Disabling Source", mArray->getName());
+      message_publish(MESSAGE_TYPE::MSG_ERROR, "Both Switch and Source enabled for PV: '%s' . Disabling Source\n", mArray->getName());
       disableManualControl();
       mBothEnabledLastStep = false;
     } else {

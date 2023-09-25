@@ -133,12 +133,12 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
       disableDischarging();
       enableCharging();
       updateStatusVar(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
-      message_publish(MESSAGE_TYPE::MSG_INFO, "Battery '%s' hit low SoC threshold of %1.4f, switching status to: %s", mBattery->getName(), mLowSocCutoff, returnStatus());
+      message_publish(MESSAGE_TYPE::MSG_INFO, "Battery '%s' hit low SoC threshold of %1.4f, switching status to: %s\n", mBattery->getName(), mLowSocCutoff, returnStatus());
     } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
       disableCharging();
       enableDischarging();
       updateStatusVar(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
-      message_publish(MESSAGE_TYPE::MSG_INFO, "Battery '%s' hit high SoC threshold of %1.4f, switching status to: %s", mBattery->getName(), mHighSocCutoff, returnStatus());
+      message_publish(MESSAGE_TYPE::MSG_INFO, "Battery '%s' hit high SoC threshold of %1.4f, switching status to: %s\n", mBattery->getName(), mHighSocCutoff, returnStatus());
     }
   }
 }
