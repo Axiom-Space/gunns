@@ -1,20 +1,34 @@
 #ifndef GunnsBMSSpotter_EXISTS
 #define GunnsBMSSpotter_EXISTS
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @defgroup UT_GUNNS_NETWORK_SPOTTER    Gunns Network Spotter Unit Test
-/// @ingroup  UT_GUNNS
-///
-/// @copyright Copyright 2019 United States Government as represented by the Administrator of the
-///            National Aeronautics and Space Administration.  All Rights Reserved.
-///
-/// @details  Unit Tests for the Gunns Network Spotter class
-/// @{
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+@file
+@brief     GUNNS BMS Spotter declarations
 
-/* FORWARD WORK: -> 
- * 1.
- */
+@defgroup  TSM_GUNNS_ELECT_SPOTTER_BMS_SPOTTER    GUNNS Elect BMS Spotter
+@ingroup   TSM_GUNNS_ELECT_SPOTTER
+
+@copyright 
+
+PURPOSE:   (Provides the classes for the GUNNS BMS Spotter.)
+
+@details
+REFERENCE:
+- (TBD)
+
+ASSUMPTIONS AND LIMITATIONS:
+- (TBD)
+
+LIBRARY DEPENDENCY:
+- ((GunnsBMSSpotter.o))
+
+PROGRAMMERS:
+- (
+  (Tristan Mansfield) (Axiom Space) (2023-09) (Initial)
+  )
+
+@{
+*/
 
 
 #include "core/GunnsNetworkSpotter.hh"
@@ -118,13 +132,26 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     bool isDischarging();
     bool isInvalid();
 
-    void updateStatus();
+    void updateStatusVar();
     void updateChargeCurrent(const double newCurrent);
+    
+    void updateStatus(BmsStatus mode);
+    BmsStatus getStatus();
 
     GunnsElectBattery* mBattery;
 
     BmsStatus mNextCommandedStatus;
     bool      mOverrideStatus;
+
+    
+    double      mLowSocCutoff;
+    double      mHighSocCutoff;
+
+    /**
+     * @brief Returns this GunnsBMSSpotter's `mDefaultChargeCurrent` term
+     * @return This GunnsBMSSpotter's `mDefaultChargeCurrent` term
+    */
+    double getChargeCurrent();
 
 
   protected:
@@ -132,22 +159,20 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
 
   private:
-    GunnsElectConverterInput*   mBmsUpIn;
-    GunnsElectConverterOutput*  mBmsUpOut;
-    GunnsLosslessSource*        mBatterySource;
+    GunnsElectConverterInput*   mBmsUpIn;           /**< (--) trick_chkpnt_io(**) Pointer to Converter Input */
+    GunnsElectConverterOutput*  mBmsUpOut;          /**< (--) trick_chkpnt_io(**) Pointer to Converter Output */
+    GunnsLosslessSource*        mBatterySource;     /**< (--) trick_chkpnt_io(**) Pointer to Lossless Source */
 
-    double      mNetFluxFromBatt;
-    double      mLowSocCutoff;
-    double      mHighSocCutoff;
-    double      mDefaultChargeCurrent;
+    double      mNetFluxFromBatt;                   /**< (--) trick_chkpnt_io(*io) Tracks the net flux into/out of the battery */
+    double      mDefaultChargeCurrent;              /**< (--) trick_chkpnt_io(*io) The charge current when charging */
 
-    double      mTotalDischargeTime;
-    double      mTotalChargeTime;
-    double      mCurrentStateTime;
+    double      mTotalDischargeTime;                /**< (--) trick_chkpnt_io(*io) Tracks the sim time spent discharging */
+    double      mTotalChargeTime;                   /**< (--) trick_chkpnt_io(*io) Tracks the sim time spent charging */
+    double      mCurrentStateTime;                  /**< (--) trick_chkpnt_io(*io) Tracks sim time since last state change */
 
-    bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if bool -> auto enable charging/discharging based on battery SoC */
+    bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if true -> auto enable charging/discharging based on battery SoC */
 
-    BmsStatus   mStatus;
+    BmsStatus   mStatus;                            /**< (--) trick_chkpnt_io(*io) Mode of BMS Operation {DISABLED, CHARGING, DISCHARGING} */
 
     void addFlux(const double dt);
 
