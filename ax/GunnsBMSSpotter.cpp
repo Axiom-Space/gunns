@@ -123,7 +123,7 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
   if ((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
     && mBatterySource->getFluxDemand() > 0.0)
   {
-    std::cerr << "Both Charging and Discharging enabled on battery '" << mBattery->getName() << "' . Disabling charging" << std::endl;
+    message_publish(MESSAGE_TYPE::MSG_INFO, "Both Charging and Discharging enabled on battery '%s', Disabling charging.\n", mBattery->getName());
     disableCharging();
   }
 
@@ -133,12 +133,12 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
       disableDischarging();
       enableCharging();
       updateStatusVar(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
-      std::cerr << "Battery '" << mBattery->getName() << "' hit low SoC threshold, switching status to: " << returnStatus() << std::endl;
+      message_publish(MESSAGE_TYPE::MSG_INFO, "Battery '%s' hit low SoC threshold of %1.4f, switching status to: %s", mBattery->getName(), mLowSocCutoff, returnStatus());
     } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
       disableCharging();
       enableDischarging();
       updateStatusVar(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
-      std::cerr << "Battery '" << mBattery->getName() << "' hit high SoC threshold, switching status to: " << returnStatus() << std::endl;
+      message_publish(MESSAGE_TYPE::MSG_INFO, "Battery '%s' hit high SoC threshold of %1.4f, switching status to: %s", mBattery->getName(), mHighSocCutoff, returnStatus());
     }
   }
 }
@@ -148,7 +148,7 @@ void GunnsBMSSpotter::stepPostSolver(const double dt) {
   if (((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
     && mBatterySource->getFluxDemand() > 0.0))
   {
-    std::cerr << "Both Charging and Discharging enabled on battery '" << mBattery->getName() << "' . Disabling charging" << std::endl;
+    message_publish(MESSAGE_TYPE::MSG_INFO, "Both Charging and Discharging enabled on battery '%s', Disabling charging.\n", mBattery->getName());
     disableCharging();
   }
 
