@@ -1,20 +1,34 @@
 #ifndef GunnsPVSpotter_EXISTS
 #define GunnsPVSpotter_EXISTS
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @defgroup UT_GUNNS_NETWORK_SPOTTER    Gunns Network Spotter Unit Test
-/// @ingroup  UT_GUNNS
-///
-/// @copyright Copyright 2019 United States Government as represented by the Administrator of the
-///            National Aeronautics and Space Administration.  All Rights Reserved.
-///
-/// @details  Unit Tests for the Gunns Network Spotter class
-/// @{
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+@file
+@brief     GUNNS PV Spotter declarations
 
-/* FORWARD WORK: -> 
- * 1.
- */
+@defgroup  TSM_GUNNS_ELECT_SPOTTER_PV_SPOTTER    GUNNS Elect PV Spotter
+@ingroup   TSM_GUNNS_ELECT_SPOTTER
+
+@copyright 
+
+PURPOSE:   (Provides the classes for the GUNNS PV Spotter.)
+
+@details
+REFERENCE:
+- (TBD)
+
+ASSUMPTIONS AND LIMITATIONS:
+- (TBD)
+
+LIBRARY DEPENDENCY:
+- ((GunnsPVSpotter.o))
+
+PROGRAMMERS:
+- (
+  (Tristan Mansfield) (Axiom Space) (2023-09) (Initial)
+  )
+
+@{
+*/
 
 
 #include "core/GunnsNetworkSpotter.hh"
@@ -114,14 +128,14 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
 
     double getConvOutEff();
 
-    GunnsElectPvArray* mArray;
-    GunnsElectPvRegConv*   mReg;
-    SwitchElect*           mSwitch;
-    GunnsLosslessSource*   mSource;
-    GunnsElectConverterOutput* mConvOut;
+    GunnsElectPvArray*         mArray;      /**< (--) trick_chkpnt_io(**) Pointer to PV array */
+    GunnsElectPvRegConv*       mReg;        /**< (--) trick_chkpnt_io(**) Pointer to PV Regulator */
+    SwitchElect*               mSwitch;     /**< (--) trick_chkpnt_io(**) Pointer to PV Switch */
+    GunnsLosslessSource*       mSource;     /**< (--) trick_chkpnt_io(**) Pointer to PV Lossless Source */
+    GunnsElectConverterOutput* mConvOut;    /**< (--) trick_chkpnt_io(**) Pointer to PV Converter Output */
 
-    PVStatus mNextCommandedStatus;
-    bool     mOverrideStatus;
+    PVStatus mNextCommandedStatus;          /**< (--) trick_chkpnt_io(**) If mOverrideStatus is true, mStatus will change to this status */
+    bool     mOverrideStatus;               /**< (--) trick_chkpnt_io(**) Bool, if true, updates mStatus and clears */
 
     /// @brief Changes mPVCalcCurrent to be equal to this, assuming it's positive
     /// @param newSourceCurrent : The new current to source from the PVs, regardless of if it's possible
@@ -135,11 +149,11 @@ class GunnsPVSpotter : public GunnsNetworkSpotter
   private:
 
     /// @brief  This needs to be updated constantly to weigh the max available power from this PV and the power demand from on high
-    double mPVCalcCurrent;
+    double mPVCalcCurrent;  /**< (--) trick_chkpnt_io(*io) current sourced from PV when in MANUAL mode */
 
-    PVStatus   mStatus;
+    PVStatus   mStatus;     /**< (--) trick_chkpnt_io(*io) Mode of PV operation {DISABLED, MANUAL, AUTOMATIC} */
 
-    bool mBothEnabledLastStep;
+    bool mBothEnabledLastStep; /**< (--) trick_chkpnt_io(**) Internal flag */
 
 
 };
