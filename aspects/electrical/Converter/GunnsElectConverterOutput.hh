@@ -145,6 +145,9 @@ class GunnsElectConverterOutput : public GunnsBasicLink
         /// @brief  Returns the output over-current trip logic.
         GunnsTripLogic* getOutputOverCurrentTrip();
 
+        /// @brief  Returns the converter efficiency.
+        double getConverterEfficiency() const;
+
     protected:
         GunnsElectConverterOutput::RegulatorType mRegulatorType;          /**<    (1)     trick_chkpnt_io(**) The type of output regulation. */
         double                                   mOutputConductance;      /**<    (1/ohm) trick_chkpnt_io(**) The output conductance. */
@@ -504,6 +507,16 @@ inline bool GunnsElectConverterOutput::isAnyTrips() const
 inline bool GunnsElectConverterOutput::isVoltageRegulator() const
 {
     return (VOLTAGE == mRegulatorType) or (TRANSFORMER == mRegulatorType);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @returns  double (--) The link's mConverterEfficiency term.
+///
+/// @details  Returns the converter efficiency.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline double GunnsElectConverterOutput::getConverterEfficiency() const
+{
+    return mConverterEfficiency;
 }
 
 #endif
