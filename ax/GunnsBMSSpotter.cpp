@@ -8,6 +8,7 @@ LIBRARY DEPENDENCY:
 
 #include "ax/GunnsBMSSpotter.hh"
 #include "software/exceptions/TsInitializationException.hh"
+#include "GunnsBMSSpotter.hh"
 
 GunnsBMSSpotterConfigData::GunnsBMSSpotterConfigData(const std::string& name,
                                                     GunnsElectBattery* battery,
@@ -204,7 +205,18 @@ void GunnsBMSSpotter::updateChargeCurrent(const double newCurrent) {
   mDefaultChargeCurrent = newCurrent;
 }
 
-void GunnsBMSSpotter::updateStatus(BmsStatus mode) {
+void GunnsBMSSpotter::updateDischargeCurrentLimit(const double newCurrentLimit)
+{
+  /**
+   * If the ConvOut link has limiting enabled, this changes the limited-to current.
+   * If it has OverCurrent trip enabled, this changes the trip threshold.
+  */
+
+  mBmsUpOut->getOutputOverCurrentTrip()->setLimit(newCurrentLimit);
+}
+
+void GunnsBMSSpotter::updateStatus(BmsStatus mode)
+{
   switch(mode) {
       case DISABLED:
         disableDischarging();

@@ -137,6 +137,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
 
     void updateStatusVar();
     void updateChargeCurrent(const double newCurrent);
+    void updateDischargeCurrentLimit(const double newCurrentLimit);
     
     void updateStatus(BmsStatus mode);
     BmsStatus getStatus();
