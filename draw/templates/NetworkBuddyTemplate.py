@@ -147,9 +147,6 @@ class NetworkBuddyTemplate:
       r = r + '\n   ' + assumption
     r = r + (')\n'
         '\n'
-        'LIBRARY DEPENDENCY:\n'
-        '  ((' + name + '.o))\n'
-        '\n'
         'PROGRAMMERS:\n'
         + self.data['revline'] + '\n'
         '\n'
