@@ -1,0 +1,1831 @@
+HEADER OPTIONS
+C    SINDA Data generated with Thermal Desktop 6.3 Patch 12
+C    Generated on Fri Oct  6 09:05:47 2023
+C    From file: AxH1_D_v20_sm.dwg
+C    Case Set: TD_export
+C    TDUNITS,   Energy     = J
+C    TDUNITS,   Time       = s
+C    TDUNITS,   Temp       = K
+C    TDUNITS,   Mass       = kg
+C    TDUNITS,   Length     = m
+C    TDUNITS,   Orbit      = km
+C    TDUNITS,   Pressure   = Pa
+C    TDUNITS,   Force      = N
+C    TDUNITS,   Angle      = Degrees
+C    TDUNITS,   Volt       = volt
+C    TDUNITS,   Current    = amp
+C    DWG name:      AxH1_D_v20_sm.dwg
+C    Thermophysical Property Database: AxCS_MASTER_TdThermo.tdp
+C    Optical Property Database:        AxCS_MASTER_RcOptics_EOL.rco
+C    Computer name: AS-MXL3011V57
+C    User name:     LoganDaigle
+C    Symbol Names, Evaluated values, Input Strings, Comments
+C    ACBM_toggle                                   1.            1 
+C    AlbedoFactorCold                              0.2           0.2 
+C    AlbedoFactorHot                               0.4           0.4 
+C    Altitude                                      416.          416                                 km
+C    AXH1_D_ConductorAir                           1000.         1000                                W/m^2*K
+C    AXH1_D_ContactorPVGF_To_Base                  1.96          1.96                                W/C  From NASA
+C    AXH1_D_FLAG_AIR_NODE                          1.            1                                   0 to disable (de...
+C    AXH1_D_FLAG_PSHEATER_ENABLE                   0.            0 
+C    AXH1_D_FLUID_AftLineCircumference             521.9991      2*Pi*Dim_ShellRadius/25.4           in
+C    AXH1_D_FLUID_AftLineVolume                    174.2829      AXH1_D_FLUID_FluidPipeArea*AXH1_... in3
+C    AXH1_D_FLUID_FluidPipeArea                    0.3338759     pi*(AXH1_D_FLUID_FluidPipeDiamet... in^2            ...
+C    AXH1_D_FLUID_FluidPipeDiameter                0.652         0.652                               inches
+C    AXH1_D_FRGF_THIGH1                            19.4          19.4                                Prime String - T...
+C    AXH1_D_FRGF_THIGH2                            5.            5.0                                 Redundant String...
+C    AXH1_D_FRGF_TLOW1                             14.           14.0                                Prime String - T...
+C    AXH1_D_FRGF_TLOW2                             -4.           -4.0                                Redundant String...
+C    AXH1_D_HTR_OFFTEMP_HAB1                       40.           AXH1_D_HTR_ONTEMP_HAB1 + 5.         [degF], temperat...
+C    AXH1_D_HTR_ONTEMP_HAB1                        35.           35.                                 [degF], temperat...
+C    AXH1_D_HTR_PSFLUIDHEATERA                     2000.         2000                                W
+C    AXH1_D_HTR_PSHEATER1                          75.           75                                  Watts
+C    AXH1_D_HTR_PSHEATER2                          75.           75                                  Watts
+C    AXH1_D_HTR_PSHEATER3                          75.           75                                  Watts
+C    AXH1_D_HTR_PSHEATER4                          75.           75                                  Watts
+C    AXH1_D_HTR_PSHEATER5                          75.           75                                  Watts
+C    AXH1_D_HTR_PSHEATER6                          75.           75                                  Watts
+C    AXH1_D_PressureShellAirTemp                   70.           70                                  F
+C    AXH1_D_StartTemperature                       70.           70                                  Deg F, used to i...
+C    BetaAngle                                     0.            0 
+C    Bolt_R_.25_9.53mm                             0.23          .23                                 Thermal resistan...
+C    Bolt_R_.3125_9.53mm                           0.17          .17                                 Thermal resistan...
+C    Bolt_R_.4375_9.53mm                           0.11          .11                                 Thermal resistan...
+C    Bolt_R_.5_9.53mm                              0.09          .09                                 Thermal resistan...
+C    Bolt_R_10_9.53mm                              0.3           .3                                  Thermal resistan...
+C    CalculationRunTime                            259200.       60*60*24*3 
+C    CONDUCTANCE_PCBM                              47.6          47.6                                Gtu/hr/F (From N...
+C    Cond_Bottomringtopanelconductance             226.42        226.42                              24 bolts NF7/16-...
+C    Cond_CBMLongeronConductionCoeffToShell        391.3043      1/Bolt_R_.25_9.53mm*90              1/4" Bolts qty 90
+C    Cond_ConductanceTop_Bot_CON_MDPS_PANELS       2.870164      0.40074*3+0.833972*2                0.40074*3+0.8339...
+C    Cond_ContactorAftLongeronToCBM                0.02146       0.148*Cond_ZeroConductance          W/K  Calculated ...
+C    Cond_ContactorAftLongeronToCBMTolerance       100.          100 
+C    Cond_ContactorAftLongeronToRingFrame          0.1595        1.1*Cond_ZeroConductance            W/K  Calculated ...
+C    Cond_ContactorAftLongeronToRingFrameTolerance 91.           91 
+C    Cond_ContactorFRGF_2_To_Base                  3.            3                                   W/C  From NASA
+C    Cond_ContactorMMODCBM_Tolerance               32.5          2239.7-2209.2+2 
+C    Cond_ContactorPVGF_LongeronAft                18.0713       4/Bolt_R_.25_9.53mm+4*Bolt_R_.31... 
+C    Cond_ContactorPVGF_LongeronForward            64.49275      11/Bolt_R_.25_9.53mm+5/Bolt_R_10... 
+C    Cond_ContactorPVGF_PlateToLongeron            208.6957      48/Bolt_R_.25_9.53mm 
+C    Cond_ContactorServiceModuleConeToSupport      66.66667      1/Bolt_R_.5_9.53mm*6                Six 1/2" bolts. ...
+C    Cond_ContactorServiceModuleToShellConduction  3000.         1/Bolt_R_.4375_9.53mm*330           7/16" Bolts qty 330
+C    Cond_ContactorSideLongeronsEnd                17.3913       1/Bolt_R_.25_9.53mm*4               Four 1/4" bolts
+C    Cond_ContactorSideLongeronsEndTolerance       15.           15 
+C    Cond_ContactorSideMMOD_Tolerance              37.5          2239.7-2207.2+5 
+C    Cond_ContactortoAFTMMOD_Tolerance             5.            5 
+C    Cond_ContactorToMMODBoltLocations             0.022         0.022                               W/°C  Provided b...
+C    Cond_ContactorTunnelBoltCircleConductance     3272.727      1/(Bolt_R_.4375_9.53mm)*(192+168)   Tasi Documentati...
+C    Cond_largeplatecondtobottomring               78.17         78.17                               W/C.
+C    Cond_MainLongeronConductionCoeffToShell       108.9514      1/(Bolt_R_.25_9.53mm)*21+1/(Bolt... 1/4" bolts qty 2...
+C    Cond_MDPSAttachmentConductance                0.027738      0.027738                            It has MDPS atta...
+C    Cond_SMALLMDPSPANELCONDUCTANCE                0.04132       0.04132                             W/K
+C    Cond_smallplateconductancetobottomring        36.45         36.45                               W/C.
+C    Cond_SMMDPSATTACHMENTCONDUCTANCE              0.04132       0.04132                             W/K
+C    Cond_Topplateconductance                      45.14         45.14                               W/C.
+C    Cond_ZeroConductance                          0.145         0.145                               (W/C)
+C    CONTACTOR_ACBMtoHAB1                          122.          122                                 Btu/hr-F
+C    Copper_Thickness                              3.            3 
+C    Dim_AccumulatorRadius                         221.11        221.11                              mm
+C    Dim_AftConeHeight                             505.          505                                 555.79
+C    Dim_AftToMainCone                             94.           94                                  mm
+C    Dim_AngleBetweenCBMs                          31.28         31.28                               °  This is the a...
+C    Dim_A_BoltCircle1                             552.49        542.49+20/2                         mm Distance from...
+C    Dim_A_BoltCircle2                             4395.5        4395.5                              mm This is the f...
+C    Dim_A_BoltCircle3                             4401.87       4401.87                             mm This is the s...
+C    Dim_A_BoltCircle4                             8428.87       8418.87+20/2                        mm Bolt Circle w...
+C    Dim_A_BoltCircle5                             8981.36       8981.36                             mm This is the t...
+C    Dim_A_BoltCircle6                             8983.36       8983.36                             mm This is the t...
+C    Dim_A_RingFrame1                              614.          609+10/2                            mm This is the m...
+C    Dim_A_RingFrame2                              1875.5        1872+7/2                            mm This is the s...
+C    Dim_A_RingFrame3                              3135.5        3132+7/2                            mm This is the t...
+C    Dim_A_RingFrame4                              5661.87       5658.37+7/2                         mm This is the m...
+C    Dim_A_RingFrame5                              8365.87       8362.37+7/2 
+C    Dim_BulkheadCylinderAft                       89.22         89.22 
+C    Dim_BulkheadCylinderForward                   121.          121 
+C    Dim_CBM_Radius                                1037.88       2075.76/2                           mm  This include...
+C    Dim_ConeBracketLength                         1225.55       1225.55                             mm
+C    Dim_ConeBracketWidth                          0.343668      0.343668                            ft
+C    Dim_CONESUPPORTLength                         4.02083       4.02083                             ft
+C    Dim_CONESUPPORTThickness                      0.015617      0.015617                            ft
+C    Dim_CONESUPPORTWidth                          0.354167      0.354167                            ft
+C    Dim_ConicalMDPSLowerPanelThickness            0.009843      0.009843                            ft
+C    Dim_COPconnectpipeR1                          310.28        310.28                              mm
+C    Dim_COPVconnectpipe1                          161.63        161.63                              mm
+C    Dim_COPVconnectpipe1R                         413.28        413.28                              mm
+C    Dim_COPVconnectpipe2                          390.28        390.28                              mm
+C    Dim_COPVconnectpipe2R                         192.2         192.2                               mm
+C    Dim_COPVconnectpipe3R                         460.28        390+35.14+35.14 
+C    Dim_COPVconnectpipeR2                         219.49        219.49                              mm
+C    Dim_COPVEndLength                             88.9          88.9                                mm
+C    Dim_COPVEndRadius                             31.369        31.369                              mm
+C    Dim_COPVEndShellThickness                     8.25          8.25                                mm
+C    Dim_COPVNeckRadMax                            31.37         62.74/2                             mm
+C    Dim_COPVNeckRadMin                            9.525         19.05/2                             mm
+C    Dim_COPVTankENDBracketLength                  62.99         62.99                               mm
+C    Dim_COPVTANKENDCONNECTIONPIPERADIUS           19.           19                                  mm
+C    Dim_COPVTankEndHeight                         89.23         89.23                               mm
+C    Dim_COPVTankMaxRadius                         88.52         177.04/2                            mm
+C    Dim_COPVTankMaxRadius2                        88.14         176.28/2                            mm
+C    Dim_COPVTankMinRadius                         37.72         75.44/2                             mm
+C    Dim_COPVTankMinRadius2                        31.37         62.74/2                             mm
+C    Dim_CylinderDistance10                        3135.5        Dim_A_RingFrame3                    mm
+C    Dim_CylinderDistance11                        3180.11       Dim_CylinderDistance10+(89.22)/2    mm
+C    Dim_CylinderDistance12                        3308.6        Dim_CylinderDistance11+Dim_Cylin... mm
+C    Dim_CylinderDistance13                        4222.4        Dim_CylinderDistance12+Dim_Cylin... mm
+C    Dim_CylinderDistance14                        4395.5        Dim_A_BoltCircle2                   mm
+C    Dim_CylinderDistance15                        4401.871      Dim_A_BoltCircle3+Dim_Separation... mm
+C    Dim_CylinderDistance16                        4574.971      Dim_CylinderDistance15+Dim_Flang... mm
+C    Dim_CylinderDistance17                        5488.771      Dim_CylinderDistance16+Dim_Cylin... mm
+C    Dim_CylinderDistance19                        5661.87       Dim_A_RingFrame4                    mm
+C    Dim_CylinderDistance2                         788.6         Dim_A_BoltCircle1+121+Dim_RingFr... mm
+C    Dim_CylinderDistance20                        5611.87       Dim_CylinderDistance19-100/2        mm
+C    Dim_CylinderDistance21                        5706.48       Dim_CylinderDistance19+Dim_Bulkh... mm
+C    Dim_CylinderDistance22                        5968.045      Dim_CylinderDistance21+Dim_Cylin... mm
+C    Dim_CylinderDistance23                        8043.805      Dim_CylinderDistance22+Dim_CBM_R... mm
+C    Dim_CylinderDistance25                        8365.87       Dim_A_RingFrame5                    mm  Forward Flan...
+C    Dim_CylinderDistance26                        8315.87       Dim_CylinderDistance25-100/2        mm  Forward Flan...
+C    Dim_CylinderDistance27                        8428.87       Dim_A_BoltCircle4                   mm Forward flange
+C    Dim_CylinderDistance28                        8845.01       Dim_CylinderDistance25+519.44-40.3  mm Forward flange
+C    Dim_CylinderDistance29                        8885.31       Dim_CylinderDistance25+519.44       mm Forward flange
+C    Dim_CylinderDistance3                         1702.4        Dim_CylinderDistance2+Dim_Cylind... mm
+C    Dim_CylinderDistance30                        8981.36       Dim_A_BoltCircle5                   mm Forward flang...
+C    Dim_CylinderDistance31                        8983.361      Dim_A_BoltCircle6+Dim_Separation... mm Forward flange
+C    Dim_CylinderDistance32                        10563.36      Dim_CylinderDistance31+1550+30      mm Forward flange
+C    Dim_CylinderDistance33                        8428.871      Dim_CylinderDistance27+Dim_Separ... mm Forward flange
+C    Dim_CylinderDistance5                         1875.5        Dim_A_RingFrame2                    mm
+C    Dim_CylinderDistance7                         2048.6        Dim_CylinderDistance5+(89.22/2)+... mm
+C    Dim_CylinderDistance8                         2962.4        Dim_CylinderDistance7+Dim_Cylind... mm
+C    Dim_CylinderEachSideOfBulkhead                261.565       (2697-Dim_CBM_Radius*2)/2-(Dim_B... 183.44-63.89/2
+C    Dim_CylinderLengthRibbed                      913.8         913.8                               mm
+C    Dim_CylinderLengthSmooth                      66.6          63.1+.5+3                           mm  This is the ...
+C    Dim_FlangeTransition                          173.1         173.1 
+C    Dim_GreenPanelRevolve                         -0.85         -0.85                               deg
+C    Dim_GreenPanelRevolve2                        14.35         14.35 
+C    Dim_IBeam2Height                              1360.94       1360.94                             mm
+C    Dim_IBeam2Width                               80.           80                                  mm
+C    Dim_IBeamMidPartWidth                         47.3          47.3                                mm
+C    Dim_IBEAMMIDPARTWIDTH2                        50.           50 
+C    Dim_IBeamWidth                                85.           85                                  mm
+C    Dim_KEVNEX1SMALLPANELHEIGHT1                  1.40235       1.40235                             ft
+C    Dim_KEVNEX2SMALLPANELHEIGHT2                  0.69          0.69                                ft
+C    Dim_KEVNEXLARGEPANELHEIGHT                    4.27          4.27                                ft
+C    Dim_LongeronAxialDistance                     3165.5        Dim_CylinderDistance10+30           mm
+C    Dim_LongeronDistFromAxis                      2115.2        Dim_ShellRadius+5 
+C    Dim_LongeronEndThickness                      8.            8 
+C    Dim_LongeronHatDistFromAxis                   -2207.2       (Dim_ShellRadius+97)*-1 
+C    Dim_LongeronHeight                            75.           75                                  mm
+C    Dim_LongeronLength                            1156.43       1106.43+50                          mm
+C    Dim_LongeronRadialDistance                    2136.8        2218.2-6.4-Dim_LongeronHeight 
+C    Dim_LongeronSideSideDistance                  52.           52                                  mm
+C    Dim_LongeronSideThickness                     6.            6                                   mm
+C    Dim_LongeronTopThickness                      10.           10                                  mm
+C    Dim_LongeronWidth                             99.6          49+49+1.6                           mm
+C    Dim_MaxRadiusLVA_AxH1                         7.05          7.05                                ft
+C    Dim_MDPS_Thickness                            1.6           1.6                                 mm (Not Radiator...
+C    Dim_MidPanelHeight                            1392.         1392                                mm
+C    Dim_MidPanelRadius                            2220.5        2220.5                              mm
+C    Dim_MidPanelrevolve                           23.           23                                  Degrees 46.2
+C    Dim_MidPanelRevolve2                          1.5           1.5                                 deg
+C    Dim_MidpanelWindowHeight                      389.8         389.8                               mm
+C    Dim_MidpanelWindowHeight2                     545.          545                                 mm
+C    Dim_MinRadiusLVA_AxH1                         6.94          6.94                                ft
+C    Dim_MLI_20_Layer_Thickness                    0.25          .25                                 mm Guess
+C    Dim_OverlapArea                               61.89         65.39-3.5                           mm This accomoda...
+C    Dim_RadiatorPanelGap                          25.           25 
+C    Dim_RadiatorPanelHeight                       1245.         1245                                mm
+C    Dim_RadiatorPanelThickness                    1.6           1.6 
+C    Dim_RingFrame2CylinderAftHeight               48.51         56.34-18.5+10.67                    mm
+C    Dim_SeparationatBoltCircle                    0.001         0.001                               mm  This can be ...
+C    Dim_ServiceModuleOuterConeHeight              562.69        562.69                              mm
+C    Dim_ServiceModuleOuterTopRadius               1018.         1018                                mm
+C    Dim_ServiceModuleOuterWallRadius              2220.         2220                                mm
+C    Dim_ShellRadius                               2110.2        2110.2                              mm
+C    Dim_SmallCBMLongeronDistance_X                8140.87       Dim_CylinderDistance25-225          mm  This places ...
+C    Dim_SmallCBMLongeronDistance_Z                2143.2        Dim_ShellRadius+25+8                mm The distance ...
+C    Dim_SmallCylinder                             979.5         979.5 
+C    Dim_SmallpanelRevolve                         61.           61                                  Degrees 59.5
+C    Dim_SmallPanelRevolve2                        45.6          45.6                                deg
+C    Dim_SMKevlarThickness                         0.059055      0.059055                            ft
+C    Dim_SMMDPS_KevlarPanelDistance                0.147         0.1470                              ft
+C    Dim_SM_CIR_MDPS_Thickness                     0.00656168    0.00656168                          ft
+C    Dim_SM_CON_MDPS_Thickness                     0.00492       0.00492                             ft
+C    Dim_StructuralPipeHeight                      1457.87       1457.87 
+C    Dim_StructuralPipeHeight2                     2097.83       2097.83                             mm
+C    Dim_StructuralPipeRadius                      19.           19 
+C    Dim_StructurePipeRadius2                      31.75         31.75 
+C    Dim_TankDiameter                              576.072       576.072                             mm
+C    Dim_TankOriginX                               0.            0 
+C    Dim_TankOriginY                               0.            0 
+C    Dim_TankOriginZ                               0.            0 
+C    Dim_TankWidth                                 823.976       1400.048-Dim_TankDiameter           Vivace Tanks (55...
+C    Dim_WindowFrameAxialSegmentAngle              165.          30+3*45                             degrees
+C    Dim_WindowFrameAxialSegmentRadial             546.1599      Dim_ShellRadius*sin(Dim_WindowFr... mm This locates ...
+C    Dim_WindowFrameAxialSegmentRadial2            -2038.297     Dim_ShellRadius*cos(Dim_WindowFr... 
+C    Dim_WindowFrameAxialSegmentRadial2Side2       -1827.487     Dim_ShellRadius*cos((Dim_WindowF... 
+C    Dim_WindowFrameAxialSegmentRadialSide2        1055.1        Dim_ShellRadius*sin((Dim_WindowF... mm This locates ...
+C    Dim_WindowFrameThickness                      34.           34                                  mm
+C    Dim_WindowHeight                              580.          580                                 mm
+C    Dim_WindowPaneFromAxis                        2204.22       4314.42-Dim_ShellRadius 
+C    export_toggle                                 0.            0 
+C    Flag_Fluid_Loop_Enable                        0.            0                                   This flag enable...
+C    Flowrate                                      1502.16       500.72*3                            lb/hr
+C    Flowrate_Loop_1                               250.36        (1/6)*Flowrate                      lb/hr
+C    Flowrate_Loop_2                               250.36        (1/6)*Flowrate                      lb/hr
+C    Flowrate_Loop_3                               250.36        (1/6)*Flowrate                      lb/hr
+C    Flowrate_Loop_4                               250.36        (1/6)*Flowrate                      lb/hr
+C    Flowrate_Loop_5                               250.36        (1/6)*Flowrate                      lb/hr
+C    Flowrate_Loop_6                               250.36        (1/6)*Flowrate                      lb/hr
+C    FluidHeatLoad                                 3000.         3000                                W
+C    FluidTemp                                     84.2          84.2                                84.2 F
+C    HeatSpreader_Conductance                      8.            8 
+C    hrBetaAngle                                   0.            0 
+C    hrEccen                                       0.            0 
+C    hrIllum                                       0.            0 
+C    hrMeanAnom                                    0.            0 
+C    HRM_Release                                   0.            0                                   HRM Released - O...
+C    hrPeriod                                      5573.3        5573.3                              Always in curren...
+C    hrPeriodSec                                   5573.3        5573.3 
+C    hrPlanetX                                     2.831010e-27  2.83101e-27 
+C    hrPlanetY                                     1.066924e-13  1.066924326665e-13   
+C    hrPlanetZ                                     1.            1 
+C    hrPos                                         0.            0 
+C    hrShadowEntry                                 110.1545      1.101545013428e+02   
+C    hrShadowExit                                  249.8455      2.498454986573e+02   
+C    hrSpeed                                       14888.93      1.488892952597e+04   
+C    hrSubSolarMeanAnom                            6.113030e-12  6.11303e-12                         -180 to 180
+C    hrSubSolarTrueAnom                            6.113030e-12  6.11303e-12                         -180 to 180
+C    hrSunX                                        0.            0 
+C    hrSunY                                        0.            0 
+C    hrSunZ                                        -1.           -1 
+C    hrTime                                        0.            0                                   Always in curren...
+C    hrTimeSec                                     0.            0 
+C    hrTimeShadowEntry                             1705.345      1.705344531041e+03   
+C    hrTimeShadowEntrySec                          1705.345      1.705344531041e+03   
+C    hrTimeShadowExit                              3867.955      3.867955004530e+03   
+C    hrTimeShadowExitSec                           3867.955      3.867955004530e+03   
+C    hrTrueAnom                                    0.            0 
+C    hrVelocityX                                   2.653433e-14  2.653433028854e-14   
+C    hrVelocityY                                   1.            1 
+C    hrVelocityZ                                   -1.066924e-13 -1.066924326665e-13  
+C    ICBMG_AxH1_NEGY                               1.            1                                   CONTROLS OVERALL...
+C    ICBMG_AxH1_NEGZ                               1.            1                                   CONTROLS OVERALL...
+C    ICBMG_AxH1_POSY                               1.            1                                   CONTROLS OVERALL...
+C    ICBMG_AxH1_POSZ                               0.            0                                   CONTROLS OVERALL...
+C    ICPA_AxH1_NEGY                                0.            0                                   1=CPA On 0=CPA Off
+C    ICPA_AxH1_NEGZ                                0.            0                                   1=CPA On 0=CPA Off
+C    ICPA_AxH1_POSX                                1.            1                                   Flag for CPA dis...
+C    ICPA_AxH1_POSY                                0.            0                                   1=CPA On 0=CPA Off
+C    ICPA_AxH1_POSZ                                0.            0                                   1=CPA On 0=CPA Off
+C    IGASKO_AxH1_NEGX                              0.            0                                   CONTROLS CONDUCT...
+C    IGASKO_AxH1_NEGY                              1.            1                                   CONTROLS CONDUCT...
+C    IGASKO_AxH1_NEGZ                              1.            1                                   CONTROLS CONDUCT...
+C    IGASKO_AxH1_POSY                              1.            1                                   CONTROLS CONDUCT...
+C    IGASKO_AxH1_POSZ                              1.            1                                   CONTROLS CONDUCT...
+C    InnerStrap_Conductance                        15.           15 
+C    MDPS_bucket_thk                               3.            3                                   mm 
+C    MTZ_Volume                                    10.262        10.26199823                         m
+C    OLRCold                                       205.          205                                 W/m^2
+C    OLRHot                                        286.          286                                 W/m^2
+C    OuterStrap_Conductance                        15.           15 
+C    Pitch                                         0.            0 
+C    posZ_negY_SEPP_Powers                         0.            0                                   W
+C    PropPanel_BoltBracketConductance              112.4         112.4                               Using the Table ...
+C    PropPanel_PinBracketConductance               112.4         112.4                               Area2 of pin bra...
+C    PropPanel_PinBracketConductance2              196.3         196.3                               Area2 of pin bra...
+C    PropPanel_PinBracketConductance3              231.9159      112.4/0.4846584                     W/C for area cal...
+C    PropPanel_ProPanelBoltR                       0.39          0.39                                °C/W. 
+C    PropPanel_PropPanelConductance                112.4         112.4                               conductance per ...
+C    PropPanel_PropPanelLength1                    0.273165      0.273165                            ft
+C    PropPanel_PropPanelLength2                    2.305362      2.305362                            ft
+C    PropPanel_PropPanelMidPanelLength             0.24237       0.24237                             ft
+C    PropPanel_PropPanelthickness                  0.010417      0.010417                            ft
+C    PropPanel_PropPanelWidth                      2.095795      2.095795                            ft
+C    Roll                                          0.            0 
+C    SEPP_onoff                                    0.            0                                   switch which tog...
+C    SEPP_Power                                    200.          200                                 W
+C    SEPP_powerOnOff                               0.            0                                   toggles the heat...
+C    SEPP_SetTemp                                  131.          131                                 °F Set temperatu...
+C    SEPP_thk                                      0.03333333    0.03333333                          ft
+C    SolarConstantCold                             1319.         1319                                W/m^2
+C    SolarConstantHot                              1423.         1423                                W/m^2
+C    SORI_Alodine_a                                0.4           (SORI_Alodine_BOL_EOL == 0)? 0.3... 0.30 BOL, 0.40 E...
+C    SORI_Alodine_BOL_EOL                          1.            1                                   0 - BOL
+C    SORI_Alodine_e                                0.08          (SORI_Alodine_BOL_EOL == 0)? 0.1... 0.11 BOL, 0.08 E...
+C    TieSwitch                                     1.            1                                   Multiplier for U...
+C    UAShellHeating                                30.19         30.19                               W/K
+C    Yaw                                           0.            0 
+C
+C    Thermo Alias are:
+C        _FTCCBRK_tdp -> FTC_Stainless_Steel_15-5PH
+C        _FTCFBRK_tdp -> FTC_Stainless_Steel_15-5PH
+C        _FTC_SHIM_TDP -> AL 1100
+C        _NDSB2P_A_MMOD -> AL 7075-T73
+C        _NDSB2P_EXT_TEST_MLI_ESTAR -> MLI e*0.06
+C        _NDSB2P_EXT_TEST_MLI_TDP -> MLI e*0.05 .239 cp
+C        _NDSB2P_HCR_TDP -> AL 2219-T851
+C        _NDSB2P_HOOK_ADAPTER_TDP -> Ti-6AL-4V
+C        _NDSB2P_HOOK_BUSHING_ATT_TDP -> 455C CRES
+C        _NDSB2P_HOOK_BUSHING_FLT_TDP -> 455C CRES
+C        _NDSB2P_HOOK_NUT_TDP -> Stainless Steel A286
+C        _NDSB2P_HOOK_TDP -> Ti-6AL-4V
+C        _NDSB2P_HTR_TDP -> Kapton
+C        _NDSB2P_INTMLI_ESTAR -> MLI e*0.06
+C        _NDSB2P_INTMLI_FLAP_ESTAR -> MLI e*0.3  .239 cp
+C        _NDSB2P_INTMLI_TDP -> MLI e*0.05 .239 cp
+C        _NDSB2P_PETALS_TDP -> AL 6061-T651
+C        _NDSB2P_SCR_TDP -> AL 7050-T74
+C        _NDSB2P_STRKR_PLT_TDP -> Stainless Steel CRES 301
+C        _RUC_tdp -> Stainless_Steel_15-5PH
+C        _UMBBRK_TDP_DoNotUse -> AL 6061-T6
+C        _UMBBRK_tdp -> AL 7075
+C        _UMBSTR_Al -> AL 6061-T6
+C
+C    Optical Prop Alias are:
+C        _Dry film -> Dry_Film_Lube - measured capture latch
+C        _FTCCBRK_rco -> SS_Passivated
+C        _FTCFBRK_rco -> SS_Passivated
+C        _FTC_SHIM_rco -> Al_Anod_Type II
+C        _Line_Cover -> Kapton
+C        _NDSB2P_EXT_TEST_MLI_INNER_RCO -> NDSB2P_AluminizedPolyimide
+C        _NDSB2P_EXT_TEST_MLI_OUTER_RCO -> Beta_Cloth
+C        _NDSB2P_HCR_BULK_RCO -> Al2219-T851_AnodizeTypeII_measured_degraded
+C        _NDSB2P_HCR_CUTOUT_RCO -> Al2219-T851_AnodizeTypeII_measured_degraded
+C        _NDSB2P_HCR_DOCK_RCO -> Al2219-T851_AnodizeTypeII_measured_degraded
+C        _NDSB2P_HOOK_ADAPTER_RCO -> Tiodize
+C        _NDSB2P_HOOK_BUSHING_ATT_RCO -> SS_Passivated
+C        _NDSB2P_HOOK_BUSHING_FLT_RCO -> SS_Passivated
+C        _NDSB2P_HOOK_NUT_RCO -> SS_Passivated
+C        _NDSB2P_HOOK_RCO -> Tiodize - measured hook
+C        _NDSB2P_HTR_RCO -> Kapton
+C        _NDSB2P_INTMLI_INNER_RCO -> Beta_Cloth
+C        _NDSB2P_INTMLI_OUTER_RCO -> Beta_Cloth_INTMLI
+C        _NDSB2P_INTMLI_UPPER_RING_RCO -> NDSB2P_AluminizedPolyimide
+C        _NDSB2P_PETALS_HYBRID_RCO -> Hyb_34%DryLube_66%HardAnodize
+C        _NDSB2P_PETALS_RCO -> Hard Anodize - MIL-A-8625 Type III Class 1
+C        _NDSB2P_SCR_MLIFLAP_RCO -> Beta_Cloth_INTMLI
+C        _NDSB2P_SCR_RCO -> Hard Anodize - MIL-A-8625 Type III Class 1
+C        _NDSB2P_STRKR_PLT_RCO -> SS_Passivated
+C        _PASSIVE_HV_INNER_CLOSEOUT_OUTSIDE_RCO -> Beta_Cloth_HV
+C        _PASSIVE_HV_MMOD_SHIELD_EXPOSED_RCO -> Al_Anod_Type II
+C        _PASSIVE_HV_MMOD_SHIELD_INSIDE_RCO -> Al_Anod_Type II
+C        _PASSIVE_HV_MMOD_SHIELD_OUTSIDE_RCO -> Beta_Cloth_HV
+C        _RUC_rco -> SS_Passivated
+C        _THERMALCOVER_INSIDE -> Beta_Cloth
+C        _THERMALCOVER_OUTSIDE -> Beta_Cloth
+C        _Teflon Impregnate Anod -> Teflon Impregnated Anodize - measured SCS ring
+C        _UMBBRK_rco -> Al7075-T7351_TypeII
+C        __MLI_BetaClothWhite -> aluminized_beta_cloth_whiteside
+C
+HEADER REGISTER DATA
+      AXH1_D_CONTACTORPVGF_TO_BASE = 1.96 $ W/C  From NASA
+      AXH1_D_FRGF_THIGH1 = 19.4 $ Prime String - Thermostat Open (deg.F)
+      AXH1_D_FRGF_THIGH2 = 5.0 $ Redundant String - Thermostat Open (deg.F)
+      AXH1_D_FRGF_TLOW1 = 14.0 $ Prime String - Thermostat Closed (deg.F)
+      AXH1_D_FRGF_TLOW2 = -4.0 $ Redundant String - Thermostat Closed (deg.F)
+      AXH1_D_HTR_OFFTEMP_HAB1 = AXH1_D_HTR_ONTEMP_HAB1 + 5. $ [degF], temperature at which the heater on the arithmetic node tied to the pressure shell turns off*Assume this value is the on temp + 5 degF
+      AXH1_D_HTR_ONTEMP_HAB1 = 35. $ [degF], temperature at which the heater on the arithmetic node tied to the pressure shell turns on(1) Capture -> 35 degF(2) Basepoint -> 60 degF
+      AXH1_D_STARTTEMPERATURE = 70 $ Deg F, used to initialize all node temperatures, used in node data logic blocks for PVGF and FRGF also, update via override in case set as needed
+      COEFF = 0.0
+      COND_CONTACTORFRGF_2_TO_BASE = 3 $ W/C  From NASA*Copied from ContactorPVGF_To_Base
+      INT:COND_MAX_PER_SUB = 0.
+      INT:COND_PTR = 0.
+      INT:COND_PTR_RADCAD = 0.
+      INT:DESIGNATES_CONDUCTION = 444
+      INT:DESIGNATES_RADIATION = -111
+      INT:DESIGNATOR = 0.
+      INT:FLAG_PRINT = 0.
+      INT:FLAG_SPACE = 0.
+      ICBMG_AXH1_NEGY = 1 $ CONTROLS OVERALL CONDUCTANCE BETWEEN PCBM AND ACBM0 = no contact  1= low interface joint conductance  2= high interface joint conductance
+      ICBMG_AXH1_NEGZ = 1 $ CONTROLS OVERALL CONDUCTANCE BETWEEN PCBM AND ACBM0 = no contact  1= low interface joint conductance  2= high interface joint conductance
+      ICBMG_AXH1_POSY = 1 $ CONTROLS OVERALL CONDUCTANCE BETWEEN PCBM AND ACBM0 = no contact  1= low interface joint conductance  2= high interface joint conductance
+      ICBMG_AXH1_POSZ = 0 $ CONTROLS OVERALL CONDUCTANCE BETWEEN PCBM AND ACBM0 = no contact  1= low interface joint conductance  2= high interface joint conductance
+      ICPA_AXH1_NEGY = 0 $ 1=CPA On 0=CPA Off
+      ICPA_AXH1_NEGZ = 0 $ 1=CPA On 0=CPA Off
+      INT:ICPA_AXH1_POSX = 1 $ Flag for CPA dissipation (0=off, 1=on)
+      ICPA_AXH1_POSY = 0 $ 1=CPA On 0=CPA Off
+      ICPA_AXH1_POSZ = 0 $ 1=CPA On 0=CPA Off
+      IGASKO_AXH1_NEGX = 0 $ CONTROLS CONDUCTANCE BETWEEN SEAL AND FLANGE ON PCBM0 = UNMATED - FREEFLYER    1= MATED - CONTACT BETWEEN ACBM AND PCBM
+      IGASKO_AXH1_NEGY = 1 $ CONTROLS CONDUCTANCE BETWEEN SEAL AND FLANGE ON PCBM0 = UNMATED - FREEFLYER    1= MATED - CONTACT BETWEEN ACBM AND PCBM
+      IGASKO_AXH1_NEGZ = 1 $ CONTROLS CONDUCTANCE BETWEEN SEAL AND FLANGE ON PCBM0 = UNMATED - FREEFLYER    1= MATED - CONTACT BETWEEN ACBM AND PCBM
+      IGASKO_AXH1_POSY = 1 $ CONTROLS CONDUCTANCE BETWEEN SEAL AND FLANGE ON PCBM0 = UNMATED - FREEFLYER    1= MATED - CONTACT BETWEEN ACBM AND PCBM
+      IGASKO_AXH1_POSZ = 1 $ CONTROLS CONDUCTANCE BETWEEN SEAL AND FLANGE ON PCBM0 = UNMATED - FREEFLYER    1= MATED - CONTACT BETWEEN ACBM AND PCBM
+      INT:I_LINK = 0.
+      INT:I_LINK_WITHIN_SUB = 0.
+      INT:I_NODE = 0.
+      INT:I_NODE_SPACE = 0.
+      INT:I_SUB = 0.
+      INT:I_SUB_RADCAD = 0.
+      INT:I_SUB_RADIATION = 0.
+      INT:LINK_COUNTER = 0.
+      INT:LINK_TOTAL = 0.
+      INT:MAX_LINK_TOTAL = 100000000.
+      MDPS_BUCKET_THK = 3 $ mm MDPS panel thickness 
+      POSZ_NEGY_SEPP_POWERS = 0 $ WTotal heat load on the pZnY SEPPPO_NLpZnY+PO_NLpZnY+PO_CpZnY+PO_FLpZnY+PO_FRpZnY;
+      PROPPANEL_PROPANELBOLTR = 0.39 $ °C/W. Thermal resistance of 1 NF 3/8 24 Bolt through 3.18mm thick plate
+      SEPP_ONOFF = 0 $ switch which toggles the SEPP on or off 
+      SEPP_POWER = 200 $ W
+      SEPP_SETTEMP = 131 $ °F Set temperature of SEPP
+HEADER NODE DATA, AXH1_D_CONESUPPORTS
+            SIV 1,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 5,    293.15,    TDPROPS.A1,    1.468574e-05 
+            9,    293.15,    243.9316
+            15,    293.15,    576.8342
+            21,    293.15,    243.9316
+            24,    293.15,    243.9316
+            30,    293.15,    576.8342
+            36,    293.15,    243.9316
+            SIV 39,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 40,    293.15,    TDPROPS.A1,    1.468574e-05 
+            SIV 41,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 42,    293.15,    TDPROPS.A1,    1.468574e-05 
+            43,    293.15,    243.9316
+            44,    293.15,    576.8342
+            61,    293.15,    243.9316
+            64,    293.15,    243.9316
+            65,    293.15,    576.8342
+            76,    293.15,    243.9316
+            SIV 79,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 83,    293.15,    TDPROPS.A1,    1.468574e-05 
+            SIV 92,    293.15,    TDPROPS.A1,    0.0006297473
+            96,    293.15,    243.9316
+            97,    293.15,    576.8342
+            105,    293.15,    243.9316
+            106,    293.15,    576.8342
+            123,    293.15,    243.9316
+            126,    293.15,    243.9316
+            SIV 134,    293.15,    TDPROPS.A1,    1.468574e-05 
+            138,    293.15,    243.9316
+            139,    293.15,    576.8342
+            144,    293.15,    243.9316
+            145,    293.15,    576.8342
+            156,    293.15,    243.9316
+            165,    293.15,    243.9316
+            SIV 181,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 185,    293.15,    TDPROPS.A1,    1.468574e-05 
+            194,    293.15,    243.9316
+            195,    293.15,    576.8342
+            206,    293.15,    243.9316
+            209,    293.15,    243.9316
+            210,    293.15,    576.8342
+            221,    293.15,    243.9316
+            224,    293.15,    243.9316
+            225,    293.15,    576.8342
+            236,    293.15,    243.9316
+            239,    293.15,    243.9316
+            240,    293.15,    576.8342
+            251,    293.15,    243.9316
+            SIV 300,    293.15,    TDPROPS.A7,    0.0004198924
+            SIV 305,    293.15,    TDPROPS.A7,    0.0004198924
+            SIV 310,    293.15,    TDPROPS.A7,    0.0004198924
+            SIV 315,    293.15,    TDPROPS.A7,    0.0004198924
+            SIV 320,    293.15,    TDPROPS.A7,    0.0004198924
+            SIV 325,    293.15,    TDPROPS.A7,    0.0004198924
+            SIV 326,    293.15,    TDPROPS.A1,    1.468574e-05 
+            SIV 327,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 332,    293.15,    TDPROPS.A1,    1.468574e-05 
+            SIV 333,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 339,    293.15,    TDPROPS.A1,    1.468574e-05 
+            SIV 340,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 341,    293.15,    TDPROPS.A1,    1.468574e-05 
+            SIV 342,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 345,    293.15,    TDPROPS.A1,    1.468574e-05 
+            SIV 346,    293.15,    TDPROPS.A1,    0.0006297473
+            SIV 347,    293.15,    TDPROPS.A1,    1.468574e-05 
+            SIV 348,    293.15,    TDPROPS.A1,    0.0006297473
+HEADER CONDUCTOR DATA, AXH1_D_CONESUPPORTS
+C Contact - Face Contactor-Bracket (all) -> Adjacent Brackets[AXH1_D_CONESUPPORTS][9]::2A3AF
+            1,    AXH1_D_CONESUPPORTS.1,    AXH1_D_CONESUPPORTS.15,    0.083214
+            2,    AXH1_D_CONESUPPORTS.1,    AXH1_D_CONESUPPORTS.30,    0.083214
+C Contact - Face Contactor-Across Brackets (all)[AXH1_D_CONESUPPORTS][7]::2A32A
+            3,    AXH1_D_CONESUPPORTS.1,    AXH1_D_CONESUPPORTS.327,    43.28322
+C Contact - Face Contactor-Bracket (all) -> SM Ring[AXH1_D_CONESUPPORTS][8]::2A3B6
+            4,    AXH1_D_CONESUPPORTS.5,    AXH1_D_SERVICEMODULE.2008,    0.145
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            5,    AXH1_D_CONESUPPORTS.9,    AXH1_D_SERVICEMODULE.753,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            6,    AXH1_D_CONESUPPORTS.21,    AXH1_D_SERVICEMODULE.771,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            7,    AXH1_D_CONESUPPORTS.24,    AXH1_D_SERVICEMODULE.849,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            8,    AXH1_D_CONESUPPORTS.36,    AXH1_D_SERVICEMODULE.867,    1.898733
+C Contact - Face Contactor-Bracket (all) -> Adjacent Brackets[AXH1_D_CONESUPPORTS][9]::2A3AF
+            9,    AXH1_D_CONESUPPORTS.39,    AXH1_D_CONESUPPORTS.139,    0.083214
+            10,    AXH1_D_CONESUPPORTS.39,    AXH1_D_CONESUPPORTS.145,    0.083214
+C Contact - Face Contactor-Across Brackets (all)[AXH1_D_CONESUPPORTS][7]::2A32A
+            11,    AXH1_D_CONESUPPORTS.39,    AXH1_D_CONESUPPORTS.340,    43.28322
+C Contact - Face Contactor-Bracket (all) -> SM Ring[AXH1_D_CONESUPPORTS][8]::2A3B6
+            12,    AXH1_D_CONESUPPORTS.40,    AXH1_D_SERVICEMODULE.2008,    0.145
+C Contact - Face Contactor-Bracket (all) -> Adjacent Brackets[AXH1_D_CONESUPPORTS][9]::2A3AF
+            13,    AXH1_D_CONESUPPORTS.41,    AXH1_D_CONESUPPORTS.44,    0.083214
+            14,    AXH1_D_CONESUPPORTS.41,    AXH1_D_CONESUPPORTS.65,    0.083214
+C Contact - Face Contactor-Across Brackets (all)[AXH1_D_CONESUPPORTS][7]::2A32A
+            15,    AXH1_D_CONESUPPORTS.41,    AXH1_D_CONESUPPORTS.342,    43.28322
+C Contact - Face Contactor-Bracket (all) -> SM Ring[AXH1_D_CONESUPPORTS][8]::2A3B6
+            16,    AXH1_D_CONESUPPORTS.42,    AXH1_D_SERVICEMODULE.409,    0.145
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            17,    AXH1_D_CONESUPPORTS.43,    AXH1_D_SERVICEMODULE.657,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            18,    AXH1_D_CONESUPPORTS.61,    AXH1_D_SERVICEMODULE.639,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            19,    AXH1_D_CONESUPPORTS.64,    AXH1_D_SERVICEMODULE.628,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            20,    AXH1_D_CONESUPPORTS.76,    AXH1_D_SERVICEMODULE.610,    1.898733
+C Contact - Face Contactor-Bracket (all) -> Adjacent Brackets[AXH1_D_CONESUPPORTS][9]::2A3AF
+            21,    AXH1_D_CONESUPPORTS.79,    AXH1_D_CONESUPPORTS.225,    0.083214
+            22,    AXH1_D_CONESUPPORTS.79,    AXH1_D_CONESUPPORTS.240,    0.083214
+C Contact - Face Contactor-Across Brackets (all)[AXH1_D_CONESUPPORTS][7]::2A32A
+            23,    AXH1_D_CONESUPPORTS.79,    AXH1_D_CONESUPPORTS.346,    43.28322
+C Contact - Face Contactor-Bracket (all) -> SM Ring[AXH1_D_CONESUPPORTS][8]::2A3B6
+            24,    AXH1_D_CONESUPPORTS.83,    AXH1_D_SERVICEMODULE.409,    0.145
+C Contact - Face Contactor-Bracket (all) -> Adjacent Brackets[AXH1_D_CONESUPPORTS][9]::2A3AF
+            25,    AXH1_D_CONESUPPORTS.92,    AXH1_D_CONESUPPORTS.97,    0.083214
+            26,    AXH1_D_CONESUPPORTS.92,    AXH1_D_CONESUPPORTS.106,    0.083214
+C Contact - Face Contactor-Across Brackets (all)[AXH1_D_CONESUPPORTS][7]::2A32A
+            27,    AXH1_D_CONESUPPORTS.92,    AXH1_D_CONESUPPORTS.348,    43.28322
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            28,    AXH1_D_CONESUPPORTS.96,    AXH1_D_SERVICEMODULE.628,    1.898733
+            29,    AXH1_D_CONESUPPORTS.105,    AXH1_D_SERVICEMODULE.867,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            30,    AXH1_D_CONESUPPORTS.123,    AXH1_D_SERVICEMODULE.610,    1.898733
+            31,    AXH1_D_CONESUPPORTS.126,    AXH1_D_SERVICEMODULE.849,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Ring[AXH1_D_CONESUPPORTS][8]::2A3B6
+            32,    AXH1_D_CONESUPPORTS.134,    AXH1_D_SERVICEMODULE.2009,    0.145
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            33,    AXH1_D_CONESUPPORTS.138,    AXH1_D_SERVICEMODULE.744,    1.898733
+            34,    AXH1_D_CONESUPPORTS.144,    AXH1_D_SERVICEMODULE.771,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            35,    AXH1_D_CONESUPPORTS.156,    AXH1_D_SERVICEMODULE.726,    1.898733
+            36,    AXH1_D_CONESUPPORTS.165,    AXH1_D_SERVICEMODULE.753,    1.898733
+C Contact - Face Contactor-Bracket (all) -> Adjacent Brackets[AXH1_D_CONESUPPORTS][9]::2A3AF
+            37,    AXH1_D_CONESUPPORTS.181,    AXH1_D_CONESUPPORTS.195,    0.083214
+            38,    AXH1_D_CONESUPPORTS.181,    AXH1_D_CONESUPPORTS.210,    0.083214
+C Contact - Face Contactor-Across Brackets (all)[AXH1_D_CONESUPPORTS][7]::2A32A
+            39,    AXH1_D_CONESUPPORTS.181,    AXH1_D_CONESUPPORTS.333,    43.28322
+C Contact - Face Contactor-Bracket (all) -> SM Ring[AXH1_D_CONESUPPORTS][8]::2A3B6
+            40,    AXH1_D_CONESUPPORTS.185,    AXH1_D_SERVICEMODULE.2009,    0.145
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            41,    AXH1_D_CONESUPPORTS.194,    AXH1_D_SERVICEMODULE.744,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            42,    AXH1_D_CONESUPPORTS.206,    AXH1_D_SERVICEMODULE.726,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            43,    AXH1_D_CONESUPPORTS.209,    AXH1_D_SERVICEMODULE.692,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            44,    AXH1_D_CONESUPPORTS.221,    AXH1_D_SERVICEMODULE.674,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            45,    AXH1_D_CONESUPPORTS.224,    AXH1_D_SERVICEMODULE.692,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            46,    AXH1_D_CONESUPPORTS.236,    AXH1_D_SERVICEMODULE.674,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Lower)[AXH1_D_CONESUPPORTS][7]::2A2EB
+            47,    AXH1_D_CONESUPPORTS.239,    AXH1_D_SERVICEMODULE.657,    1.898733
+C Contact - Face Contactor-Bracket (all) -> SM Cone (Upper)[AXH1_D_CONESUPPORTS][7]::2A30E
+            48,    AXH1_D_CONESUPPORTS.251,    AXH1_D_SERVICEMODULE.639,    1.898733
+HEADER NODE DATA, AXH1_D_COPVTANK
+            1,    293.15,    -1.
+            2139,    293.15,    103.217
+            2189,    293.15,    5460.498
+            2299,    293.15,    103.217
+            2329,    293.15,    5460.498
+            2404,    293.15,    1479.608
+            2409,    293.15,    -1.
+            2414,    293.15,    1178.493
+            2419,    293.15,    488.0593
+            2424,    293.15,    -1.
+            2429,    293.15,    1247.944
+            2434,    293.15,    580.3687
+            2454,    293.15,    1389.865
+            2476,    293.15,    662.7738
+            2481,    293.15,    1191.115
+            2486,    293.15,    827.5841
+            2491,    293.15,    936.924
+            2721,    293.15,    103.217
+            2752,    293.15,    -1.
+            2753,    293.15,    -1.
+            2754,    293.15,    -1.
+            2755,    293.15,    -1.
+            2756,    293.15,    -1.
+            2757,    293.15,    -1.
+            2758,    293.15,    -1.
+            2759,    293.15,    -1.
+            2760,    293.15,    -1.
+            2761,    293.15,    -1.
+            2762,    293.15,    -1.
+            2763,    293.15,    -1.
+            2764,    293.15,    -1.
+            2765,    293.15,    -1.
+            2766,    293.15,    -1.
+            2767,    293.15,    -1.
+            2768,    293.15,    -1.
+            2769,    293.15,    -1.
+            2770,    293.15,    -1.
+            2771,    293.15,    -1.
+            2772,    293.15,    -1.
+            2773,    293.15,    -1.
+            2774,    293.15,    -1.
+            3094,    293.15,    103.217
+            3097,    293.15,    103.217
+            3100,    293.15,    103.217
+            3103,    293.15,    103.217
+            3106,    293.15,    103.217
+            3151,    293.15,    5460.498
+            3152,    293.15,    5460.498
+            3153,    293.15,    5460.498
+            3154,    293.15,    5460.498
+            3155,    293.15,    5460.498
+            3208,    293.15,    103.217
+            3213,    293.15,    103.217
+            3218,    293.15,    103.217
+            3223,    293.15,    103.217
+            3228,    293.15,    103.217
+            3233,    293.15,    103.217
+            3239,    293.15,    103.217
+            3240,    293.15,    103.217
+            3241,    293.15,    103.217
+            3242,    293.15,    103.217
+            3243,    293.15,    103.217
+            3267,    293.15,    5460.498
+            3268,    293.15,    5460.498
+            3269,    293.15,    5460.498
+            3270,    293.15,    5460.498
+            3271,    293.15,    5460.498
+            3303,    293.15,    5460.498
+            3311,    293.15,    5460.498
+            3317,    293.15,    5460.498
+            3323,    293.15,    5460.498
+            3329,    293.15,    5460.498
+            3335,    293.15,    5460.498
+            3338,    293.15,    5460.498
+            3340,    293.15,    5460.498
+            3342,    293.15,    5460.498
+            3344,    293.15,    5460.498
+            3346,    293.15,    15620.68
+            3348,    293.15,    5460.498
+            3408,    293.15,    1479.608
+            3411,    293.15,    1479.608
+            3413,    293.15,    1479.608
+            3415,    293.15,    1479.608
+            3417,    293.15,    1479.608
+            3419,    293.15,    -1.
+            3420,    293.15,    -1.
+            3421,    293.15,    -1.
+            3422,    293.15,    -1.
+            3423,    293.15,    -1.
+            3439,    293.15,    1178.493
+            3442,    293.15,    1178.493
+            3444,    293.15,    1178.493
+            3446,    293.15,    1178.493
+            3448,    293.15,    1178.493
+            3465,    293.15,    488.0593
+            3468,    293.15,    488.0593
+            3470,    293.15,    488.0593
+            3472,    293.15,    488.0593
+            3474,    293.15,    488.0593
+            3492,    293.15,    -1.
+            3494,    293.15,    -1.
+            3496,    293.15,    -1.
+            3498,    293.15,    -1.
+            3500,    293.15,    -1.
+            3517,    293.15,    1247.944
+            3520,    293.15,    1247.944
+            3522,    293.15,    1247.944
+            3524,    293.15,    1247.944
+            3526,    293.15,    1247.944
+            3543,    293.15,    580.3687
+            3546,    293.15,    580.3687
+            3548,    293.15,    580.3687
+            3550,    293.15,    580.3687
+            3552,    293.15,    580.3687
+            3569,    293.15,    -1.
+            3573,    293.15,    -1.
+            3576,    293.15,    -1.
+            3579,    293.15,    -1.
+            3582,    293.15,    -1.
+            3585,    293.15,    -1.
+            3591,    293.15,    1389.865
+            3592,    293.15,    1389.865
+            3593,    293.15,    1389.865
+            3594,    293.15,    1389.865
+            3595,    293.15,    1389.865
+            3611,    293.15,    662.7738
+            3612,    293.15,    662.7738
+            3613,    293.15,    662.7738
+            3614,    293.15,    662.7738
+            3615,    293.15,    662.7738
+            3616,    293.15,    1191.115
+            3617,    293.15,    1191.115
+            3618,    293.15,    1191.115
+            3619,    293.15,    1191.115
+            3620,    293.15,    1191.115
+            3621,    293.15,    827.5841
+            3622,    293.15,    827.5841
+            3623,    293.15,    827.5841
+            3624,    293.15,    827.5841
+            3625,    293.15,    827.5841
+            3626,    293.15,    936.924
+            3627,    293.15,    936.924
+            3628,    293.15,    936.924
+            3629,    293.15,    936.924
+            3630,    293.15,    936.924
+            3631,    293.15,    -1.
+            3633,    293.15,    -1.
+            3635,    293.15,    -1.
+            3637,    293.15,    -1.
+            3639,    293.15,    -1.
+            3641,    293.15,    -1.
+            3930,    293.15,    103.217
+            3933,    293.15,    103.217
+            3936,    293.15,    103.217
+            3939,    293.15,    103.217
+            3942,    293.15,    103.217
+            3943,    293.15,    15620.68
+            3944,    293.15,    15620.68
+            3945,    293.15,    15620.68
+            3946,    293.15,    15620.68
+            3947,    293.15,    15620.68
+            3948,    293.15,    15620.68
+            3949,    293.15,    15620.68
+            3950,    293.15,    15620.68
+            3951,    293.15,    15620.68
+            3952,    293.15,    15620.68
+            3953,    293.15,    5460.498
+            3954,    293.15,    15620.68
+HEADER CONDUCTOR DATA, AXH1_D_COPVTANK
+C Contact - Face Contactor-COPV Tank Small Conduction[AXH1_D_COPVTANK][22]::1BEC9
+            1,    AXH1_D_COPVTANK.1,    AXH1_D_COPVTANK.3585,    0.1316732
+            2,    AXH1_D_COPVTANK.2409,    AXH1_D_COPVTANK.2772,    0.1583268
+            3,    AXH1_D_COPVTANK.2424,    AXH1_D_COPVTANK.2773,    0.1583268
+            4,    AXH1_D_COPVTANK.2752,    AXH1_D_COPVTANK.3419,    0.1583268
+            5,    AXH1_D_COPVTANK.2753,    AXH1_D_COPVTANK.3492,    0.1583268
+            6,    AXH1_D_COPVTANK.2754,    AXH1_D_COPVTANK.3631,    0.1316732
+            7,    AXH1_D_COPVTANK.2755,    AXH1_D_COPVTANK.3569,    0.1316732
+            8,    AXH1_D_COPVTANK.2756,    AXH1_D_COPVTANK.3420,    0.1583268
+            9,    AXH1_D_COPVTANK.2757,    AXH1_D_COPVTANK.3494,    0.1583268
+            10,    AXH1_D_COPVTANK.2758,    AXH1_D_COPVTANK.3633,    0.1316732
+            11,    AXH1_D_COPVTANK.2759,    AXH1_D_COPVTANK.3573,    0.1316732
+            12,    AXH1_D_COPVTANK.2760,    AXH1_D_COPVTANK.3421,    0.1583268
+            13,    AXH1_D_COPVTANK.2761,    AXH1_D_COPVTANK.3496,    0.1583268
+            14,    AXH1_D_COPVTANK.2762,    AXH1_D_COPVTANK.3635,    0.1316732
+            15,    AXH1_D_COPVTANK.2763,    AXH1_D_COPVTANK.3576,    0.1316732
+            16,    AXH1_D_COPVTANK.2764,    AXH1_D_COPVTANK.3422,    0.1583268
+            17,    AXH1_D_COPVTANK.2765,    AXH1_D_COPVTANK.3498,    0.1583268
+            18,    AXH1_D_COPVTANK.2766,    AXH1_D_COPVTANK.3637,    0.1316732
+            19,    AXH1_D_COPVTANK.2767,    AXH1_D_COPVTANK.3579,    0.1316732
+            20,    AXH1_D_COPVTANK.2768,    AXH1_D_COPVTANK.3423,    0.1583268
+            21,    AXH1_D_COPVTANK.2769,    AXH1_D_COPVTANK.3500,    0.1583268
+            22,    AXH1_D_COPVTANK.2770,    AXH1_D_COPVTANK.3639,    0.1316732
+            23,    AXH1_D_COPVTANK.2771,    AXH1_D_COPVTANK.3582,    0.1316732
+            24,    AXH1_D_COPVTANK.2774,    AXH1_D_COPVTANK.3641,    0.1316732
+HEADER NODE DATA, AXH1_D_GNC_PLATE
+            169,    293.15,    9656.767
+            170,    293.15,    9656.767
+            171,    293.15,    9656.767
+            172,    293.15,    9656.767
+            20169,    293.15,    -1.
+            20170,    293.15,    -1.
+            20171,    293.15,    -1.
+            20172,    293.15,    -1.
+HEADER CONDUCTOR DATA, AXH1_D_GNC_PLATE
+            1,    AXH1_D_GNC_PLATE.169,    AXH1_D_GNC_PLATE.170,    0.391459
+            2,    AXH1_D_GNC_PLATE.169,    AXH1_D_GNC_PLATE.171,    0.6248088
+            -3,    AXH1_D_GNC_PLATE.169,    AXH1_D_GNC_PLATE.20169,    0.01123584
+            4,    AXH1_D_GNC_PLATE.170,    AXH1_D_GNC_PLATE.172,    0.6248088
+            -5,    AXH1_D_GNC_PLATE.170,    AXH1_D_GNC_PLATE.20170,    0.01123584
+            6,    AXH1_D_GNC_PLATE.171,    AXH1_D_GNC_PLATE.172,    0.391459
+            -7,    AXH1_D_GNC_PLATE.171,    AXH1_D_GNC_PLATE.20171,    0.01123584
+            -8,    AXH1_D_GNC_PLATE.172,    AXH1_D_GNC_PLATE.20172,    0.01123584
+HEADER NODE DATA, AXH1_D_HOST
+HEADER CONDUCTOR DATA, AXH1_D_HOST
+            1,    AXH1_D_LPGF.33,    AXH1_D_LPGFBRACKETS.102,    5.625
+            2,    AXH1_D_LPGF.34,    AXH1_D_LPGFBRACKETS.102,    5.625
+            3,    AXH1_D_LPGF.35,    AXH1_D_LPGFBRACKETS.102,    5.625
+            4,    AXH1_D_LPGF.38,    AXH1_D_LPGFBRACKETS.185,    5.625
+            5,    AXH1_D_LPGF.39,    AXH1_D_LPGFBRACKETS.185,    5.625
+            6,    AXH1_D_LPGF.40,    AXH1_D_LPGFBRACKETS.185,    5.625
+            7,    AXH1_D_LPGF.51,    AXH1_D_LPGFBRACKETS.102,    5.625
+            8,    AXH1_D_LPGF.52,    AXH1_D_LPGFBRACKETS.185,    5.625
+HEADER NODE DATA, AXH1_D_KEVNEX
+            SIV 1,    293.15,    TDPROPS.A5,    0.01218458
+            SIV 10,    293.15,    TDPROPS.A5,    0.01248176
+            SIV 19,    293.15,    TDPROPS.A5,    0.00244003
+            SIV 23,    293.15,    TDPROPS.A5,    0.001200571
+            SIV 27,    293.15,    TDPROPS.A5,    0.01277895
+            SIV 36,    293.15,    TDPROPS.A5,    0.01248176
+            SIV 45,    293.15,    TDPROPS.A5,    0.001200571
+            SIV 49,    293.15,    TDPROPS.A5,    0.00244003
+            SIV 53,    293.15,    TDPROPS.A5,    0.00244003
+            SIV 57,    293.15,    TDPROPS.A5,    0.001200571
+            SIV 61,    293.15,    TDPROPS.A5,    0.00244003
+            SIV 65,    293.15,    TDPROPS.A5,    0.001200571
+            SIV 69,    293.15,    TDPROPS.A5,    0.01248176
+            SIV 78,    293.15,    TDPROPS.A5,    0.01218458
+            SIV 87,    293.15,    TDPROPS.A5,    0.00244003
+            SIV 91,    293.15,    TDPROPS.A5,    0.001200571
+            SIV 95,    293.15,    TDPROPS.A5,    0.01277895
+            SIV 104,    293.15,    TDPROPS.A5,    0.001200571
+            SIV 108,    293.15,    TDPROPS.A5,    0.01277895
+            SIV 117,    293.15,    TDPROPS.A5,    0.00244003
+HEADER NODE DATA, AXH1_D_LPGF
+            SIV 20,    293.15,    TDPROPS.A9,    0.000828703
+            SIV 24,    293.15,    TDPROPS.A9,    0.0002183804
+            SIV 32,    293.15,    TDPROPS.A9,    0.0004167649
+            33,    293.15,    1.
+            34,    293.15,    1.
+            35,    293.15,    1.
+            SIV 36,    293.15,    TDPROPS.A9,    0.001772735
+            SIV 37,    293.15,    TDPROPS.A9,    0.0004167649
+            38,    293.15,    1.
+            39,    293.15,    1.
+            40,    293.15,    1.
+            SIV 45,    293.15,    TDPROPS.A9,    0.001772735
+            SIV 46,    293.15,    TDPROPS.A9,    0.0002183804
+            SIV 50,    293.15,    TDPROPS.A9,    0.000828703
+            51,    293.15,    1.
+            52,    293.15,    1.
+HEADER NODE DATA, AXH1_D_LPGFBRACKETS
+            80,    293.15,    408.8245
+            81,    293.15,    408.8245
+            84,    293.15,    159.7393
+            85,    293.15,    1.
+            92,    293.15,    1.
+            93,    293.15,    1.
+            94,    293.15,    202.111
+            95,    293.15,    1.
+            96,    293.15,    159.7393
+            97,    293.15,    1.
+            98,    293.15,    268.2575
+            99,    293.15,    2146.06
+            102,    293.15,    1.
+            107,    293.15,    159.7393
+            108,    293.15,    202.111
+            115,    293.15,    1.
+            116,    293.15,    1.
+            117,    293.15,    1.
+            118,    293.15,    1.
+            119,    293.15,    159.7393
+            120,    293.15,    1.
+            121,    293.15,    3407.01
+            133,    293.15,    3407.01
+            145,    293.15,    3407.01
+            150,    293.15,    1.
+            151,    293.15,    1.
+            153,    293.15,    3407.01
+            158,    293.15,    1.
+            159,    293.15,    1.
+            161,    293.15,    3407.01
+            169,    293.15,    3407.01
+            177,    293.15,    408.8245
+            179,    293.15,    268.2575
+            180,    293.15,    2146.06
+            181,    293.15,    408.8245
+            185,    293.15,    1.
+            190,    293.15,    3407.01
+            194,    293.15,    3407.01
+            203,    293.15,    1.
+            204,    293.15,    1.
+            210,    293.15,    3407.01
+            215,    293.15,    1.
+            216,    293.15,    1.
+            222,    293.15,    3407.01
+            230,    293.15,    3407.01
+            238,    293.15,    3407.013
+            246,    293.15,    159.7393
+            247,    293.15,    202.111
+            248,    293.15,    1.
+            249,    293.15,    1.
+            250,    293.15,    1.
+            251,    293.15,    1.
+            252,    293.15,    159.7393
+            259,    293.15,    1.
+            260,    293.15,    159.7393
+            261,    293.15,    202.111
+            268,    293.15,    1.
+            269,    293.15,    1.
+            270,    293.15,    1.
+            271,    293.15,    1.
+            272,    293.15,    159.7393
+            273,    293.15,    1.
+            274,    293.15,    1.
+            275,    293.15,    1.
+            276,    293.15,    1.
+            277,    293.15,    268.2575
+            278,    293.15,    1.
+            279,    293.15,    1.
+            280,    293.15,    1.
+            281,    293.15,    1.
+            282,    293.15,    1.
+            283,    293.15,    1.
+            284,    293.15,    268.2571
+            285,    293.15,    1.
+            286,    293.15,    1.
+            287,    293.15,    1.
+HEADER CONDUCTOR DATA, AXH1_D_LPGFBRACKETS
+            1,    AXH1_D_LPGFBRACKETS.85,    AXH1_D_LPGFBRACKETS.151,    0.875
+            2,    AXH1_D_LPGFBRACKETS.92,    AXH1_D_LPGFBRACKETS.159,    0.875
+            3,    AXH1_D_LPGFBRACKETS.93,    AXH1_D_LPGFBRACKETS.159,    0.875
+            4,    AXH1_D_LPGFBRACKETS.95,    AXH1_D_LPGFBRACKETS.159,    0.875
+            5,    AXH1_D_LPGFBRACKETS.97,    AXH1_D_LPGFBRACKETS.159,    0.875
+            6,    AXH1_D_LPGFBRACKETS.115,    AXH1_D_LPGFBRACKETS.158,    0.875
+            7,    AXH1_D_LPGFBRACKETS.116,    AXH1_D_LPGFBRACKETS.158,    0.875
+            8,    AXH1_D_LPGFBRACKETS.117,    AXH1_D_LPGFBRACKETS.150,    0.875
+            9,    AXH1_D_LPGFBRACKETS.118,    AXH1_D_LPGFBRACKETS.158,    0.875
+            10,    AXH1_D_LPGFBRACKETS.120,    AXH1_D_LPGFBRACKETS.158,    0.875
+            11,    AXH1_D_LPGFBRACKETS.150,    AXH1_D_LPGFBRACKETS.274,    0.875
+            12,    AXH1_D_LPGFBRACKETS.150,    AXH1_D_LPGFBRACKETS.275,    0.875
+            13,    AXH1_D_LPGFBRACKETS.150,    AXH1_D_LPGFBRACKETS.276,    0.875
+            14,    AXH1_D_LPGFBRACKETS.151,    AXH1_D_LPGFBRACKETS.285,    0.875
+            15,    AXH1_D_LPGFBRACKETS.151,    AXH1_D_LPGFBRACKETS.286,    0.875
+            16,    AXH1_D_LPGFBRACKETS.151,    AXH1_D_LPGFBRACKETS.287,    0.875
+            17,    AXH1_D_LPGFBRACKETS.203,    AXH1_D_LPGFBRACKETS.268,    0.875
+            18,    AXH1_D_LPGFBRACKETS.203,    AXH1_D_LPGFBRACKETS.269,    0.875
+            19,    AXH1_D_LPGFBRACKETS.203,    AXH1_D_LPGFBRACKETS.271,    0.875
+            20,    AXH1_D_LPGFBRACKETS.203,    AXH1_D_LPGFBRACKETS.273,    0.875
+            21,    AXH1_D_LPGFBRACKETS.204,    AXH1_D_LPGFBRACKETS.248,    0.875
+            22,    AXH1_D_LPGFBRACKETS.204,    AXH1_D_LPGFBRACKETS.249,    0.875
+            23,    AXH1_D_LPGFBRACKETS.204,    AXH1_D_LPGFBRACKETS.251,    0.875
+            24,    AXH1_D_LPGFBRACKETS.204,    AXH1_D_LPGFBRACKETS.259,    0.875
+            25,    AXH1_D_LPGFBRACKETS.215,    AXH1_D_LPGFBRACKETS.270,    0.875
+            26,    AXH1_D_LPGFBRACKETS.215,    AXH1_D_LPGFBRACKETS.281,    0.875
+            27,    AXH1_D_LPGFBRACKETS.215,    AXH1_D_LPGFBRACKETS.282,    0.875
+            28,    AXH1_D_LPGFBRACKETS.215,    AXH1_D_LPGFBRACKETS.283,    0.875
+            29,    AXH1_D_LPGFBRACKETS.216,    AXH1_D_LPGFBRACKETS.250,    0.875
+            30,    AXH1_D_LPGFBRACKETS.216,    AXH1_D_LPGFBRACKETS.278,    0.875
+            31,    AXH1_D_LPGFBRACKETS.216,    AXH1_D_LPGFBRACKETS.279,    0.875
+            32,    AXH1_D_LPGFBRACKETS.216,    AXH1_D_LPGFBRACKETS.280,    0.875
+HEADER NODE DATA, AXH1_D_PRESSURESHELL
+            -5498,    294.2611,    -1.0
+HEADER CONDUCTOR DATA, AXH1_D_PRESSURESHELL
+            1,    AXH1_D_PRESSURESHELL_SM.3991,    AXH1_D_PRESSURESHELL_SM.3992,    0.09125372
+            2,    AXH1_D_PRESSURESHELL_SM.3991,    AXH1_D_PRESSURESHELL_SM.3993,    0.09125372
+            -3,    AXH1_D_PRESSURESHELL_SM.3991,    AXH1_D_PRESSURESHELL_SM.13991,    0.002051249
+            4,    AXH1_D_PRESSURESHELL_SM.3992,    AXH1_D_PRESSURESHELL_SM.3993,    0.09125372
+            -5,    AXH1_D_PRESSURESHELL_SM.3992,    AXH1_D_PRESSURESHELL_SM.13992,    0.002051249
+            -6,    AXH1_D_PRESSURESHELL_SM.3993,    AXH1_D_PRESSURESHELL_SM.13993,    0.002051249
+            7,    AXH1_D_PRESSURESHELL_SM.4015,    AXH1_D_PRESSURESHELL_SM.4016,    0.4806977
+            8,    AXH1_D_PRESSURESHELL_SM.4015,    AXH1_D_PRESSURESHELL_SM.4017,    0.4806977
+            -9,    AXH1_D_PRESSURESHELL_SM.4015,    AXH1_D_PRESSURESHELL_SM.14015,    0.0688511
+            -10,    AXH1_D_PRESSURESHELL_SM.4015,    AXH1_D_PRESSURESHELL_SM.24015,    0.0688511
+            11,    AXH1_D_PRESSURESHELL_SM.4016,    AXH1_D_PRESSURESHELL_SM.4017,    0.4806977
+            -12,    AXH1_D_PRESSURESHELL_SM.4016,    AXH1_D_PRESSURESHELL_SM.14016,    0.0688511
+            -13,    AXH1_D_PRESSURESHELL_SM.4016,    AXH1_D_PRESSURESHELL_SM.24016,    0.0688511
+            -14,    AXH1_D_PRESSURESHELL_SM.4017,    AXH1_D_PRESSURESHELL_SM.14017,    0.0688511
+            -15,    AXH1_D_PRESSURESHELL_SM.4017,    AXH1_D_PRESSURESHELL_SM.24017,    0.0688511
+            16,    AXH1_D_PRESSURESHELL_SM.4055,    AXH1_D_PRESSURESHELL_SM.9341,    1.122329
+            17,    AXH1_D_PRESSURESHELL_SM.4055,    AXH1_D_PRESSURESHELL_SM.9342,    1.122329
+            -18,    AXH1_D_PRESSURESHELL_SM.4055,    AXH1_D_PRESSURESHELL_SM.14055,    0.02009405
+            19,    AXH1_D_PRESSURESHELL_SM.4403,    AXH1_D_PRESSURESHELL_SM.4404,    0.03228496
+            20,    AXH1_D_PRESSURESHELL_SM.4403,    AXH1_D_PRESSURESHELL_SM.4405,    0.03228496
+            -21,    AXH1_D_PRESSURESHELL_SM.4403,    AXH1_D_PRESSURESHELL_SM.14403,    0.01137623
+            -22,    AXH1_D_PRESSURESHELL_SM.4403,    AXH1_D_PRESSURESHELL_SM.24403,    0.01137623
+            23,    AXH1_D_PRESSURESHELL_SM.4404,    AXH1_D_PRESSURESHELL_SM.4405,    0.03228496
+            -24,    AXH1_D_PRESSURESHELL_SM.4404,    AXH1_D_PRESSURESHELL_SM.14404,    0.01137623
+            -25,    AXH1_D_PRESSURESHELL_SM.4404,    AXH1_D_PRESSURESHELL_SM.24404,    0.01137623
+            -26,    AXH1_D_PRESSURESHELL_SM.4405,    AXH1_D_PRESSURESHELL_SM.14405,    0.01137623
+            -27,    AXH1_D_PRESSURESHELL_SM.4405,    AXH1_D_PRESSURESHELL_SM.24405,    0.01137623
+            28,    AXH1_D_PRESSURESHELL_SM.9341,    AXH1_D_PRESSURESHELL_SM.9342,    1.122329
+            -29,    AXH1_D_PRESSURESHELL_SM.9341,    AXH1_D_PRESSURESHELL_SM.19341,    0.02009405
+            -30,    AXH1_D_PRESSURESHELL_SM.9342,    AXH1_D_PRESSURESHELL_SM.19342,    0.02009405
+            31,    AXH1_D_PRESSURESHELL_SM.9343,    AXH1_D_PRESSURESHELL_SM.9344,    0.4519931
+            32,    AXH1_D_PRESSURESHELL_SM.9343,    AXH1_D_PRESSURESHELL_SM.9345,    0.4519931
+            -33,    AXH1_D_PRESSURESHELL_SM.9343,    AXH1_D_PRESSURESHELL_SM.19343,    0.08051977
+            34,    AXH1_D_PRESSURESHELL_SM.9344,    AXH1_D_PRESSURESHELL_SM.9345,    0.4519931
+            -35,    AXH1_D_PRESSURESHELL_SM.9344,    AXH1_D_PRESSURESHELL_SM.19344,    0.08051977
+            -36,    AXH1_D_PRESSURESHELL_SM.9345,    AXH1_D_PRESSURESHELL_SM.19345,    0.08051977
+HEADER NODE DATA, AXH1_D_PRESSURESHELL_SM
+            3991,    293.15,    6104.029
+            3992,    293.15,    6104.029
+            3993,    293.15,    6104.029
+            4015,    293.15,    32080.49
+            4016,    293.15,    32080.49
+            4017,    293.15,    32080.49
+            4055,    293.15,    18725.31
+            4403,    293.15,    10601.32
+            4404,    293.15,    10601.32
+            4405,    293.15,    10601.32
+            9341,    293.15,    18725.31
+            9342,    293.15,    18725.31
+            9343,    293.15,    75035.11
+            9344,    293.15,    75035.11
+            9345,    293.15,    75035.11
+            13991,    293.15,    -1.
+            13992,    293.15,    -1.
+            13993,    293.15,    -1.
+            14015,    293.15,    -1.
+            14016,    293.15,    -1.
+            14017,    293.15,    -1.
+            14055,    293.15,    -1.
+            14403,    293.15,    -1.
+            14404,    293.15,    -1.
+            14405,    293.15,    -1.
+            19341,    293.15,    -1.
+            19342,    293.15,    -1.
+            19343,    293.15,    -1.
+            19344,    293.15,    -1.
+            19345,    293.15,    -1.
+            24015,    293.15,    -1.
+            24016,    293.15,    -1.
+            24017,    293.15,    -1.
+            24403,    293.15,    -1.
+            24404,    293.15,    -1.
+            24405,    293.15,    -1.
+HEADER NODE DATA, AXH1_D_PROPPANEL
+            1,    293.15,    367.6608
+            3,    293.15,    3497.093
+            10,    293.15,    3497.093
+            12,    293.15,    414.3749
+            27,    293.15,    414.3749
+            34,    293.15,    3497.093
+            42,    293.15,    414.3749
+            43,    293.15,    367.6608
+            49,    293.15,    3497.093
+            51,    293.15,    414.3749
+            67,    293.15,    367.6608
+            69,    293.15,    3497.093
+            76,    293.15,    367.6608
+            78,    293.15,    3497.093
+            85,    293.15,    367.6608
+            87,    293.15,    3497.093
+            94,    293.15,    3497.093
+            96,    293.15,    414.3749
+            105,    293.15,    414.3749
+            112,    293.15,    367.6608
+            114,    293.15,    3497.093
+            126,    293.15,    414.3749
+            127,    293.15,    1595.461
+            131,    293.15,    3497.091
+            133,    293.15,    414.3749
+            143,    293.15,    3497.093
+            151,    293.15,    414.3749
+            152,    293.15,    367.6608
+            158,    293.15,    3497.093
+            160,    293.15,    414.3749
+            164,    293.15,    414.3749
+            166,    293.15,    3497.093
+            179,    293.15,    700.367
+            188,    293.15,    414.3749
+            198,    293.15,    414.3749
+            200,    293.15,    3497.093
+            215,    293.15,    414.3749
+            228,    293.15,    1595.461
+            232,    293.15,    700.367
+            242,    293.15,    700.367
+            252,    293.15,    1595.461
+            256,    293.15,    700.367
+            260,    293.15,    367.6608
+            262,    293.15,    3497.093
+            269,    293.15,    414.3749
+            271,    293.15,    3497.093
+            283,    293.15,    414.3749
+            293,    293.15,    1595.461
+            297,    293.15,    367.6608
+            299,    293.15,    3497.093
+            306,    293.15,    414.3749
+            315,    293.15,    414.3749
+            327,    293.15,    3497.093
+            333,    293.15,    367.6608
+            339,    293.15,    583.8109
+            348,    293.15,    3497.093
+            350,    293.15,    414.3749
+            354,    293.15,    3497.093
+            356,    293.15,    414.3749
+            360,    293.15,    1595.461
+            364,    293.15,    700.3781
+            380,    293.15,    244.0654
+            389,    293.15,    583.8106
+            418,    293.15,    244.0654
+            428,    293.15,    700.3781
+            432,    293.15,    1595.46
+            433,    293.15,    15605.85
+HEADER CONDUCTOR DATA, AXH1_D_PROPPANEL
+C Contact - Face Contactor-Prop Panels - [AXH1_D_PROPPANEL][6]::2905B
+            1,    AXH1_D_PROPPANEL.1,    AXH1_D_SERVICEMODULE.355,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            2,    AXH1_D_PROPPANEL.43,    AXH1_D_SERVICEMODULE.355,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            3,    AXH1_D_PROPPANEL.67,    AXH1_D_SERVICEMODULE.528,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            4,    AXH1_D_PROPPANEL.76,    AXH1_D_SERVICEMODULE.528,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            5,    AXH1_D_PROPPANEL.85,    AXH1_D_SERVICEMODULE.253,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            6,    AXH1_D_PROPPANEL.112,    AXH1_D_SERVICEMODULE.448,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            7,    AXH1_D_PROPPANEL.152,    AXH1_D_SERVICEMODULE.448,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            8,    AXH1_D_PROPPANEL.260,    AXH1_D_SERVICEMODULE.253,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            9,    AXH1_D_PROPPANEL.297,    AXH1_D_SERVICEMODULE.716,    0.1*(10/PropPanel_ProPanelBoltR)*10
+            10,    AXH1_D_PROPPANEL.333,    AXH1_D_SERVICEMODULE.716,    0.1*(10/PropPanel_ProPanelBoltR)*10
+HEADER NODE DATA, AXH1_D_SERVICEMODULE
+            227,    293.15,    6176.314
+            239,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            240,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            241,    293.15,    6176.314
+            253,    293.15,    1809.971
+            259,    293.15,    1007.196
+            268,    293.15,    1809.971
+            276,    (AXH1_D_StartTemperature+459.67)/1.8,    1018.49
+            277,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            278,    (AXH1_D_StartTemperature+459.67)/1.8,    1018.49
+            279,    293.15,    792.8647
+            281,    293.15,    1238.837
+            285,    293.15,    2610.626
+            291,    293.15,    4423.965
+            295,    293.15,    36.4718
+            296,    293.15,    36.4718
+            307,    293.15,    1809.971
+            316,    293.15,    1007.196
+            322,    293.15,    1809.971
+            328,    (AXH1_D_StartTemperature+459.67)/1.8,    4073.958
+            329,    293.15,    6176.314
+            341,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            342,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            343,    293.15,    6176.314
+            355,    293.15,    1809.971
+            364,    293.15,    1007.196
+            370,    293.15,    1809.971
+            376,    (AXH1_D_StartTemperature+459.67)/1.8,    4073.958
+            387,    293.15,    4259.18
+            388,    293.15,    4259.18
+            389,    293.15,    4259.18
+            409,    293.15,    17033.39
+            433,    293.15,    6176.314
+            445,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            446,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            447,    (AXH1_D_StartTemperature+459.67)/1.8,    4073.958
+            448,    293.15,    1809.971
+            457,    293.15,    1007.196
+            463,    293.15,    1809.971
+            469,    293.15,    6176.314
+            481,    293.15,    792.8647
+            489,    293.15,    2610.626
+            493,    293.15,    4423.965
+            503,    (AXH1_D_StartTemperature+459.67)/1.8,    4073.958
+            504,    293.15,    6176.314
+            516,    293.15,    6176.314
+            528,    293.15,    1809.971
+            537,    293.15,    1007.196
+            551,    293.15,    1809.971
+            557,    293.15,    4423.965
+            565,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            566,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            567,    293.15,    6176.314
+            579,    293.15,    6176.314
+            591,    (AXH1_D_StartTemperature+459.67)/1.8,    4073.958
+            592,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            593,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            594,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            595,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            596,    293.15,    226.3109
+            597,    293.15,    226.3109
+            608,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            609,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            SIV 610,    293.15,    TDPROPS.A1,    0.003153865
+            SIV 619,    293.15,    TDPROPS.A5,    0.03500842
+            SIV 628,    293.15,    TDPROPS.A1,    0.006309654
+            637,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            638,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            SIV 639,    293.15,    TDPROPS.A1,    0.003153865
+            SIV 648,    293.15,    TDPROPS.A5,    0.03500842
+            SIV 657,    293.15,    TDPROPS.A1,    0.006309654
+            666,    293.15,    4423.965
+            670,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            671,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            672,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            673,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            SIV 674,    293.15,    TDPROPS.A1,    0.003153865
+            SIV 683,    293.15,    TDPROPS.A5,    0.03500842
+            SIV 692,    293.15,    TDPROPS.A1,    0.006309654
+            701,    293.15,    1447.982
+            704,    293.15,    805.7594
+            716,    293.15,    1447.982
+            722,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            723,    (AXH1_D_StartTemperature+459.67)/1.8,    2036.979
+            724,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            725,    (AXH1_D_StartTemperature+459.67)/1.8,    8184.994
+            SIV 726,    293.15,    TDPROPS.A1,    0.003153865
+            SIV 735,    293.15,    TDPROPS.A5,    0.03500842
+            SIV 744,    293.15,    TDPROPS.A1,    0.006309654
+            SIV 753,    293.15,    TDPROPS.A1,    0.003153865
+            SIV 762,    293.15,    TDPROPS.A5,    0.03500842
+            SIV 771,    293.15,    TDPROPS.A1,    0.006309654
+            780,    293.15,    7755.61
+            781,    293.15,    7755.61
+            782,    293.15,    7755.61
+            SIV 849,    293.15,    TDPROPS.A1,    0.003153865
+            SIV 858,    293.15,    TDPROPS.A5,    0.03500842
+            SIV 867,    293.15,    TDPROPS.A1,    0.006309654
+            876,    293.15,    1151.113
+            877,    293.15,    1151.113
+            878,    293.15,    1151.113
+            915,    293.15,    341.2741
+            916,    293.15,    341.2741
+            917,    293.15,    341.2741
+            918,    293.15,    341.2741
+            941,    293.15,    76.23888
+            942,    293.15,    76.23888
+            950,    293.15,    792.8647
+            958,    293.15,    76.23888
+            959,    293.15,    76.23888
+            969,    293.15,    10655.4
+            970,    293.15,    10655.4
+            971,    293.15,    10655.4
+            1016,    293.15,    4067.39
+            1018,    293.15,    4067.39
+            1038,    293.15,    4067.39
+            1101,    293.15,    585.2471
+            1112,    293.15,    1732.084
+            1116,    293.15,    585.2471
+            1119,    293.15,    1732.084
+            1137,    293.15,    76.23888
+            1139,    293.15,    76.23888
+            1151,    293.15,    76.23888
+            1153,    293.15,    76.23888
+            1158,    293.15,    693.7129
+            1161,    293.15,    693.7129
+            1177,    293.15,    792.8647
+            1198,    293.15,    941.4675
+            1199,    293.15,    941.4675
+            1200,    293.15,    941.4675
+            1201,    293.15,    941.4675
+            1202,    293.15,    1238.837
+            2000,    293.15,    772.004
+            2001,    293.15,    772.004
+            2002,    293.15,    585.2471
+            2003,    293.15,    585.2471
+            2007,    293.15,    11450.09
+            2008,    293.15,    17033.39
+            2009,    293.15,    17033.39
+            2010,    293.15,    11450.09
+            2012,    293.15,    23154.19
+            2013,    293.15,    23154.19
+            2014,    293.15,    23154.19
+            10285,    293.15,    -1.
+            10489,    293.15,    -1.
+            10780,    293.15,    -1.
+            10781,    293.15,    -1.
+            10782,    293.15,    -1.
+            10969,    293.15,    -1.
+            10970,    293.15,    -1.
+            10971,    293.15,    -1.
+            11016,    293.15,    -1.
+            11018,    293.15,    -1.
+            11038,    293.15,    -1.
+            12012,    293.15,    -1.
+            12013,    293.15,    -1.
+            12014,    293.15,    -1.
+            20285,    293.15,    -1.
+            20295,    293.15,    -1.
+            20296,    293.15,    -1.
+            20489,    293.15,    -1.
+            20596,    293.15,    -1.
+            20597,    293.15,    -1.
+            20876,    293.15,    -1.
+            20877,    293.15,    -1.
+            20878,    293.15,    -1.
+            20915,    293.15,    -1.
+            20916,    293.15,    -1.
+            20917,    293.15,    -1.
+            20918,    293.15,    -1.
+            20969,    293.15,    -1.
+            20970,    293.15,    -1.
+            20971,    293.15,    -1.
+            22000,    293.15,    -1.
+            22001,    293.15,    -1.
+            22012,    293.15,    -1.
+            22013,    293.15,    -1.
+            22014,    293.15,    -1.
+HEADER CONDUCTOR DATA, AXH1_D_SERVICEMODULE
+C Contact - Face Contactor-TANK (all)[AXH1_D_SERVICEMODULE][2]::1BDA1
+            1,    AXH1_D_COPVTANK.2139,    AXH1_D_COPVTANK.3348,    0.145
+            2,    AXH1_D_COPVTANK.2329,    AXH1_D_COPVTANK.3233,    0.145
+C Contact - Face Contactor-COPV Perpendicular Rods (all)[AXH1_D_SERVICEMODULE][8]::1BEC5
+            3,    AXH1_D_COPVTANK.2404,    AXH1_D_COPVTANK.3641,    0.03909135
+C Contact - Face Contactor-COPV Angular Rods (all)[AXH1_D_SERVICEMODULE][10]::1BEC7
+            4,    AXH1_D_COPVTANK.2409,    AXH1_D_COPVTANK.2414,    0.145
+            5,    AXH1_D_COPVTANK.2409,    AXH1_D_COPVTANK.2419,    0.145
+            6,    AXH1_D_COPVTANK.2424,    AXH1_D_COPVTANK.2429,    0.145
+            7,    AXH1_D_COPVTANK.2424,    AXH1_D_COPVTANK.2434,    0.145
+            8,    AXH1_D_COPVTANK.2424,    AXH1_D_COPVTANK.2454,    0.145
+            9,    AXH1_D_COPVTANK.2476,    AXH1_D_COPVTANK.3585,    0.145
+            10,    AXH1_D_COPVTANK.2481,    AXH1_D_COPVTANK.3641,    0.145
+            11,    AXH1_D_COPVTANK.2486,    AXH1_D_COPVTANK.3641,    0.145
+            12,    AXH1_D_COPVTANK.2491,    AXH1_D_COPVTANK.3585,    0.145
+C Contact - Face Contactor-TANK (all)[AXH1_D_SERVICEMODULE][2]::1BDA1
+            13,    AXH1_D_COPVTANK.3094,    AXH1_D_COPVTANK.3338,    0.145
+            14,    AXH1_D_COPVTANK.3097,    AXH1_D_COPVTANK.3340,    0.145
+            15,    AXH1_D_COPVTANK.3100,    AXH1_D_COPVTANK.3342,    0.145
+            16,    AXH1_D_COPVTANK.3103,    AXH1_D_COPVTANK.3344,    0.145
+            17,    AXH1_D_COPVTANK.3106,    AXH1_D_COPVTANK.3953,    0.145
+            18,    AXH1_D_COPVTANK.3208,    AXH1_D_COPVTANK.3267,    0.145
+            19,    AXH1_D_COPVTANK.3213,    AXH1_D_COPVTANK.3268,    0.145
+            20,    AXH1_D_COPVTANK.3218,    AXH1_D_COPVTANK.3269,    0.145
+            21,    AXH1_D_COPVTANK.3223,    AXH1_D_COPVTANK.3270,    0.145
+            22,    AXH1_D_COPVTANK.3228,    AXH1_D_COPVTANK.3271,    0.145
+C Contact - Face Contactor-COPV Perpendicular Rods (all)[AXH1_D_SERVICEMODULE][8]::1BEC5
+            23,    AXH1_D_COPVTANK.3408,    AXH1_D_COPVTANK.3631,    0.03909135
+            24,    AXH1_D_COPVTANK.3411,    AXH1_D_COPVTANK.3633,    0.03909135
+            25,    AXH1_D_COPVTANK.3413,    AXH1_D_COPVTANK.3635,    0.6745432
+            26,    AXH1_D_COPVTANK.3415,    AXH1_D_COPVTANK.3637,    0.03909135
+            27,    AXH1_D_COPVTANK.3417,    AXH1_D_COPVTANK.3639,    0.03909135
+C Contact - Face Contactor-COPV Angular Rods (all)[AXH1_D_SERVICEMODULE][10]::1BEC7
+            28,    AXH1_D_COPVTANK.3419,    AXH1_D_COPVTANK.3439,    0.145
+            29,    AXH1_D_COPVTANK.3419,    AXH1_D_COPVTANK.3465,    0.145
+            30,    AXH1_D_COPVTANK.3420,    AXH1_D_COPVTANK.3442,    0.145
+            31,    AXH1_D_COPVTANK.3420,    AXH1_D_COPVTANK.3468,    0.145
+            32,    AXH1_D_COPVTANK.3421,    AXH1_D_COPVTANK.3444,    0.145
+            33,    AXH1_D_COPVTANK.3421,    AXH1_D_COPVTANK.3470,    0.145
+            34,    AXH1_D_COPVTANK.3422,    AXH1_D_COPVTANK.3446,    0.145
+            35,    AXH1_D_COPVTANK.3422,    AXH1_D_COPVTANK.3472,    0.145
+            36,    AXH1_D_COPVTANK.3423,    AXH1_D_COPVTANK.3448,    0.145
+            37,    AXH1_D_COPVTANK.3423,    AXH1_D_COPVTANK.3474,    0.145
+            38,    AXH1_D_COPVTANK.3492,    AXH1_D_COPVTANK.3517,    0.145
+            39,    AXH1_D_COPVTANK.3492,    AXH1_D_COPVTANK.3543,    0.145
+            40,    AXH1_D_COPVTANK.3492,    AXH1_D_COPVTANK.3591,    0.145
+            41,    AXH1_D_COPVTANK.3494,    AXH1_D_COPVTANK.3520,    0.145
+            42,    AXH1_D_COPVTANK.3494,    AXH1_D_COPVTANK.3546,    0.145
+            43,    AXH1_D_COPVTANK.3494,    AXH1_D_COPVTANK.3592,    0.145
+            44,    AXH1_D_COPVTANK.3496,    AXH1_D_COPVTANK.3522,    0.145
+            45,    AXH1_D_COPVTANK.3496,    AXH1_D_COPVTANK.3548,    0.145
+            46,    AXH1_D_COPVTANK.3496,    AXH1_D_COPVTANK.3593,    0.145
+            47,    AXH1_D_COPVTANK.3498,    AXH1_D_COPVTANK.3524,    0.145
+            48,    AXH1_D_COPVTANK.3498,    AXH1_D_COPVTANK.3550,    0.145
+            49,    AXH1_D_COPVTANK.3498,    AXH1_D_COPVTANK.3594,    0.145
+            50,    AXH1_D_COPVTANK.3500,    AXH1_D_COPVTANK.3526,    0.145
+            51,    AXH1_D_COPVTANK.3500,    AXH1_D_COPVTANK.3552,    0.145
+            52,    AXH1_D_COPVTANK.3500,    AXH1_D_COPVTANK.3595,    0.145
+            53,    AXH1_D_COPVTANK.3569,    AXH1_D_COPVTANK.3611,    0.145
+            54,    AXH1_D_COPVTANK.3569,    AXH1_D_COPVTANK.3626,    0.145
+            55,    AXH1_D_COPVTANK.3573,    AXH1_D_COPVTANK.3612,    0.145
+            56,    AXH1_D_COPVTANK.3573,    AXH1_D_COPVTANK.3627,    0.145
+            57,    AXH1_D_COPVTANK.3576,    AXH1_D_COPVTANK.3613,    0.145
+            58,    AXH1_D_COPVTANK.3576,    AXH1_D_COPVTANK.3628,    0.145
+            59,    AXH1_D_COPVTANK.3579,    AXH1_D_COPVTANK.3614,    0.145
+            60,    AXH1_D_COPVTANK.3579,    AXH1_D_COPVTANK.3629,    0.145
+            61,    AXH1_D_COPVTANK.3582,    AXH1_D_COPVTANK.3615,    0.145
+            62,    AXH1_D_COPVTANK.3582,    AXH1_D_COPVTANK.3630,    0.145
+            63,    AXH1_D_COPVTANK.3616,    AXH1_D_COPVTANK.3631,    0.145
+            64,    AXH1_D_COPVTANK.3617,    AXH1_D_COPVTANK.3633,    0.145
+            65,    AXH1_D_COPVTANK.3618,    AXH1_D_COPVTANK.3635,    0.145
+            66,    AXH1_D_COPVTANK.3619,    AXH1_D_COPVTANK.3637,    0.145
+            67,    AXH1_D_COPVTANK.3620,    AXH1_D_COPVTANK.3639,    0.145
+            68,    AXH1_D_COPVTANK.3621,    AXH1_D_COPVTANK.3631,    0.145
+            69,    AXH1_D_COPVTANK.3622,    AXH1_D_COPVTANK.3633,    0.145
+            70,    AXH1_D_COPVTANK.3623,    AXH1_D_COPVTANK.3635,    0.145
+            71,    AXH1_D_COPVTANK.3624,    AXH1_D_COPVTANK.3637,    0.145
+            72,    AXH1_D_COPVTANK.3625,    AXH1_D_COPVTANK.3639,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            73,    AXH1_D_LPGFBRACKETS.121,    AXH1_D_SERVICEMODULE.1018,    12.881
+            74,    AXH1_D_LPGFBRACKETS.133,    AXH1_D_SERVICEMODULE.1018,    12.881
+            75,    AXH1_D_LPGFBRACKETS.145,    AXH1_D_SERVICEMODULE.1018,    12.881
+            76,    AXH1_D_LPGFBRACKETS.153,    AXH1_D_SERVICEMODULE.1018,    12.881
+            77,    AXH1_D_LPGFBRACKETS.161,    AXH1_D_SERVICEMODULE.1018,    12.881
+            78,    AXH1_D_LPGFBRACKETS.169,    AXH1_D_SERVICEMODULE.1018,    12.881
+            79,    AXH1_D_LPGFBRACKETS.190,    AXH1_D_SERVICEMODULE.1038,    12.881
+            80,    AXH1_D_LPGFBRACKETS.194,    AXH1_D_SERVICEMODULE.1038,    12.881
+            81,    AXH1_D_LPGFBRACKETS.210,    AXH1_D_SERVICEMODULE.1016,    12.881
+            82,    AXH1_D_LPGFBRACKETS.222,    AXH1_D_SERVICEMODULE.1016,    12.881
+            83,    AXH1_D_LPGFBRACKETS.230,    AXH1_D_SERVICEMODULE.1016,    12.881
+            84,    AXH1_D_LPGFBRACKETS.238,    AXH1_D_SERVICEMODULE.1038,    12.881
+C Contact - Face Contactor-Dampers -> Forward Tunnel[AXH1_D_SERVICEMODULE][4]::2C55C
+            85,    AXH1_D_PRESSURESHELL_SM.3991,    AXH1_D_SERVICEMODULE.592,    0.145
+            86,    AXH1_D_PRESSURESHELL_SM.3991,    AXH1_D_SERVICEMODULE.594,    0.145
+            87,    AXH1_D_PRESSURESHELL_SM.3992,    AXH1_D_SERVICEMODULE.608,    0.145
+            88,    AXH1_D_PRESSURESHELL_SM.3992,    AXH1_D_SERVICEMODULE.637,    0.145
+            89,    AXH1_D_PRESSURESHELL_SM.3993,    AXH1_D_SERVICEMODULE.672,    0.145
+            90,    AXH1_D_PRESSURESHELL_SM.3993,    AXH1_D_SERVICEMODULE.724,    0.145
+C Contact - Edge Contactor-SM LPGF Panel Conductance[AXH1_D_SERVICEMODULE][6]::1BC70
+            91,    AXH1_D_SERVICEMODULE.227,    AXH1_D_SERVICEMODULE.285,    0.1013789
+            92,    AXH1_D_SERVICEMODULE.239,    AXH1_D_SERVICEMODULE.240,    0.1198006
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            93,    AXH1_D_SERVICEMODULE.239,    AXH1_D_SERVICEMODULE.259,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            94,    AXH1_D_SERVICEMODULE.253,    AXH1_D_SERVICEMODULE.1016,    13.68607
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            95,    AXH1_D_SERVICEMODULE.259,    AXH1_D_SERVICEMODULE.276,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            96,    AXH1_D_SERVICEMODULE.259,    AXH1_D_SERVICEMODULE.1016,    7.615895
+            97,    AXH1_D_SERVICEMODULE.268,    AXH1_D_SERVICEMODULE.1016,    13.68607
+            98,    AXH1_D_SERVICEMODULE.276,    AXH1_D_SERVICEMODULE.277,    0.2396012
+            99,    AXH1_D_SERVICEMODULE.277,    AXH1_D_SERVICEMODULE.278,    0.2396012
+C Contact - Edge Contactor-SM LPGF Panel Conductance[AXH1_D_SERVICEMODULE][6]::1BC70
+            100,    AXH1_D_SERVICEMODULE.281,    AXH1_D_SERVICEMODULE.285,    0.1886211
+            101,    AXH1_D_SERVICEMODULE.285,    AXH1_D_SERVICEMODULE.343,    0.1013789
+            102,    AXH1_D_SERVICEMODULE.285,    AXH1_D_SERVICEMODULE.1112,    0.1886211
+            -103,    AXH1_D_SERVICEMODULE.285,    AXH1_D_SERVICEMODULE.10285,    0.005386516
+            -104,    AXH1_D_SERVICEMODULE.285,    AXH1_D_SERVICEMODULE.20285,    0.005386516
+            105,    AXH1_D_SERVICEMODULE.295,    AXH1_D_SERVICEMODULE.296,    0.00153955
+            -106,    AXH1_D_SERVICEMODULE.295,    AXH1_D_SERVICEMODULE.20295,    0.000136982
+            -107,    AXH1_D_SERVICEMODULE.296,    AXH1_D_SERVICEMODULE.20296,    0.000136982
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            108,    AXH1_D_SERVICEMODULE.307,    AXH1_D_SERVICEMODULE.1038,    13.68607
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            109,    AXH1_D_SERVICEMODULE.316,    AXH1_D_SERVICEMODULE.328,    0.145
+            110,    AXH1_D_SERVICEMODULE.316,    AXH1_D_SERVICEMODULE.670,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            111,    AXH1_D_SERVICEMODULE.316,    AXH1_D_SERVICEMODULE.1038,    7.615895
+            112,    AXH1_D_SERVICEMODULE.322,    AXH1_D_SERVICEMODULE.1038,    13.68607
+            113,    AXH1_D_SERVICEMODULE.341,    AXH1_D_SERVICEMODULE.342,    0.1198006
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            114,    AXH1_D_SERVICEMODULE.341,    AXH1_D_SERVICEMODULE.364,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            115,    AXH1_D_SERVICEMODULE.355,    AXH1_D_SERVICEMODULE.1038,    13.68607
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            116,    AXH1_D_SERVICEMODULE.364,    AXH1_D_SERVICEMODULE.376,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            117,    AXH1_D_SERVICEMODULE.364,    AXH1_D_SERVICEMODULE.1038,    7.615895
+            118,    AXH1_D_SERVICEMODULE.370,    AXH1_D_SERVICEMODULE.1038,    13.68607
+            119,    AXH1_D_SERVICEMODULE.387,    AXH1_D_SERVICEMODULE.388,    0.01342118
+            120,    AXH1_D_SERVICEMODULE.387,    AXH1_D_SERVICEMODULE.389,    0.01342118
+            121,    AXH1_D_SERVICEMODULE.388,    AXH1_D_SERVICEMODULE.389,    0.01342118
+            122,    AXH1_D_SERVICEMODULE.409,    AXH1_D_SERVICEMODULE.2008,    0.05142334
+            123,    AXH1_D_SERVICEMODULE.409,    AXH1_D_SERVICEMODULE.2009,    0.05142334
+            124,    AXH1_D_SERVICEMODULE.445,    AXH1_D_SERVICEMODULE.446,    0.1198006
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            125,    AXH1_D_SERVICEMODULE.445,    AXH1_D_SERVICEMODULE.457,    0.145
+            126,    AXH1_D_SERVICEMODULE.447,    AXH1_D_SERVICEMODULE.457,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            127,    AXH1_D_SERVICEMODULE.448,    AXH1_D_SERVICEMODULE.1018,    13.68607
+            128,    AXH1_D_SERVICEMODULE.457,    AXH1_D_SERVICEMODULE.1018,    7.615895
+            129,    AXH1_D_SERVICEMODULE.463,    AXH1_D_SERVICEMODULE.1018,    13.68607
+C Contact - Edge Contactor-SM LPGF Panel Conductance[AXH1_D_SERVICEMODULE][6]::1BC70
+            130,    AXH1_D_SERVICEMODULE.469,    AXH1_D_SERVICEMODULE.489,    0.1013789
+            131,    AXH1_D_SERVICEMODULE.489,    AXH1_D_SERVICEMODULE.567,    0.1013789
+            132,    AXH1_D_SERVICEMODULE.489,    AXH1_D_SERVICEMODULE.1119,    0.1886211
+            133,    AXH1_D_SERVICEMODULE.489,    AXH1_D_SERVICEMODULE.1202,    0.1886211
+            -134,    AXH1_D_SERVICEMODULE.489,    AXH1_D_SERVICEMODULE.10489,    0.005386516
+            -135,    AXH1_D_SERVICEMODULE.489,    AXH1_D_SERVICEMODULE.20489,    0.005386516
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            136,    AXH1_D_SERVICEMODULE.503,    AXH1_D_SERVICEMODULE.537,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            137,    AXH1_D_SERVICEMODULE.528,    AXH1_D_SERVICEMODULE.1016,    13.68607
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            138,    AXH1_D_SERVICEMODULE.537,    AXH1_D_SERVICEMODULE.565,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            139,    AXH1_D_SERVICEMODULE.537,    AXH1_D_SERVICEMODULE.1016,    7.615895
+            140,    AXH1_D_SERVICEMODULE.551,    AXH1_D_SERVICEMODULE.1016,    13.68607
+            141,    AXH1_D_SERVICEMODULE.565,    AXH1_D_SERVICEMODULE.566,    0.1198006
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            142,    AXH1_D_SERVICEMODULE.591,    AXH1_D_SERVICEMODULE.704,    0.145
+            143,    AXH1_D_SERVICEMODULE.592,    AXH1_D_SERVICEMODULE.593,    0.2324812
+C Contact - Face Contactor-ROD - RING (all)[AXH1_D_SERVICEMODULE][1]::1BC00
+            144,    AXH1_D_SERVICEMODULE.593,    AXH1_D_SERVICEMODULE.1016,    0.29
+            145,    AXH1_D_SERVICEMODULE.594,    AXH1_D_SERVICEMODULE.595,    0.2324812
+C Contact - Face Contactor-ROD - RING (all)[AXH1_D_SERVICEMODULE][1]::1BC00
+            146,    AXH1_D_SERVICEMODULE.595,    AXH1_D_SERVICEMODULE.1018,    0.29
+            147,    AXH1_D_SERVICEMODULE.596,    AXH1_D_SERVICEMODULE.597,    0.00955466
+            -148,    AXH1_D_SERVICEMODULE.596,    AXH1_D_SERVICEMODULE.20596,    0.0008499861
+            -149,    AXH1_D_SERVICEMODULE.597,    AXH1_D_SERVICEMODULE.20597,    0.0008499861
+            150,    AXH1_D_SERVICEMODULE.608,    AXH1_D_SERVICEMODULE.609,    0.2324812
+C Contact - Face Contactor-ROD - RING (all)[AXH1_D_SERVICEMODULE][1]::1BC00
+            151,    AXH1_D_SERVICEMODULE.609,    AXH1_D_SERVICEMODULE.1016,    0.29
+C Contact - Face Contactor-SM Cone -> SM Cone (Layers)[AXH1_D_SERVICEMODULE][6]::296B7
+            152,    AXH1_D_SERVICEMODULE.610,    AXH1_D_SERVICEMODULE.628,    2.870165
+            153,    AXH1_D_SERVICEMODULE.637,    AXH1_D_SERVICEMODULE.638,    0.2324812
+C Contact - Face Contactor-ROD - RING (all)[AXH1_D_SERVICEMODULE][1]::1BC00
+            154,    AXH1_D_SERVICEMODULE.638,    AXH1_D_SERVICEMODULE.1038,    0.29
+C Contact - Face Contactor-SM Cone -> SM Cone (Layers)[AXH1_D_SERVICEMODULE][6]::296B7
+            155,    AXH1_D_SERVICEMODULE.639,    AXH1_D_SERVICEMODULE.657,    2.870165
+            156,    AXH1_D_SERVICEMODULE.670,    AXH1_D_SERVICEMODULE.671,    0.1198006
+            157,    AXH1_D_SERVICEMODULE.672,    AXH1_D_SERVICEMODULE.673,    0.2324812
+C Contact - Face Contactor-ROD - RING (all)[AXH1_D_SERVICEMODULE][1]::1BC00
+            158,    AXH1_D_SERVICEMODULE.673,    AXH1_D_SERVICEMODULE.1038,    0.29
+C Contact - Face Contactor-SM Cone -> SM Cone (Layers)[AXH1_D_SERVICEMODULE][6]::296B7
+            159,    AXH1_D_SERVICEMODULE.674,    AXH1_D_SERVICEMODULE.692,    2.870165
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            160,    AXH1_D_SERVICEMODULE.701,    AXH1_D_SERVICEMODULE.1018,    13.68607
+C Contact - Face Contactor-ROD (all) -> Longeron[AXH1_D_SERVICEMODULE][5]::1BC29
+            161,    AXH1_D_SERVICEMODULE.704,    AXH1_D_SERVICEMODULE.722,    0.145
+C Contact - Edge Contactor-I-BEAM - BOTTOM - SMALL PLATE[AXH1_D_SERVICEMODULE][2]::1BBF5
+            162,    AXH1_D_SERVICEMODULE.704,    AXH1_D_SERVICEMODULE.1018,    7.615895
+            163,    AXH1_D_SERVICEMODULE.716,    AXH1_D_SERVICEMODULE.1018,    13.68607
+            164,    AXH1_D_SERVICEMODULE.722,    AXH1_D_SERVICEMODULE.723,    0.1198006
+            165,    AXH1_D_SERVICEMODULE.724,    AXH1_D_SERVICEMODULE.725,    0.2324812
+C Contact - Face Contactor-ROD - RING (all)[AXH1_D_SERVICEMODULE][1]::1BC00
+            166,    AXH1_D_SERVICEMODULE.725,    AXH1_D_SERVICEMODULE.1018,    0.29
+C Contact - Face Contactor-SM Cone -> SM Cone (Layers)[AXH1_D_SERVICEMODULE][6]::296B7
+            167,    AXH1_D_SERVICEMODULE.726,    AXH1_D_SERVICEMODULE.744,    2.870165
+            168,    AXH1_D_SERVICEMODULE.753,    AXH1_D_SERVICEMODULE.771,    2.870165
+            169,    AXH1_D_SERVICEMODULE.780,    AXH1_D_SERVICEMODULE.781,    0.02245225
+            170,    AXH1_D_SERVICEMODULE.780,    AXH1_D_SERVICEMODULE.782,    0.02245225
+C Contact - Face Contactor-Ring -> Ring[AXH1_D_SERVICEMODULE][5]::1BC85
+            171,    AXH1_D_SERVICEMODULE.780,    AXH1_D_SERVICEMODULE.877,    44.99998
+            172,    AXH1_D_SERVICEMODULE.780,    AXH1_D_SERVICEMODULE.878,    4.999998
+            -173,    AXH1_D_SERVICEMODULE.780,    AXH1_D_SERVICEMODULE.10780,    0.007081137
+            174,    AXH1_D_SERVICEMODULE.781,    AXH1_D_SERVICEMODULE.782,    0.02245225
+C Contact - Face Contactor-Ring -> Ring[AXH1_D_SERVICEMODULE][5]::1BC85
+            175,    AXH1_D_SERVICEMODULE.781,    AXH1_D_SERVICEMODULE.876,    44.99998
+            176,    AXH1_D_SERVICEMODULE.781,    AXH1_D_SERVICEMODULE.877,    4.999998
+            -177,    AXH1_D_SERVICEMODULE.781,    AXH1_D_SERVICEMODULE.10781,    0.007081137
+C Contact - Face Contactor-Ring -> Ring[AXH1_D_SERVICEMODULE][5]::1BC85
+            178,    AXH1_D_SERVICEMODULE.782,    AXH1_D_SERVICEMODULE.876,    4.999998
+            179,    AXH1_D_SERVICEMODULE.782,    AXH1_D_SERVICEMODULE.878,    44.99998
+            -180,    AXH1_D_SERVICEMODULE.782,    AXH1_D_SERVICEMODULE.10782,    0.007081137
+C Contact - Face Contactor-SM Cone -> SM Cone (Layers)[AXH1_D_SERVICEMODULE][6]::296B7
+            181,    AXH1_D_SERVICEMODULE.849,    AXH1_D_SERVICEMODULE.867,    2.870165
+            182,    AXH1_D_SERVICEMODULE.876,    AXH1_D_SERVICEMODULE.877,    0.003356266
+            183,    AXH1_D_SERVICEMODULE.876,    AXH1_D_SERVICEMODULE.878,    0.003356266
+            -184,    AXH1_D_SERVICEMODULE.876,    AXH1_D_SERVICEMODULE.20876,    0.004725014
+            185,    AXH1_D_SERVICEMODULE.877,    AXH1_D_SERVICEMODULE.878,    0.003356266
+            -186,    AXH1_D_SERVICEMODULE.877,    AXH1_D_SERVICEMODULE.20877,    0.004725014
+            -187,    AXH1_D_SERVICEMODULE.878,    AXH1_D_SERVICEMODULE.20878,    0.004725014
+            188,    AXH1_D_SERVICEMODULE.915,    AXH1_D_SERVICEMODULE.916,    0.008383403
+            189,    AXH1_D_SERVICEMODULE.915,    AXH1_D_SERVICEMODULE.918,    0.008383403
+            -190,    AXH1_D_SERVICEMODULE.915,    AXH1_D_SERVICEMODULE.20915,    0.001602212
+            191,    AXH1_D_SERVICEMODULE.916,    AXH1_D_SERVICEMODULE.917,    0.008383403
+            -192,    AXH1_D_SERVICEMODULE.916,    AXH1_D_SERVICEMODULE.20916,    0.001602212
+            193,    AXH1_D_SERVICEMODULE.917,    AXH1_D_SERVICEMODULE.918,    0.008383403
+            -194,    AXH1_D_SERVICEMODULE.917,    AXH1_D_SERVICEMODULE.20917,    0.001602212
+            -195,    AXH1_D_SERVICEMODULE.918,    AXH1_D_SERVICEMODULE.20918,    0.001602212
+C Contact - Face Contactor-ROD: ROD->Rod[AXH1_D_SERVICEMODULE][3]::1BC31
+            196,    AXH1_D_SERVICEMODULE.942,    AXH1_D_SERVICEMODULE.1101,    0.145
+            197,    AXH1_D_SERVICEMODULE.959,    AXH1_D_SERVICEMODULE.2002,    0.145
+            198,    AXH1_D_SERVICEMODULE.969,    AXH1_D_SERVICEMODULE.970,    0.03368145
+            199,    AXH1_D_SERVICEMODULE.969,    AXH1_D_SERVICEMODULE.971,    0.03368145
+            -200,    AXH1_D_SERVICEMODULE.969,    AXH1_D_SERVICEMODULE.10969,    0.00400199
+            -201,    AXH1_D_SERVICEMODULE.969,    AXH1_D_SERVICEMODULE.20969,    0.00400199
+            202,    AXH1_D_SERVICEMODULE.970,    AXH1_D_SERVICEMODULE.971,    0.03368145
+            -203,    AXH1_D_SERVICEMODULE.970,    AXH1_D_SERVICEMODULE.10970,    0.00400199
+            -204,    AXH1_D_SERVICEMODULE.970,    AXH1_D_SERVICEMODULE.20970,    0.00400199
+            -205,    AXH1_D_SERVICEMODULE.971,    AXH1_D_SERVICEMODULE.10971,    0.00400199
+            -206,    AXH1_D_SERVICEMODULE.971,    AXH1_D_SERVICEMODULE.20971,    0.00400199
+            207,    AXH1_D_SERVICEMODULE.1016,    AXH1_D_SERVICEMODULE.1018,    0.01285222
+            208,    AXH1_D_SERVICEMODULE.1016,    AXH1_D_SERVICEMODULE.1038,    0.01285222
+C Contact - Face Contactor-ROD -> SM Disk[AXH1_D_SERVICEMODULE][2]::1BC35
+            209,    AXH1_D_SERVICEMODULE.1016,    AXH1_D_SERVICEMODULE.1200,    0.03625
+            -210,    AXH1_D_SERVICEMODULE.1016,    AXH1_D_SERVICEMODULE.11016,    0.01527644
+            211,    AXH1_D_SERVICEMODULE.1018,    AXH1_D_SERVICEMODULE.1038,    0.01285222
+C Contact - Face Contactor-ROD -> SM Disk[AXH1_D_SERVICEMODULE][2]::1BC35
+            212,    AXH1_D_SERVICEMODULE.1018,    AXH1_D_SERVICEMODULE.1198,    0.03625
+            213,    AXH1_D_SERVICEMODULE.1018,    AXH1_D_SERVICEMODULE.1199,    0.03625
+            -214,    AXH1_D_SERVICEMODULE.1018,    AXH1_D_SERVICEMODULE.11018,    0.01527644
+C Contact - Face Contactor-ROD -> SM Disk[AXH1_D_SERVICEMODULE][2]::1BC35
+            215,    AXH1_D_SERVICEMODULE.1038,    AXH1_D_SERVICEMODULE.1201,    0.03625
+            -216,    AXH1_D_SERVICEMODULE.1038,    AXH1_D_SERVICEMODULE.11038,    0.01527644
+C Contact - Face Contactor-ROD: ROD->Rod[AXH1_D_SERVICEMODULE][3]::1BC31
+            217,    AXH1_D_SERVICEMODULE.1116,    AXH1_D_SERVICEMODULE.1153,    0.145
+            218,    AXH1_D_SERVICEMODULE.1139,    AXH1_D_SERVICEMODULE.2003,    0.145
+            219,    AXH1_D_SERVICEMODULE.2000,    AXH1_D_SERVICEMODULE.2001,    0.03466079
+            -220,    AXH1_D_SERVICEMODULE.2000,    AXH1_D_SERVICEMODULE.22000,    0.002899519
+            -221,    AXH1_D_SERVICEMODULE.2001,    AXH1_D_SERVICEMODULE.22001,    0.002899519
+            222,    AXH1_D_SERVICEMODULE.2008,    AXH1_D_SERVICEMODULE.2009,    0.05142334
+            223,    AXH1_D_SERVICEMODULE.2012,    AXH1_D_SERVICEMODULE.2013,    0.07462455
+            224,    AXH1_D_SERVICEMODULE.2012,    AXH1_D_SERVICEMODULE.2014,    0.07462455
+            -225,    AXH1_D_SERVICEMODULE.2012,    AXH1_D_SERVICEMODULE.12012,    0.008696331
+            -226,    AXH1_D_SERVICEMODULE.2012,    AXH1_D_SERVICEMODULE.22012,    0.008696331
+            227,    AXH1_D_SERVICEMODULE.2013,    AXH1_D_SERVICEMODULE.2014,    0.07462455
+            -228,    AXH1_D_SERVICEMODULE.2013,    AXH1_D_SERVICEMODULE.12013,    0.008696331
+            -229,    AXH1_D_SERVICEMODULE.2013,    AXH1_D_SERVICEMODULE.22013,    0.008696331
+            -230,    AXH1_D_SERVICEMODULE.2014,    AXH1_D_SERVICEMODULE.12014,    0.008696331
+            -231,    AXH1_D_SERVICEMODULE.2014,    AXH1_D_SERVICEMODULE.22014,    0.008696331
+HEADER NODE DATA, AXH1_D_SERVICEMODULE_MLI
+            1,    293.15,    -1.
+            20,    293.15,    -1.
+            10000,    293.15,    -1.
+            10001,    293.15,    -1.
+            20000,    293.15,    -1.
+            20001,    293.15,    -1.
+            20008,    293.15,    -1.
+            20009,    293.15,    -1.
+            20010,    293.15,    -1.
+            20011,    293.15,    -1.
+            20012,    293.15,    -1.
+            20014,    293.15,    -1.
+            20015,    293.15,    -1.
+            20017,    293.15,    -1.
+            20018,    293.15,    -1.
+            20020,    293.15,    -1.
+            20021,    293.15,    -1.
+            20022,    293.15,    -1.
+            20052,    293.15,    -1.
+            20053,    293.15,    -1.
+            20054,    293.15,    -1.
+            20055,    293.15,    -1.
+            20056,    293.15,    -1.
+            20058,    293.15,    -1.
+            20059,    293.15,    -1.
+            20061,    293.15,    -1.
+            20062,    293.15,    -1.
+            20064,    293.15,    -1.
+            20065,    293.15,    -1.
+            20066,    293.15,    -1.
+            20068,    293.15,    -1.
+            20069,    293.15,    -1.
+HEADER CONDUCTOR DATA, AXH1_D_SERVICEMODULE_MLI
+            -1,    AXH1_D_SERVICEMODULE_MLI.1,    AXH1_D_SERVICEMODULE_MLI.20,    0.01660819
+            -2,    AXH1_D_SERVICEMODULE_MLI.10000,    AXH1_D_SERVICEMODULE_MLI.20000,    0.08878417
+            -3,    AXH1_D_SERVICEMODULE_MLI.10001,    AXH1_D_SERVICEMODULE_MLI.20001,    0.08878417
+            -4,    AXH1_D_SERVICEMODULE_MLI.20008,    AXH1_D_SERVICEMODULE_MLI.20052,    0.04809907
+            -5,    AXH1_D_SERVICEMODULE_MLI.20009,    AXH1_D_SERVICEMODULE_MLI.20053,    0.04809907
+            -6,    AXH1_D_SERVICEMODULE_MLI.20010,    AXH1_D_SERVICEMODULE_MLI.20054,    0.04809907
+            -7,    AXH1_D_SERVICEMODULE_MLI.20011,    AXH1_D_SERVICEMODULE_MLI.20055,    0.04809907
+            -8,    AXH1_D_SERVICEMODULE_MLI.20012,    AXH1_D_SERVICEMODULE_MLI.20056,    0.04809907
+            -9,    AXH1_D_SERVICEMODULE_MLI.20014,    AXH1_D_SERVICEMODULE_MLI.20058,    0.01660819
+            -10,    AXH1_D_SERVICEMODULE_MLI.20015,    AXH1_D_SERVICEMODULE_MLI.20059,    0.006436819
+            -11,    AXH1_D_SERVICEMODULE_MLI.20017,    AXH1_D_SERVICEMODULE_MLI.20061,    0.004650874
+            -12,    AXH1_D_SERVICEMODULE_MLI.20018,    AXH1_D_SERVICEMODULE_MLI.20062,    0.01660819
+            -13,    AXH1_D_SERVICEMODULE_MLI.20020,    AXH1_D_SERVICEMODULE_MLI.20064,    0.004650874
+            -14,    AXH1_D_SERVICEMODULE_MLI.20021,    AXH1_D_SERVICEMODULE_MLI.20065,    0.006436819
+            -15,    AXH1_D_SERVICEMODULE_MLI.20022,    AXH1_D_SERVICEMODULE_MLI.20066,    0.01660819
+            -16,    AXH1_D_SERVICEMODULE_MLI.20068,    AXH1_D_SERVICEMODULE_MLI.20069,    0.08878417
+HEADER NODE DATA, AXH1_D_SM_SKIRT
+            SIV 1,    293.15,    TDPROPS.A3,    0.0003278677
+            SIV 2,    293.15,    TDPROPS.A3,    0.0003278677
+            SIV 3,    293.15,    TDPROPS.A3,    0.0003278677
+            SIV 12,    293.15,    TDPROPS.A3,    0.000386449
+            SIV 13,    293.15,    TDPROPS.A3,    0.000386449
+            SIV 14,    293.15,    TDPROPS.A3,    0.000386449
+            SIV 34,    293.15,    TDPROPS.A3,    0.00023403
+            SIV 35,    293.15,    TDPROPS.A3,    0.00023403
+            SIV 36,    293.15,    TDPROPS.A3,    0.00023403
+            20001,    293.15,    -1.
+            20002,    293.15,    -1.
+            20003,    293.15,    -1.
+            20012,    293.15,    -1.
+            20013,    293.15,    -1.
+            20014,    293.15,    -1.
+            20034,    293.15,    -1.
+            20035,    293.15,    -1.
+            20036,    293.15,    -1.
+HEADER CONDUCTOR DATA, AXH1_D_SM_SKIRT
+            SIV 1,    AXH1_D_SM_SKIRT.1,    AXH1_D_SM_SKIRT.2,    TDPROPS.A4,    1.505948e-05 
+            SIV 2,    AXH1_D_SM_SKIRT.1,    AXH1_D_SM_SKIRT.3,    TDPROPS.A4,    1.505948e-05 
+            -3,    AXH1_D_SM_SKIRT.1,    AXH1_D_SM_SKIRT.20001,    0.005163267
+            SIV 4,    AXH1_D_SM_SKIRT.2,    AXH1_D_SM_SKIRT.3,    TDPROPS.A4,    1.505948e-05 
+            -5,    AXH1_D_SM_SKIRT.2,    AXH1_D_SM_SKIRT.20002,    0.005163267
+            -6,    AXH1_D_SM_SKIRT.3,    AXH1_D_SM_SKIRT.20003,    0.005163267
+            SIV 7,    AXH1_D_SM_SKIRT.12,    AXH1_D_SM_SKIRT.13,    TDPROPS.A4,    1.763367e-05 
+            SIV 8,    AXH1_D_SM_SKIRT.12,    AXH1_D_SM_SKIRT.14,    TDPROPS.A4,    1.763367e-05 
+            -9,    AXH1_D_SM_SKIRT.12,    AXH1_D_SM_SKIRT.20012,    0.006085807
+            SIV 10,    AXH1_D_SM_SKIRT.13,    AXH1_D_SM_SKIRT.14,    TDPROPS.A4,    1.763367e-05 
+            -11,    AXH1_D_SM_SKIRT.13,    AXH1_D_SM_SKIRT.20013,    0.006085807
+            -12,    AXH1_D_SM_SKIRT.14,    AXH1_D_SM_SKIRT.20014,    0.006085807
+            SIV 13,    AXH1_D_SM_SKIRT.34,    AXH1_D_SM_SKIRT.35,    TDPROPS.A4,    1.082065e-05 
+            SIV 14,    AXH1_D_SM_SKIRT.34,    AXH1_D_SM_SKIRT.36,    TDPROPS.A4,    1.082065e-05 
+            -15,    AXH1_D_SM_SKIRT.34,    AXH1_D_SM_SKIRT.20034,    0.003685508
+            SIV 16,    AXH1_D_SM_SKIRT.35,    AXH1_D_SM_SKIRT.36,    TDPROPS.A4,    1.082065e-05 
+            -17,    AXH1_D_SM_SKIRT.35,    AXH1_D_SM_SKIRT.20035,    0.003685508
+            -18,    AXH1_D_SM_SKIRT.36,    AXH1_D_SM_SKIRT.20036,    0.003685508
+HEADER OUTPUT CALLS, GLOBAL
+C Case Set Prop Generated Code
+
+      CALL TPRINT('ALL')
+      IF(NSOL .GT. 1 ) THEN
+          IF(TIMEN .GE. TIMEND) THEN
+              CALL SAVE('ALL',0)
+          ELSE
+              CALL SAVE('TR',0)
+          ENDIF
+      ELSE IF( LOOPCT .GT. 0 ) THEN
+          CALL SAVE('ALL',0)
+      ENDIF
+
+HEADER NODE DATA, SPACE
+            -1,    2.73,    -1.0
+HEADER NODE DATA, TDPROPS
+HEADER ARRAY DATA, TDPROPS
+C     AL 2219-T851_k:
+            2 = 
+            10.92778,  6.922939
+            55.37222,  43.26837
+            110.9278,  71.82549
+            166.4833,  91.72894
+            222.0389,  107.3055
+            277.5944,  119.4207
+            333.15,  128.0744
+            388.7056,  134.9973
+            444.2611,  141.0549
+            566.4833,  152.3047
+C     AL 2219-T851_rhocp:
+            1 = 
+            22.03889,  119366.9
+            55.37222,  537151.2
+            110.9278,  1456277.
+            166.4833,  1981491.
+            222.0389,  2184415.
+            277.5944,  2411212.
+            333.15,  2518642.
+            388.7056,  2602199.
+            444.2611,  2673819.
+            499.8167,  2745439.
+            555.3722,  2805123.
+            810.9278,  3079667.
+C     AL 6061-T6_k:
+            4 = 
+            33.15,  31.15322
+            44.26111,  55.38351
+            55.37222,  65.76792
+            110.9278,  102.1133
+            166.4833,  122.8822
+            222.0389,  138.4588
+            277.5944,  149.7085
+            333.15,  157.4969
+            388.7056,  164.4198
+            444.2611,  170.4774
+            499.8167,  174.8042
+C     AL 6061-T6_rhocp:
+            3 = 
+            44.26111,  282482.4
+            55.37222,  451971.9
+            110.9278,  1299419.
+            166.4833,  1773990.
+            222.0389,  2090370.
+            277.5944,  2305057.
+            333.15,  2440648.
+            388.7056,  2542342.
+            444.2611,  2644035.
+            499.8167,  2711831.
+C     AL 6061_k:
+            8 = 
+            0.,  0.
+            33.15,  44.9992
+            88.7056,  91.7288
+            144.261,  115.959
+            199.817,  132.339
+            255.372,  144.302
+            310.928,  153.274
+            366.483,  160.751
+            422.039,  166.733
+            477.594,  171.966
+            533.15,  176.08
+            588.706,  178.697
+            644.261,  179.443
+            699.817,  178.266
+            755.372,  174.804
+            810.928,  167.881
+C     AL 6061_rhocp:
+            7 = 
+            0.,  0.
+            33.15,  144804.8
+            88.70561,  993758.6
+            144.261,  1618407.
+            199.817,  1964827.
+            255.372,  2248758.
+            310.928,  2413414.
+            366.483,  2526986.
+            422.039,  2623523.
+            477.594,  2697345.
+            533.15,  2754133.
+            588.706,  2810909.
+            644.261,  2856346.
+            699.817,  2907452.
+            755.372,  2981290.
+            810.9278,  3066467.
+C     Kevlar_k:
+            6 = 
+            88.70556,  0.04326837
+            255.3722,  0.04326837
+            297.0389,  0.04326837
+            477.5944,  0.04326837
+C     Kevlar_rhocp:
+            5 = 
+            88.70556,  2000729.
+            255.3722,  2000729.
+            298.15,  2000729.
+            373.15,  2832357.
+            453.15,  3543460.
+C     LPGF_AL7075_k:
+            10 = 
+            294.1,  167.
+            310.,  169.2
+            343.,  172.9
+            364.4,  175.6
+            392.,  178.4
+            420.1,  180.6
+            431.8,  181.3
+C     LPGF_AL7075_rhocp:
+            9 = 
+            273.2,  2232498.
+            366.5,  2459325.
+            422.,  2566370.
+            533.2,  2841164.
+            644.3,  3079373.
+            699.8,  3198613.
+HEADER SUBROUTINE
+      SUBROUTINE TDHTR
+C     This routine is to hold heaters at their midpoint temps
+C     for steady state solutions.
+      RETURN
+      END
+      SUBROUTINE TDREL
+C     This routine is to release heaters for transient runs
+C     for steady state solutions.
+F     RETURN
+F     END
+F     SUBROUTINE TDHTOT
+C     This routine prints out heater ontime and cycle summaries
+F     RETURN
+F     END
+F     SUBROUTINE TDHTRST
+C     This routine resets heater statistics
+F     RETURN
+F     END
+F     SUBROUTINE TDPREBL
+C     This routine executes logic before the build statement
+M     CALL COMMON
+F     RETURN
+F     END
+F     SUBROUTINE TDPOSTBL
+C     This routine executes logic after the build statement
+M     CALL COMMON
+F     RETURN
+F     END
+F     SUBROUTINE TDPOSTSL
+C     This routine executes logic after the solution
+M     CALL COMMON
+F     RETURN
+F     END
+F     SUBROUTINE BASEPLOT
+      CALL COMMON
+F     RETURN
+F     END
