@@ -83,6 +83,11 @@ double GunnsBMSSpotter::getChargeCurrent()
   return mDefaultChargeCurrent;
 }
 
+double GunnsBMSSpotter::getBmsEfficiency()
+{
+  return mBmsUpOut->getConverterEfficiency();
+}
+
 const GunnsBMSSpotterConfigData *GunnsBMSSpotter::validateConfig(const GunnsNetworkSpotterConfigData *config)
 {
   const GunnsBMSSpotterConfigData* result = dynamic_cast<const GunnsBMSSpotterConfigData*>(config);
@@ -194,6 +199,8 @@ void GunnsBMSSpotter::updateStatusVar() {
     mStatus = BmsStatus::CHARGING;
   } else if (isDischarging()) {
     mStatus = BmsStatus::DISCHARGING;
+  } else {
+    mStatus = BmsStatus::DISABLED;
   }
 }
 

@@ -157,6 +157,12 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     */
     double getChargeCurrent();
 
+    /**
+     * @brief Returns this BMS Group's efficiency
+     * @return This GunnsBMSSpotter's mBmsUpOut's Efficiency Term
+    */
+    double getBmsEfficiency();
+
 
   protected:
     const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
