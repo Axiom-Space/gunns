@@ -88,6 +88,11 @@ double GunnsBMSSpotter::getBmsEfficiency()
   return mBmsUpOut->getConverterEfficiency();
 }
 
+double GunnsBMSSpotter::getOutputVoltage()
+{
+  return mBmsUpOut->getPotentialVector()[0];
+}
+
 const GunnsBMSSpotterConfigData *GunnsBMSSpotter::validateConfig(const GunnsNetworkSpotterConfigData *config)
 {
   const GunnsBMSSpotterConfigData* result = dynamic_cast<const GunnsBMSSpotterConfigData*>(config);

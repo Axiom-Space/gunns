@@ -163,15 +163,22 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     */
     double getBmsEfficiency();
 
+    /**
+     * @brief Returns this BMS Group's output voltage (Currently, simply HVDC voltage)
+     * @return This GunnsBMSSpotter's mBmsUpOut->getPotentialVector()[0]
+    */
+    double getOutputVoltage();
+
 
   protected:
     const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
     const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
 
-  private:
     GunnsElectConverterInput*   mBmsUpIn;           /**< (--) trick_chkpnt_io(**) Pointer to Converter Input */
     GunnsElectConverterOutput*  mBmsUpOut;          /**< (--) trick_chkpnt_io(**) Pointer to Converter Output */
     GunnsLosslessSource*        mBatterySource;     /**< (--) trick_chkpnt_io(**) Pointer to Lossless Source */
+
+  private:
 
     double      mNetFluxFromBatt;                   /**< (--) trick_chkpnt_io(*io) Tracks the net flux into/out of the battery */
     double      mDefaultChargeCurrent;              /**< (--) trick_chkpnt_io(*io) The charge current when charging */
