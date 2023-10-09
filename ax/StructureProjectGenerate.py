@@ -24,7 +24,7 @@ thisScript = os.path.basename(__file__)
 tNetworks = ['simplified', 'sm', 'h1']
 
 ## Upper-level paths.
-tPtcsHome = os.environ["SIM_HOME"] + "/models/gunns/Ptcs/therm/"
+tPtcsHome = os.environ["MODELS_HOME"] + "/gunns/Ptcs/therm/"
 tAspectRegistry = tPtcsHome + "%s/" + "aspect_registry/"
 
 ## File name specifics
@@ -46,7 +46,7 @@ tEnumFile = os.environ["ICD_HOME"] + "/enum/PtcsEnum.hh"
 
 ## Name of icd file and path of trickView file
 tIcdFile = os.environ["ICD_HOME"] + "/PTCS_ICD.txt"
-tTvPath = os.environ["SIM_HOME"] + "/SIM_AxH1/Modified_data/trick_tv_files/ptcs/TV_icd_%s.tv"
+tTvPath = os.environ["SIMS_HOME"] + "/SIM_AxH1/runtime_config/trick_tv_files/ptcs/TV_icd_%s.tv"
 
 ## Uniform ICD variables
 tIcdSys = "gunns"
