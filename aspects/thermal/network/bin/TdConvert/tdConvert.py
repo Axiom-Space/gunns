@@ -26,7 +26,7 @@ def parse_k(k_path):
     # Filter out links lower than specified coefficient
     temp_rad_links = []
     for link in rad_links:
-        if link[2] > 0:
+        if link[2] > 5e-4:
             temp_rad_links.append(link)
     rad_links = temp_rad_links
     return rad_links
@@ -128,7 +128,6 @@ def parse_cc(cc_path):
                         cond_links.append([cond_info[1].strip(' ').replace('.', '_'), cond_info[2].strip(' ').replace('.', '_'), float(cond_info[3])])
                     elif len(cond_info) == 5:
                         cond_links.append([cond_info[1].strip(' ').replace('.', '_'), cond_info[2].strip(' ').replace('.', '_'), float(cond_info[4])])
-    print(tdprops)
     # Removing negative node numbers and capacitance
     ct = 0
     for n in nodes:
