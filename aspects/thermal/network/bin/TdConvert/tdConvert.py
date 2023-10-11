@@ -4,6 +4,7 @@
 # Dependencies: Must convert input files into .txt to be parsed properly. 
 #########################################################################################
 import os
+import numpy as np
 
 # Reads lines of specified *.k file and extracts radiation link information
 def parse_k(k_path):
@@ -25,7 +26,7 @@ def parse_k(k_path):
     # Filter out links lower than specified coefficient
     temp_rad_links = []
     for link in rad_links:
-        if link[2] > 0:
+        if link[2] > 5e-4:
             temp_rad_links.append(link)
     rad_links = temp_rad_links
     return rad_links
@@ -37,11 +38,37 @@ def parse_cc(cc_path):
     submodel_nodes = dict()
     node_flag = 0
     cond_flag = 0
+    tdprops_flag = 0
     submodel = ""
     # Parses file and stores node information ([submodel_num, init_temp, capacitance]) and conduction links ([node0, node1, conductivity]) in respective lists
     with open(cc_path, 'r', encoding='cp1252') as file:
         for line in file:
-            if node_flag == 0 and cond_flag == 0:
+            if "HEADER ARRAY DATA, TDPROPS" in line:
+                    tdprops_flag = 1
+                    var_flag = 0
+                    tdprops = dict()
+            elif tdprops_flag == 1:
+                if var_flag == 0:
+                    if "rhocp" in line:
+                        var_flag = 1 
+                else:
+                    if "=" in line:
+                        var_name = "TDPROPS.A" + line.strip('\n').replace(' ', '').replace('=', '')
+                        var_data = [[],[]]
+                    elif "HEADER" in line:
+                        tdprops_flag = 0
+                        var_flag = 0
+                        tdprops[var_name] = var_data
+                    elif "_k" in line:
+                        var_flag = 0
+                        tdprops[var_name] = var_data
+                    else: 
+                        line_data = line.split(',')
+                        var_data[0].append(float(line_data[0].strip(' ')))
+                        var_data[1].append(float(line_data[1].strip('\n').strip('.').strip(' ')))
+        file.seek(0)
+        for line in file:
+            if node_flag == 0 and cond_flag == 0 and tdprops_flag == 0:
                 if "HEADER NODE DATA" in line:
                     node_flag = 1
                     submodel = line.split(',')[1].strip('\n').strip(' ')
@@ -71,7 +98,10 @@ def parse_cc(cc_path):
                 else:
                     node_info = line.split(',')
                     if "SIV" in node_info[0]:
-                        nodes.append([submodel + "_" + node_info[0].replace('SIV', '').strip(' '), float(node_info[1].strip(' ')), float(node_info[3].strip(' '))])
+                        init_temp = float(node_info[1].strip(' '))
+                        mass = float(node_info[3].strip(' '))
+                        rhocp = np.interp(init_temp, tdprops[node_info[2].strip(' ')][0], tdprops[node_info[2].strip(' ')][1])
+                        nodes.append([submodel + "_" + node_info[0].replace('SIV', '').strip(' '), init_temp, rhocp*mass])
                         node_ct += 1                    
                     else:
                         if 'AXH1_D_StartTemperature' in node_info[1]:
@@ -178,7 +208,7 @@ if __name__ == "__main__":
         k_path = model_path + "/C36A2.txt"
         cc_path = model_path + "/case36.txt"
         print(cc_path)
-        save_path = os.getenv('GUNNS_EXT_PATH').replace('-I', '') + "/Ptcs/therm/%s/aspect_registry" % model
+        save_path = os.getenv('MODELS_HOME').replace('-I', '') + "/gunns/Ptcs/therm/%s/aspect_registry" % model
 
         rad_links = parse_k(k_path)
         [nodes, cond_links, submodel_nodes] = parse_cc(cc_path)
