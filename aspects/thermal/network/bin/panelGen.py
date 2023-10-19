@@ -12,7 +12,7 @@ class panelGen:
         vect_path = self.parse_path + '/' + f'TdConvert/tdFiles/{model}/vectors_{model}.txt'
         self.parse_nodes(nodes_path)
         self.parse_vect(vect_path)
-        self.xml_str = self.format_xml()
+        self.xml_str = self.format_xml(model)
 
     # Parses specified node list file
     def parse_nodes(self, nodes_path):
@@ -44,7 +44,7 @@ class panelGen:
         return
     
     # Reformats collected data lists to GUNNS .xml
-    def format_xml(self):
+    def format_xml(self, model):
         xml_str = """<?xml version="1.0" ?>\n<list>"""
 
         for n in self.normals:
@@ -66,7 +66,7 @@ class panelGen:
         <incidentFlux isReadyForIcd='true'>
             <rate>PTCS_RATE</rate>
             <simObject>Flux_SimObj flux_SimObj</simObject>
-            <simVarName>flux.solar_fluxes[pan_{n}]</simVarName>
+            <simVarName>flux.{model}.solar_flux[pan_{n}]</simVarName>
         </incidentFlux>
     </panel>"""
 
