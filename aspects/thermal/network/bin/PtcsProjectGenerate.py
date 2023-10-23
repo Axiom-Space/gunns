@@ -24,7 +24,7 @@ thisScript = os.path.basename(__file__)
 tNetworks = ['simplified', 'sm', 'h1']
 
 ## Upper-level paths.
-tPtcsHome = os.environ["MODELS_HOME"] + "/gunns/Ptcs/therm/"
+tPtcsHome = os.environ["MODELS_HOME"] + "/gunns/ptcs/therm/"
 tAspectRegistry = tPtcsHome + "%s/" + "aspect_registry/"
 
 ## File name specifics
