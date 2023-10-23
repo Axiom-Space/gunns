@@ -78,7 +78,7 @@ class panelGen:
     def save_xml(self, model):
         print("Generating", len(self.normals), "thermal panels")
         print("___________________________")
-        save_path = os.environ["MODELS_HOME"] + f"/gunns/Ptcs/therm/{model}/aspect_registry/PanelRegistry_{model}.xml"
+        save_path = os.environ["MODELS_HOME"] + f"/gunns/ptcs/therm/{model}/aspect_registry/PanelRegistry_{model}.xml"
         with open(save_path, "w") as f:
             f.write(self.xml_str)
 
