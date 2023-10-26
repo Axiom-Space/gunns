@@ -55,10 +55,9 @@ class panelGen:
             found = 0
             ct = 0
             for i in ops_nodes:
-                if found != 1:
-                    if n == i.replace('.', '_'):
-                        self.ops[n] = ops_file['ALPHA'][ct]
-                        found = 1
+                if n == i.replace('.', '_'):
+                    self.ops[n] = ops_file['ALPHA'][ct]
+                    found = 1
                 ct += 1
             if found == 0:
                 print(n, f"not found in {ops_path}. Setting absorp to 1.0 in panel registry.")
