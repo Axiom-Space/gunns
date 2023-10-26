@@ -73,6 +73,7 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
   mHighSocCutoff = input->mHighSocCutoff;
   mDefaultChargeCurrent = input->mDefaultChargeCurrent;
   mAutoThresholdsEnabled = input->mAutoThresholdsEnabled;
+  mStatusLast = mStatus;
 
   /// - Set the init flag.
   mInitFlag = true;
@@ -161,6 +162,15 @@ void GunnsBMSSpotter::stepPostSolver(const double dt) {
   {
     message_publish(MESSAGE_TYPE::MSG_INFO, "Both Charging and Discharging enabled on battery '%s', Disabling charging.\n", mBattery->getName());
     disableCharging();
+  }
+
+  if (mStatus == mStatusLast) {
+    // Status continuity - time + dt
+    mCurrentStateTime += dt;
+  } else {
+    // Change mStatusLast & reset time
+    mCurrentStateTime = 0.0;
+    mStatusLast = mStatus;
   }
 
   addFlux(dt);

@@ -190,6 +190,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if true -> auto enable charging/discharging based on battery SoC */
 
     BmsStatus   mStatus;                            /**< (--) trick_chkpnt_io(*io) Mode of BMS Operation {DISABLED, CHARGING, DISCHARGING} */
+    BmsStatus   mStatusLast;                            /**< (--) trick_chkpnt_io(**) Mode of BMS Operation last dt, used for time tracking */
 
     void addFlux(const double dt);
 
