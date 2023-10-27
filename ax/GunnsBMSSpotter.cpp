@@ -225,6 +225,11 @@ void GunnsBMSSpotter::addFlux(const double dt) {
 
 void GunnsBMSSpotter::updateChargeCurrent(const double newCurrent) {
   mDefaultChargeCurrent = newCurrent;
+  if (mStatus == BmsStatus::CHARGING) {
+    // This is passed to mBatterySource only when enableCharging() is called,
+    // so if we're already charging, need to push this update
+    mBatterySource->setFluxDemand(mDefaultChargeCurrent);
+  }
 }
 
 void GunnsBMSSpotter::updateDischargeCurrentLimit(const double newCurrentLimit)
