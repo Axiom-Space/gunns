@@ -57,11 +57,23 @@ class panelGen:
             for i in ops_nodes:
                 if n == i.replace('.', '_'):
                     self.ops[n] = ops_file['ALPHA'][ct]
-                    found = 1
+                    found += 1
                 ct += 1
+            ct = 0
             if found == 0:
                 print(n, f"not found in {ops_path}. Setting absorp to 1.0 in panel registry.")
                 self.ops[n] = 1.0
+            elif found == 2:
+                for i in ops_nodes:
+                    if n == i.replace('.', '_') and 'TOP' in ops_file['AxCS_MASTER_RcOptics_EOL.rco'][ct]:
+                        self.ops[n] = ops_file['ALPHA'][ct]
+                    ct += 1
+            ct = 0
+            if n == 'AXH1_D_MDPSPANELS_1' or n == 'AXH1_D_MDPSPANELS_1189' or n == 'AXH1_D_MDPSPANELS_1187':
+                for i in ops_nodes:
+                    if n == i.replace('.', '_') and 'BOT' in ops_file['AxCS_MASTER_RcOptics_EOL.rco'][ct]:
+                        self.ops[n] = ops_file['ALPHA'][ct]
+                    ct += 1
         return
 
     
