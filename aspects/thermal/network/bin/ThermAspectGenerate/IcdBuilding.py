@@ -218,17 +218,17 @@ class IcdBuilder:
                     continue
                 ## Print the action to the ICD file.
                 f_icd.write(action.mCommentChar)
-                f_icd.write(exchange.mPui + '\t')                     # pui number or 'xxxx'
-                f_icd.write(self.mIcdSettings.mSys + '\t')            # "iss", etc.
-                f_icd.write(self.mIcdSettings.mBus + '\t')            # "sim_bus"
-                f_icd.write(exchange.mSubsys + '\t')                  # "ptcs"
-                f_icd.write(exchange.mVarName + '\t')
-                f_icd.write(action.mAction + '\t')                    # "WRITE" or "READ"
-                f_icd.write(self.mIcdSettings.mTrickSeq + action.mRate + '\t')  # "P_PTCS" and RATE from registry 
-                f_icd.write(action.mSimObject + '\t')                 # Trick SimObject and Sim names
-                f_icd.write(action.mSimVarName + '\t')                # from variable server (TrickView)
-                f_icd.write(exchange.mType + '\t')                    # "double"
-                f_icd.write('(' + exchange.mUnits + ')' + '\t')       # "(K)" for kelvin or "(W)" for Watts
+                f_icd.write(exchange.mPui + '    ')                     # pui number or 'xxxx'
+                f_icd.write(self.mIcdSettings.mSys + '    ')            # "iss", etc.
+                f_icd.write(self.mIcdSettings.mBus + '    ')            # "sim_bus"
+                f_icd.write(exchange.mSubsys + '    ')                  # "ptcs"
+                f_icd.write(exchange.mVarName + '    ')
+                f_icd.write(action.mAction + '    ')                    # "WRITE" or "READ"
+                f_icd.write(self.mIcdSettings.mTrickSeq + action.mRate + '    ')  # "P_PTCS" and RATE from registry 
+                f_icd.write(action.mSimObject.replace(' ', ',') + '    ')                 # Trick SimObject and Sim names
+                f_icd.write(action.mSimVarName + '    ')                # from variable server (TrickView)
+                f_icd.write(exchange.mType + '    ')                    # "double"
+                f_icd.write('(' + exchange.mUnits + ')' + '    ')       # "(K)" for kelvin or "(W)" for Watts
                 f_icd.write(exchange.mComments + '\n')                # description from registry and \n
                 
                 ## Don't print to the TrickView file if commented out of the ICD.
