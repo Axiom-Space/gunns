@@ -40,7 +40,10 @@ PROGRAMMERS:
 
 #include "ax/elect/GunnsLosslessSource.hh"
 
-#include <iostream>
+//Trick Includes
+#include "trick/exec_proto.h"
+#include "trick/message_type.h"
+#include "trick/message_proto.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    PV Network Spotter Configuration Data

@@ -8,6 +8,7 @@ LIBRARY DEPENDENCY:
 
 #include "ax/GunnsBMSSpotter.hh"
 #include "software/exceptions/TsInitializationException.hh"
+#include "GunnsBMSSpotter.hh"
 
 GunnsBMSSpotterConfigData::GunnsBMSSpotterConfigData(const std::string& name,
                                                     GunnsElectBattery* battery,
@@ -72,6 +73,7 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
   mHighSocCutoff = input->mHighSocCutoff;
   mDefaultChargeCurrent = input->mDefaultChargeCurrent;
   mAutoThresholdsEnabled = input->mAutoThresholdsEnabled;
+  mStatusLast = mStatus;
 
   /// - Set the init flag.
   mInitFlag = true;
@@ -80,6 +82,16 @@ void GunnsBMSSpotter::initialize(const GunnsNetworkSpotterConfigData* configData
 double GunnsBMSSpotter::getChargeCurrent()
 {
   return mDefaultChargeCurrent;
+}
+
+double GunnsBMSSpotter::getBmsEfficiency()
+{
+  return mBmsUpOut->getConverterEfficiency();
+}
+
+double GunnsBMSSpotter::getOutputVoltage()
+{
+  return mBmsUpOut->getPotentialVector()[0];
 }
 
 const GunnsBMSSpotterConfigData *GunnsBMSSpotter::validateConfig(const GunnsNetworkSpotterConfigData *config)
@@ -123,7 +135,7 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
   if ((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
     && mBatterySource->getFluxDemand() > 0.0)
   {
-    std::cerr << "Both Charging and Discharging enabled on battery '" << mBattery->getName() << "' . Disabling charging" << std::endl;
+    message_publish(MESSAGE_TYPE::MSG_INFO, "Both Charging and Discharging enabled on battery '%s', Disabling charging.\n", mBattery->getName());
     disableCharging();
   }
 
@@ -133,12 +145,12 @@ void GunnsBMSSpotter::stepPreSolver(const double dt) {
       disableDischarging();
       enableCharging();
       updateStatusVar(); // FIXME_ This doesn't _necessarily_ make it mStatus == Charging
-      std::cerr << "Battery '" << mBattery->getName() << "' hit low SoC threshold, switching status to: " << returnStatus() << std::endl;
+      message_publish(MESSAGE_TYPE::MSG_INFO, "Battery '%s' hit low SoC threshold of %1.4f, switching status to: %s\n", mBattery->getName(), mLowSocCutoff, returnStatus().data());
     } else if ((mBattery->getSoc() >= mHighSocCutoff) && mStatus != BmsStatus::DISCHARGING) {
       disableCharging();
       enableDischarging();
       updateStatusVar(); // FIXME_ This doesn't _necessarily_ make it mStatus == Discharging
-      std::cerr << "Battery '" << mBattery->getName() << "' hit high SoC threshold, switching status to: " << returnStatus() << std::endl;
+      message_publish(MESSAGE_TYPE::MSG_INFO, "Battery '%s' hit high SoC threshold of %1.4f, switching status to: %s\n", mBattery->getName(), mHighSocCutoff, returnStatus().data());
     }
   }
 }
@@ -148,8 +160,17 @@ void GunnsBMSSpotter::stepPostSolver(const double dt) {
   if (((mBmsUpIn->getEnabled() || mBmsUpOut->getEnabled()) 
     && mBatterySource->getFluxDemand() > 0.0))
   {
-    std::cerr << "Both Charging and Discharging enabled on battery '" << mBattery->getName() << "' . Disabling charging" << std::endl;
+    message_publish(MESSAGE_TYPE::MSG_INFO, "Both Charging and Discharging enabled on battery '%s', Disabling charging.\n", mBattery->getName());
     disableCharging();
+  }
+
+  if (mStatus == mStatusLast) {
+    // Status continuity - time + dt
+    mCurrentStateTime += dt;
+  } else {
+    // Change mStatusLast & reset time
+    mCurrentStateTime = 0.0;
+    mStatusLast = mStatus;
   }
 
   addFlux(dt);
@@ -193,6 +214,8 @@ void GunnsBMSSpotter::updateStatusVar() {
     mStatus = BmsStatus::CHARGING;
   } else if (isDischarging()) {
     mStatus = BmsStatus::DISCHARGING;
+  } else {
+    mStatus = BmsStatus::DISABLED;
   }
 }
 
@@ -202,9 +225,25 @@ void GunnsBMSSpotter::addFlux(const double dt) {
 
 void GunnsBMSSpotter::updateChargeCurrent(const double newCurrent) {
   mDefaultChargeCurrent = newCurrent;
+  if (mStatus == BmsStatus::CHARGING) {
+    // This is passed to mBatterySource only when enableCharging() is called,
+    // so if we're already charging, need to push this update
+    mBatterySource->setFluxDemand(mDefaultChargeCurrent);
+  }
 }
 
-void GunnsBMSSpotter::updateStatus(BmsStatus mode) {
+void GunnsBMSSpotter::updateDischargeCurrentLimit(const double newCurrentLimit)
+{
+  /**
+   * If the ConvOut link has limiting enabled, this changes the limited-to current.
+   * If it has OverCurrent trip enabled, this changes the trip threshold.
+  */
+
+  mBmsUpOut->getOutputOverCurrentTrip()->setLimit(newCurrentLimit);
+}
+
+void GunnsBMSSpotter::updateStatus(BmsStatus mode)
+{
   switch(mode) {
       case DISABLED:
         disableDischarging();
