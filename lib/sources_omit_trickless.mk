@@ -7,6 +7,10 @@ SOURCES := $(filter-out %/TsHsMsgStdFilter.cpp,$(SOURCES))
 SOURCES := $(filter-out %/TsHsStdMngr.cpp,$(SOURCES))
 SOURCES := $(filter-out %/TsHsTextPlugin.cpp,$(SOURCES))
 
+# Axiom IP&A addition, relies on Trick message_publish
+SOURCES := $(filter-out %/GunnsPVSpotter.cpp,$(SOURCES))
+SOURCES := $(filter-out %/GunnsPVSpotter.hh,$(SOURCES))
+
 # Omit these becaue they use Trick memory manager:
 SOURCES := $(filter-out %/TsMemoryManager.cpp,$(SOURCES))
 

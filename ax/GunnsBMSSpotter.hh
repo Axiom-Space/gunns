@@ -39,7 +39,10 @@ PROGRAMMERS:
 
 #include "ax/elect/GunnsLosslessSource.hh"
 
-#include <iostream>
+//Trick Includes
+#include "trick/exec_proto.h"
+#include "trick/message_type.h"
+#include "trick/message_proto.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief    BMS Network Spotter Configuration Data
@@ -134,6 +137,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
 
     void updateStatusVar();
     void updateChargeCurrent(const double newCurrent);
+    void updateDischargeCurrentLimit(const double newCurrentLimit);
     
     void updateStatus(BmsStatus mode);
     BmsStatus getStatus();
@@ -153,15 +157,28 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     */
     double getChargeCurrent();
 
+    /**
+     * @brief Returns this BMS Group's efficiency
+     * @return This GunnsBMSSpotter's mBmsUpOut's Efficiency Term
+    */
+    double getBmsEfficiency();
+
+    /**
+     * @brief Returns this BMS Group's output voltage (Currently, simply HVDC voltage)
+     * @return This GunnsBMSSpotter's mBmsUpOut->getPotentialVector()[0]
+    */
+    double getOutputVoltage();
+
 
   protected:
     const GunnsBMSSpotterConfigData* validateConfig(const GunnsNetworkSpotterConfigData* config);
     const GunnsBMSSpotterInputData*  validateInput (const GunnsNetworkSpotterInputData* input);
 
-  private:
     GunnsElectConverterInput*   mBmsUpIn;           /**< (--) trick_chkpnt_io(**) Pointer to Converter Input */
     GunnsElectConverterOutput*  mBmsUpOut;          /**< (--) trick_chkpnt_io(**) Pointer to Converter Output */
     GunnsLosslessSource*        mBatterySource;     /**< (--) trick_chkpnt_io(**) Pointer to Lossless Source */
+
+  private:
 
     double      mNetFluxFromBatt;                   /**< (--) trick_chkpnt_io(*io) Tracks the net flux into/out of the battery */
     double      mDefaultChargeCurrent;              /**< (--) trick_chkpnt_io(*io) The charge current when charging */
@@ -173,6 +190,7 @@ class GunnsBMSSpotter : public GunnsNetworkSpotter
     bool        mAutoThresholdsEnabled;             /**< *o (--) trick_chkpnt_io(**) if true -> auto enable charging/discharging based on battery SoC */
 
     BmsStatus   mStatus;                            /**< (--) trick_chkpnt_io(*io) Mode of BMS Operation {DISABLED, CHARGING, DISCHARGING} */
+    BmsStatus   mStatusLast;                            /**< (--) trick_chkpnt_io(**) Mode of BMS Operation last dt, used for time tracking */
 
     void addFlux(const double dt);
 
