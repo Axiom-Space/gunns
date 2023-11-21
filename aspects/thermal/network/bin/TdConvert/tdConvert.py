@@ -35,6 +35,7 @@ def parse_k(k_path):
 def parse_cc(cc_path):
     nodes = []
     cond_links = []
+    rad_links = []
     submodel_nodes = dict()
     node_flag = 0
     cond_flag = 0
@@ -49,7 +50,7 @@ def parse_cc(cc_path):
                     tdprops = dict()
             elif tdprops_flag == 1:
                 if var_flag == 0:
-                    if "rhocp" in line:
+                    if "rhocp" in line or "_k" in line:
                         var_flag = 1 
                 else:
                     if "=" in line:
@@ -59,8 +60,7 @@ def parse_cc(cc_path):
                         tdprops_flag = 0
                         var_flag = 0
                         tdprops[var_name] = var_data
-                    elif "_k" in line:
-                        var_flag = 0
+                    elif "rhocp" in line or "_k" in line:
                         tdprops[var_name] = var_data
                     else: 
                         line_data = line.split(',')
@@ -123,11 +123,16 @@ def parse_cc(cc_path):
                 else: 
                     cond_info = line.split(',')
                     if len(cond_info) == 4:
-                        if 'PropPanel_ProPanelBoltR' in cond_info[3]:
-                            cond_info[3] = eval(cond_info[3].replace('PropPanel_ProPanelBoltR', '112.4'))
-                        cond_links.append([cond_info[1].strip(' ').replace('.', '_'), cond_info[2].strip(' ').replace('.', '_'), float(cond_info[3])])
+                        if int(cond_info[0].strip()) < 0:
+                            rad_links.append([cond_info[1].strip(' ').replace('.', '_'), cond_info[2].strip(' ').replace('.', '_'), float(cond_info[3].strip().replace('\n',''))])
+                        else:
+                            if 'PropPanel_ProPanelBoltR' in cond_info[3]:
+                                cond_info[3] = eval(cond_info[3].replace('PropPanel_ProPanelBoltR', '112.4'))
+                            cond_links.append([cond_info[1].strip(' ').replace('.', '_'), cond_info[2].strip(' ').replace('.', '_'), float(cond_info[3])])
                     elif len(cond_info) == 5:
-                        cond_links.append([cond_info[1].strip(' ').replace('.', '_'), cond_info[2].strip(' ').replace('.', '_'), float(cond_info[4])])
+                        g = np.interp(219.15, tdprops[cond_info[3].strip()][0], tdprops[cond_info[3].strip()][1])
+                        cond = float(cond_info[4]) * g
+                        cond_links.append([cond_info[1].strip(' ').replace('.', '_'), cond_info[2].strip(' ').replace('.', '_'), cond])
     # Removing negative node numbers and capacitance
     ct = 0
     for n in nodes:
@@ -157,7 +162,7 @@ def parse_cc(cc_path):
         if link[2] > 0:
             temp_cond_links.append(link)
     cond_links = temp_cond_links
-    return nodes, cond_links, submodel_nodes
+    return nodes, cond_links, rad_links, submodel_nodes
 
 # Reformats collected data lists to GUNNS .xml
 def format_xml(nodes, cond_links, rad_links):
@@ -208,10 +213,11 @@ if __name__ == "__main__":
         k_path = model_path + "/C36A2.txt"
         cc_path = model_path + "/case36.txt"
         print(cc_path)
-        save_path = os.getenv('MODELS_HOME').replace('-I', '') + "/gunns/Ptcs/therm/%s/aspect_registry" % model
+        save_path = os.getenv('MODELS_HOME').replace('-I', '') + "/gunns/ptcs/therm/%s/aspect_registry" % model
 
-        rad_links = parse_k(k_path)
-        [nodes, cond_links, submodel_nodes] = parse_cc(cc_path)
+        rad_links_1 = parse_k(k_path)
+        [nodes, cond_links, rad_links_2, submodel_nodes] = parse_cc(cc_path)
+        rad_links = rad_links_1 + rad_links_2
         xml_str = format_xml(nodes, cond_links, rad_links)
         save_xml(save_path, xml_str, model)
 
