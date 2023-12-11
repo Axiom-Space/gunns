@@ -88,8 +88,7 @@ def create_potential(registry_path, nodes, td_cap_temp):
         cond.text = str(0.0)
         
     indent(registry)
-    # comment = ET.Comment("Copyright 2019 United States Government as represented by the Administrator of the\nNational Aeronautics and Space Administration.  All Rights Reserved.")
-    # registry.addprevious(comment)
+    
     tree.write(registry_path)
     with open(registry_path, 'r') as f:
        content = f.read()
