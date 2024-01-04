@@ -55,7 +55,6 @@ from templates.FluidNetworkHeaderTemplate import FluidNetworkHeaderTemplate
 from templates.BasicNetworkBodyTemplate import BasicNetworkBodyTemplate
 from templates.FluidNetworkBodyTemplate import FluidNetworkBodyTemplate
 from templates.NetworkJsonTemplate import NetworkJsonTemplate
-from templates.NetworkBuddyTemplate import NetworkBuddyTemplate
 
 START_TIME = datetime.now()
 
@@ -1426,7 +1425,6 @@ else:
     hhTemplate = BasicNetworkHeaderTemplate(data_model)
     ccTemplate = BasicNetworkBodyTemplate(data_model)
 
-budTemplate = NetworkBuddyTemplate(data_model)
 jsTemplate = NetworkJsonTemplate(data_model)
 
 # For debugging:
@@ -1435,7 +1433,6 @@ jsTemplate = NetworkJsonTemplate(data_model)
 hhFileName = outputPath + '/' + networkName + '.hh'
 ccFileName = outputPath + '/' + networkName + '.cpp'
 #ccFileName = os.path.splitext(outputPathFile)[0] + '.cpp'
-budFileName = outputPath + '/' + networkName.split('_')[0] + 'Bud_' + networkName.split('_')[-1] + '.hh'
 jsFileName = outputPath + '/' + networkName + '.json'
 
 # Render templates to output files.
@@ -1448,11 +1445,6 @@ print ('  Rendering ' + networkName + '.cpp...')
 with open(ccFileName, 'w') as fcc:
     ccRender = ccTemplate.render()
     fcc.write(ccRender)
-
-print ('  Rendering ' + networkName + ' buddy...')
-with open(budFileName, 'w') as fbud:
-    budRender = budTemplate.render()
-    fbud.write(budRender)
 
 print ('  Rendering ' + networkName + '.json...')
 with open(jsFileName, 'w') as fjs:
