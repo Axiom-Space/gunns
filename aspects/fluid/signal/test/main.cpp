@@ -7,6 +7,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 
 #include "UtGunnsFluidSolenoidValve.hh"
+#include "UtGunnsFluid3WaySolenoidValve.hh"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @param     int     --  not used
@@ -21,6 +22,7 @@ int main(int, char**)
     CppUnit::TextTestRunner runner;
 
     runner.addTest(UtGunnsFluidSolenoidValve::suite());
+    runner.addTest(UtGunnsFluid3WaySolenoidValve::suite());
 
     runner.run();
 
