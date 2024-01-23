@@ -16,14 +16,14 @@ ASSUMPTIONS AND LIMITATIONS:
 
 LIBRARY DEPENDENCY:
     (
-     (core/GunnsFluid3WaySolenoidValve.o)
+     (aspects/fluid/conductor/GunnsFluid3WayValve.o)
     )
 
 PROGRAMMERS:
    ((Mike Moore) (L3) (2012-04) (Addition to GUNNS Fluid Conductors))
 **************************************************************************************************/
 
-#include "GunnsFluid3WaySolenoidValve.hh"
+#include "aspects/fluid/signal/GunnsFluid3WaySolenoidValve.hh"
 #include "core/GunnsFluidUtils.hh"
 #include "math/MsMath.hh"
 #include "software/exceptions/TsInitializationException.hh"
