@@ -28,7 +28,7 @@ def icd_generate(icds, tgt) :
 
 # store some directory info
 rdir = os.environ['ICD_HOME']
-print "\nICD for "+rdir+" . . .\n"
+print("\nICD for "+rdir+" . . .\n")
 
 # get the single argument is there is one
 opt = ''
