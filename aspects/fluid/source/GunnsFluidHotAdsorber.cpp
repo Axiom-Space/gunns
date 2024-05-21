@@ -18,10 +18,10 @@ LIBRARY DEPENDENCY:
 /// @param[in]      maxConductivity       (m2)    Maximum conductivity.
 /// @param[in]      expansionScaleFactor  (--)    Scale factor for isentropic gas cooling.
 /// @param[in]      gasType               (--)    Fluid type of constituent gas being sorbed.
-/// @param[in]      efficiency            (--)    Efficiency of gas adsorbtion from atmosphere.
-/// @param[in]      maxAdsorbtionRate     (kg/s)  Maximum mass rate at which gas can be adsorbed from atmosphere.
+/// @param[in]      efficiency            (--)    Efficiency of gas adsorption from atmosphere.
+/// @param[in]      maxAdsorptionRate     (kg/s)  Maximum mass rate at which gas can be adsorbed from atmosphere.
 /// @param[in]      maxAdsorbedMass       (kg)    Maximum amount of adsorbed mass.
-/// @param[in]      desorbtionRate        (kg/s)  Mass rate at which gas can be desorbed to atmosphere.
+/// @param[in]      desorptionRate        (kg/s)  Mass rate at which gas can be desorbed to atmosphere.
 /// @param[in]      efficiencyBias        (1/K)   Bias for the dependency of efficiency on temperature.
 /// @param[in]      efficiencyScaleFactor (--)    Scale factor for the dependency of efficiency on temperature.
 /// @param[in]      thermalLength         (m)     Tube length for thermal convection.
@@ -36,9 +36,9 @@ GunnsFluidHotAdsorberConfigData::GunnsFluidHotAdsorberConfigData(const std::stri
                                                                  const double                     expansionScaleFactor,
                                                                  const FluidProperties::FluidType gasType,
                                                                  const double                     efficiency,
-                                                                 const double                     maxAdsorbtionRate,
+                                                                 const double                     maxAdsorptionRate,
                                                                  const double                     maxAdsorbedMass,
-                                                                 const double                     desorbtionRate,
+                                                                 const double                     desorptionRate,
                                                                  const double                     thermalLength,
                                                                  const double                     thermalDiameter,
                                                                  const double                     surfaceRoughness,
@@ -51,9 +51,9 @@ GunnsFluidHotAdsorberConfigData::GunnsFluidHotAdsorberConfigData(const std::stri
                                  expansionScaleFactor,
                                  gasType,
                                  efficiency,
-                                 maxAdsorbtionRate,
+                                 maxAdsorptionRate,
                                  maxAdsorbedMass,
-                                 desorbtionRate,
+                                 desorptionRate,
                                  thermalLength,
                                  thermalDiameter,
                                  surfaceRoughness),
@@ -88,7 +88,7 @@ GunnsFluidHotAdsorberConfigData::~GunnsFluidHotAdsorberConfigData()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @param[in]  malfBlockageFlag     (--)  Blockage malfunction flag.
 /// @param[in]  malfBlockageValue    (--)  Blockage malfunction fractional value (0-1).
-/// @param[in]  desorbtionCycle      (--)  Desorbtion cycle flag.
+/// @param[in]  desorptionCycle      (--)  Desorption cycle flag.
 /// @param[in]  adsorbedMass         (--)  Adsorbed mass in the adsorber.
 /// @param[in]  wallTemperature      (K)   Tube wall temperature for thermal convection.
 /// @param[in]  tcEfficiency         (--)  Adsorption/desorption efficiency for trace compounds.
@@ -103,7 +103,7 @@ GunnsFluidHotAdsorberConfigData::~GunnsFluidHotAdsorberConfigData()
 GunnsFluidHotAdsorberInputData::GunnsFluidHotAdsorberInputData(
         const bool                         malfBlockageFlag,
         const double                       malfBlockageValue,
-        const bool                         desorbtionCycle,
+        const bool                         desorptionCycle,
         const double                       adsorbedMass,
         const double                       wallTemperature,
         GunnsFluidTraceCompoundsInputData* tcEfficiency,
@@ -114,7 +114,7 @@ GunnsFluidHotAdsorberInputData::GunnsFluidHotAdsorberInputData(
     :
     GunnsFluidAdsorberInputData(malfBlockageFlag,
                                 malfBlockageValue,
-                                desorbtionCycle,
+                                desorptionCycle,
                                 adsorbedMass,
                                 wallTemperature,
                                 tcEfficiency,
@@ -218,9 +218,9 @@ void GunnsFluidHotAdsorber::restartModel()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @return   (--)  Efficiency of the sorbtion (-1 to 1).
+/// @return   (--)  Efficiency of the sorption (-1 to 1).
 ///
-/// @details  Computes and returns the efficiency of the specified sorbtion linearly dependent on
+/// @details  Computes and returns the efficiency of the specified sorption linearly dependent on
 ///           temperature.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 double GunnsFluidHotAdsorber::computeEfficiency()
@@ -232,6 +232,6 @@ double GunnsFluidHotAdsorber::computeEfficiency()
     if (mMalfEfficiencyFlag) {
         efficiency = mMalfEfficiencyValue;
     }
-    mDesorbtionCycle = efficiency < 0.0;
+    mDesorptionCycle = efficiency < 0.0;
     return efficiency;
 }

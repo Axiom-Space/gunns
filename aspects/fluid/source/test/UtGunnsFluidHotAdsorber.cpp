@@ -38,9 +38,9 @@ UtGunnsFluidHotAdsorber::UtGunnsFluidHotAdsorber()
     mGasType(FluidProperties::NO_FLUID),
     mGasIndex(-1),
     mEfficiency(0.0),
-    mMaxAdsorbtionRate(0.0),
+    mMaxAdsorptionRate(0.0),
     mMaxAdsorbedMass(0.0),
-    mDesorbtionRate(0.0),
+    mDesorptionRate(0.0),
     mThermalLength(0.0),
     mThermalDiameter(0.0),
     mSurfaceRoughness(0.0),
@@ -53,14 +53,14 @@ UtGunnsFluidHotAdsorber::UtGunnsFluidHotAdsorber()
     mMalfBlockageValue(0.0),
     mMalfEfficiencyFlag(false),
     mMalfEfficiencyValue(0.0),
-    mDesorbtionCycle(false),
+    mDesorptionCycle(false),
     mAdsorbedMass(0.0),
     mWallTemperature(0.0),
     mInputData(0),
     mFluidTemperature(0.0),
     mWallHeatFlux(0.0),
     mMass(0.0),
-    mSorbtionFlowRate(0.0),
+    mSorptionFlowRate(0.0),
     mArticle(0),
     mFlowRate(0.0),
     mTimeStep(0.0),
@@ -125,9 +125,9 @@ void UtGunnsFluidHotAdsorber::setUp()
     mGasType               = FluidProperties::GUNNS_CO2;
     mGasIndex              = mNodes[0].getContent()->find(mGasType);
     mEfficiency            = 0.8;
-    mMaxAdsorbtionRate     = 0.01;
+    mMaxAdsorptionRate     = 0.01;
     mMaxAdsorbedMass       = 0.5;
-    mDesorbtionRate        = 0.02;
+    mDesorptionRate        = 0.02;
     mThermalLength         = 1.0;
     mThermalDiameter       = 1.0;
     mSurfaceRoughness      = 1.0e-06;
@@ -141,9 +141,9 @@ void UtGunnsFluidHotAdsorber::setUp()
                                                                  mExpansionScaleFactor,
                                                                  mGasType,
                                                                  mEfficiency,
-                                                                 mMaxAdsorbtionRate,
+                                                                 mMaxAdsorptionRate,
                                                                  mMaxAdsorbedMass,
-                                                                 mDesorbtionRate,
+                                                                 mDesorptionRate,
                                                                  mThermalLength,
                                                                  mThermalDiameter,
                                                                  mSurfaceRoughness,
@@ -153,14 +153,14 @@ void UtGunnsFluidHotAdsorber::setUp()
     /// - Define the nominal input data.
     mMalfBlockageFlag      = false;
     mMalfBlockageValue     = 0.3;
-    mDesorbtionCycle       = false;
+    mDesorptionCycle       = false;
     mAdsorbedMass          = 0.4;
     mWallTemperature       = 283.0;
     mMalfEfficiencyFlag    = false;
     mMalfEfficiencyValue   = 0.5;
     mInputData             = new GunnsFluidHotAdsorberInputData(mMalfBlockageFlag,
                                                                 mMalfBlockageValue,
-                                                                mDesorbtionCycle,
+                                                                mDesorptionCycle,
                                                                 mAdsorbedMass,
                                                                 mWallTemperature,
                                                                 0,
@@ -177,7 +177,7 @@ void UtGunnsFluidHotAdsorber::setUp()
     mFluidTemperature      = 0.5 * (mWallTemperature + mFluidInput0->mTemperature);
     mWallHeatFlux          = 0.0;
     mMass                  = 0.0;
-    mSorbtionFlowRate      = 0.0;
+    mSorptionFlowRate      = 0.0;
     mArticle               = new FriendlyGunnsFluidHotAdsorber;
 
     /// - Define the nominal flow rate, time step and comparison tolerance.
@@ -219,9 +219,9 @@ void UtGunnsFluidHotAdsorber::testConfigAndInput()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mExpansionScaleFactor,              mConfigData->mExpansionScaleFactor,  0.0);
     CPPUNIT_ASSERT(FluidProperties::GUNNS_CO2                     == mConfigData->mGasType);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mEfficiency,                        mConfigData->mEfficiency,            0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mMaxAdsorbtionRate,                 mConfigData->mMaxAdsorbtionRate,     0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mMaxAdsorptionRate,                 mConfigData->mMaxAdsorptionRate,     0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mMaxAdsorbedMass,                   mConfigData->mMaxAdsorbedMass,       0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mDesorbtionRate,                    mConfigData->mDesorbtionRate,        0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mDesorptionRate,                    mConfigData->mDesorptionRate,        0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mThermalLength,                     mConfigData->mThermalLength,         0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mThermalDiameter,                   mConfigData->mThermalDiameter,       0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mSurfaceRoughness,                  mConfigData->mSurfaceRoughness,      0.0);
@@ -231,7 +231,7 @@ void UtGunnsFluidHotAdsorber::testConfigAndInput()
     /// @test    Input data nominal construction.
     CPPUNIT_ASSERT(mMalfBlockageFlag                              == mInputData->mMalfBlockageFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mMalfBlockageValue,                 mInputData->mMalfBlockageValue,      0.0);
-    CPPUNIT_ASSERT(mDesorbtionCycle                               == mInputData->mDesorbtionCycle);
+    CPPUNIT_ASSERT(mDesorptionCycle                               == mInputData->mDesorptionCycle);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mAdsorbedMass,                      mInputData->mAdsorbedMass,           0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mWallTemperature,                   mInputData->mWallTemperature,        0.0);
     CPPUNIT_ASSERT(0                                              == mInputData->mTcEfficiency);
@@ -248,9 +248,9 @@ void UtGunnsFluidHotAdsorber::testConfigAndInput()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mExpansionScaleFactor, 0.0);
     CPPUNIT_ASSERT(FluidProperties::NO_FLUID                      == defaultConfig.mGasType);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mEfficiency,           0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mMaxAdsorbtionRate,    0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mMaxAdsorptionRate,    0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mMaxAdsorbedMass,      0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mDesorbtionRate,       0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mDesorptionRate,       0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mThermalLength,        0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mThermalDiameter,      0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultConfig.mSurfaceRoughness,     0.0);
@@ -261,7 +261,7 @@ void UtGunnsFluidHotAdsorber::testConfigAndInput()
     GunnsFluidHotAdsorberInputData   defaultInput;
     CPPUNIT_ASSERT(                                                 !defaultInput.mMalfBlockageFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultInput.mMalfBlockageValue,     0.0);
-    CPPUNIT_ASSERT(                                                 !defaultInput.mDesorbtionCycle);
+    CPPUNIT_ASSERT(                                                 !defaultInput.mDesorptionCycle);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultInput.mAdsorbedMass,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                                defaultInput.mWallTemperature,       0.0);
     CPPUNIT_ASSERT(0                                              == defaultInput.mTcEfficiency);
@@ -278,9 +278,9 @@ void UtGunnsFluidHotAdsorber::testConfigAndInput()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mExpansionScaleFactor, copyConfig.mExpansionScaleFactor,    0.0);
     CPPUNIT_ASSERT(mConfigData->mGasType                          == copyConfig.mGasType);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mEfficiency,           copyConfig.mEfficiency,              0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mMaxAdsorbtionRate,    copyConfig.mMaxAdsorbtionRate,       0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mMaxAdsorptionRate,    copyConfig.mMaxAdsorptionRate,       0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mMaxAdsorbedMass,      copyConfig.mMaxAdsorbedMass,         0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mDesorbtionRate,       copyConfig.mDesorbtionRate,          0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mDesorptionRate,       copyConfig.mDesorptionRate,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mThermalLength,        copyConfig.mThermalLength,           0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mThermalDiameter,      copyConfig.mThermalDiameter,         0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mConfigData->mSurfaceRoughness,     copyConfig.mSurfaceRoughness,        0.0);
@@ -291,7 +291,7 @@ void UtGunnsFluidHotAdsorber::testConfigAndInput()
     GunnsFluidHotAdsorberInputData   copyInput(*mInputData);
     CPPUNIT_ASSERT(mInputData->mMalfBlockageFlag                  == copyInput.mMalfBlockageFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInputData->mMalfBlockageValue,     copyInput.mMalfBlockageValue,        0.0);
-    CPPUNIT_ASSERT(mInputData->mDesorbtionCycle                   == copyInput.mDesorbtionCycle);
+    CPPUNIT_ASSERT(mInputData->mDesorptionCycle                   == copyInput.mDesorptionCycle);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInputData->mAdsorbedMass,          copyInput.mAdsorbedMass,             0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInputData->mWallTemperature,       copyInput.mWallTemperature,          0.0);
     CPPUNIT_ASSERT(0                                              == copyInput.mTcEfficiency);
@@ -317,9 +317,9 @@ void UtGunnsFluidHotAdsorber::testDefaultConstruction()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mExpansionScaleFactor,  0.0);
     CPPUNIT_ASSERT(FluidProperties::NO_FLUID == mArticle->mGasType);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mEfficiency,            0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mMaxAdsorbtionRate,     0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mMaxAdsorptionRate,     0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mMaxAdsorbedMass,       0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mDesorbtionRate,        0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mDesorptionRate,        0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mThermalDiameter,       0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mThermalSurfaceArea,    0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mThermalROverD,         0.0);
@@ -329,7 +329,7 @@ void UtGunnsFluidHotAdsorber::testDefaultConstruction()
     /// @test    Default construction input data.
     CPPUNIT_ASSERT(                            !mArticle->mMalfBlockageFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mMalfBlockageValue,     0.0);
-    CPPUNIT_ASSERT(                            !mArticle->mDesorbtionCycle);
+    CPPUNIT_ASSERT(                            !mArticle->mDesorptionCycle);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mAdsorbedMass,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mWallTemperature,       0.0);
     CPPUNIT_ASSERT(                            !mArticle->mMalfEfficiencyFlag);
@@ -339,8 +339,8 @@ void UtGunnsFluidHotAdsorber::testDefaultConstruction()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mFluidTemperature,      0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mWallHeatFlux,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mMass,                  0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mSorbtionFlowRate,      0.0);
-    CPPUNIT_ASSERT(0                         == mArticle->mSorbtionFluid);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,           mArticle->mSorptionFlowRate,      0.0);
+    CPPUNIT_ASSERT(0                         == mArticle->mSorptionFluid);
     CPPUNIT_ASSERT(0                         == mArticle->mInternalFluid);
     CPPUNIT_ASSERT(0                         == mArticle->mGasIndex);
 
@@ -373,9 +373,9 @@ void UtGunnsFluidHotAdsorber::testNominalInitialization()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mExpansionScaleFactor,          article.mExpansionScaleFactor,  0.0);
     CPPUNIT_ASSERT(mConfigData->mGasType                      == article.mGasType);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mEfficiency,                    article.mEfficiency,            0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mMaxAdsorbtionRate,             article.mMaxAdsorbtionRate,     0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mMaxAdsorptionRate,             article.mMaxAdsorptionRate,     0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mMaxAdsorbedMass,               article.mMaxAdsorbedMass,       0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mDesorbtionRate,                article.mDesorbtionRate,        0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mDesorptionRate,                article.mDesorptionRate,        0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mThermalDiameter,               article.mThermalDiameter,       0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mThermalSurfaceArea,            article.mThermalSurfaceArea,    0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mThermalROverD,                 article.mThermalROverD,         0.0);
@@ -385,7 +385,7 @@ void UtGunnsFluidHotAdsorber::testNominalInitialization()
     /// @test    Nominal input data.
     CPPUNIT_ASSERT(mInputData->mMalfBlockageFlag              == article.mMalfBlockageFlag);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mInputData->mMalfBlockageValue, article.mMalfBlockageValue,     0.0);
-    CPPUNIT_ASSERT(mDesorbtionCycle                           == article.mDesorbtionCycle);
+    CPPUNIT_ASSERT(mDesorptionCycle                           == article.mDesorptionCycle);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mAdsorbedMass,                  article.mAdsorbedMass,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mWallTemperature,               article.mWallTemperature,      0.0);
     CPPUNIT_ASSERT(mMalfEfficiencyFlag                        == article.mMalfEfficiencyFlag);
@@ -394,15 +394,15 @@ void UtGunnsFluidHotAdsorber::testNominalInitialization()
     /// @test    Nominal state data.
     CPPUNIT_ASSERT(0                                          != article.mInternalFluid);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                            article.mMass,                 0.0);
-    CPPUNIT_ASSERT(0                                          != article.mSorbtionFluid);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                            article.mSorbtionFlowRate,     0.0);
+    CPPUNIT_ASSERT(0                                          != article.mSorptionFluid);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,                            article.mSorptionFlowRate,     0.0);
     CPPUNIT_ASSERT(mGasIndex                                  == article.mGasIndex);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidTemperature,              article.mFluidTemperature,      0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mWallHeatFlux,                  article.mWallHeatFlux,          0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mMass,                          article.mMass,                  0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(mSorbtionFlowRate,              article.mSorbtionFlowRate,      0.0);
-    CPPUNIT_ASSERT(0                                          != article.mSorbtionFluid);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(mSorptionFlowRate,              article.mSorptionFlowRate,      0.0);
+    CPPUNIT_ASSERT(0                                          != article.mSorptionFluid);
     CPPUNIT_ASSERT(0                                          != article.mInternalFluid);
     CPPUNIT_ASSERT(mGasIndex                                  == article.mGasIndex);
 
@@ -412,13 +412,13 @@ void UtGunnsFluidHotAdsorber::testNominalInitialization()
     /// @test    Test RestartMethods for functionality
     article.mFluidTemperature = 1.0;
     article.mMass = 1.0;
-    article.mSorbtionFlowRate = 1.0;
+    article.mSorptionFlowRate = 1.0;
 
     article.restartModel();
 
     CPPUNIT_ASSERT(0.0 == article.mFluidTemperature);
     CPPUNIT_ASSERT(0.0 == article.mMass);
-    CPPUNIT_ASSERT(0.0 == article.mSorbtionFlowRate);
+    CPPUNIT_ASSERT(0.0 == article.mSorptionFlowRate);
 
     UT_PASS;
 }
@@ -482,11 +482,11 @@ void UtGunnsFluidHotAdsorber::testUpdateFluidNominal()
         mArticle->updateFluid(mTimeStep, 0.0);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed,           mArticle->mAdsorbedMass,                    mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mMass,                            mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorbtionFlowRate,                mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidInput0->mTemperature, mArticle->mSorbtionFluid->getTemperature(), mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mSorbtionFluid->getMass(),        mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorptionFlowRate,                mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidInput0->mTemperature, mArticle->mSorptionFluid->getTemperature(), mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mSorptionFluid->getMass(),        mTolerance);
     } {
-        /// @test    adsorbtion temperature dependence.
+        /// @test    adsorption temperature dependence.
         mConfigData->mEfficiencyBias        = 0.25;
         mConfigData->mEfficiencyScaleFactor = 1.0 / (4.0 * 283.0);
         mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
@@ -495,14 +495,14 @@ void UtGunnsFluidHotAdsorber::testUpdateFluidNominal()
         const double expectedRate     = -expectedMass / mTimeStep;
         mArticle->mFlowRate           = mFlowRate;
         mArticle->updateFluid(mTimeStep, 0.0);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorbtionFlowRate,                mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorptionFlowRate,                mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed,           mArticle->mAdsorbedMass,                    mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mMass,                            mTolerance);
         mConfigData->mEfficiencyBias        =  1.0;
         mConfigData->mEfficiencyScaleFactor =  0.0;
     } {
         /// @test     Max removal rate constraint.
-        mConfigData->mMaxAdsorbtionRate = 0.001;
+        mConfigData->mMaxAdsorptionRate = 0.001;
         mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
         const double expectedRate     = -0.001;
         const double expectedMass     = -expectedRate * mTimeStep;;
@@ -511,10 +511,10 @@ void UtGunnsFluidHotAdsorber::testUpdateFluidNominal()
         mArticle->updateFluid(mTimeStep, 0.0);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed,           mArticle->mAdsorbedMass,                    mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mMass,                            mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorbtionFlowRate,                mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidInput0->mTemperature, mArticle->mSorbtionFluid->getTemperature(), mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mSorbtionFluid->getMass(),        mTolerance);
-        mConfigData->mMaxAdsorbtionRate = mMaxAdsorbtionRate;
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorptionFlowRate,                mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidInput0->mTemperature, mArticle->mSorptionFluid->getTemperature(), mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mSorptionFluid->getMass(),        mTolerance);
+        mConfigData->mMaxAdsorptionRate = mMaxAdsorptionRate;
     } {
         /// @test     Capacity constraint.
         mInputData->mAdsorbedMass     = mConfigData->mMaxAdsorbedMass - 0.001;
@@ -526,9 +526,9 @@ void UtGunnsFluidHotAdsorber::testUpdateFluidNominal()
         mArticle->updateFluid(mTimeStep, 0.0);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed,           mArticle->mAdsorbedMass,                    mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mMass,                            mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorbtionFlowRate,                mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidInput0->mTemperature, mArticle->mSorbtionFluid->getTemperature(), mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mSorbtionFluid->getMass(),        mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorptionFlowRate,                mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidInput0->mTemperature, mArticle->mSorptionFluid->getTemperature(), mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mSorptionFluid->getMass(),        mTolerance);
         mInputData->mAdsorbedMass     = mAdsorbedMass;
     } {
         /// @test     Nominal initialization data with reverse flow, efficiency malf active.
@@ -541,9 +541,9 @@ void UtGunnsFluidHotAdsorber::testUpdateFluidNominal()
         mArticle->updateFluid(mTimeStep, 0.0);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed,           mArticle->mAdsorbedMass,                    mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mMass,                            mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorbtionFlowRate,                mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidInput0->mTemperature, mArticle->mSorbtionFluid->getTemperature(), mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mSorbtionFluid->getMass(),        mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,               mArticle->mSorptionFlowRate,                mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(mFluidInput0->mTemperature, mArticle->mSorptionFluid->getTemperature(), mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,               mArticle->mSorptionFluid->getMass(),        mTolerance);
     }
 
     UT_PASS;
@@ -556,101 +556,101 @@ void UtGunnsFluidHotAdsorber::testUpdateFluidOffNominal()
 {
     UT_RESULT;
 
-    /// @test    No flow adsorbtion.
+    /// @test    No flow adsorption.
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
     mArticle->mFlowRate                          = 0.0;
     mArticle->updateFluid(mTimeStep, 1.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mAdsorbedMass,    mArticle->mAdsorbedMass,     mTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mMass,             mTolerance);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorbtionFlowRate, mTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorptionFlowRate, mTolerance);
 
-    /// @test    Zero time step adsorbtion.
+    /// @test    Zero time step adsorption.
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
     mArticle->mFlowRate                          = mFlowRate;
     mArticle->updateFluid(0.0, 2.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mAdsorbedMass,    mArticle->mAdsorbedMass,     mTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mMass,             mTolerance);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorbtionFlowRate, mTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorptionFlowRate, mTolerance);
 
-    /// @test    Too low flow adsorbtion.
+    /// @test    Too low flow adsorption.
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
     mArticle->mFlowRate                          = -DBL_EPSILON;
     mArticle->updateFluid(mTimeStep, 3.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mAdsorbedMass,    mArticle->mAdsorbedMass,     mTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mMass,             mTolerance);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorbtionFlowRate, mTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorptionFlowRate, mTolerance);
 
-    const double expectedMass                    = -mDesorbtionRate * mTimeStep;
-    const double expectedAdsorbed                =  mAdsorbedMass - mDesorbtionRate * mTimeStep;
+    const double expectedMass                    = -mDesorptionRate * mTimeStep;
+    const double expectedAdsorbed                =  mAdsorbedMass - mDesorptionRate * mTimeStep;
     const double expectedRate                    = -expectedMass / mTimeStep;
 
-    /// @test    No flow desorbtion.
+    /// @test    No flow desorption.
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
     mArticle->mFlowRate                          =  0.0;
-    mInputData->mDesorbtionCycle                 = true;
+    mInputData->mDesorptionCycle                 = true;
     mArticle->updateFluid(mTimeStep, 1.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mAdsorbedMass,    mArticle->mAdsorbedMass,     mTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mMass,             mTolerance);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorbtionFlowRate, mTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorptionFlowRate, mTolerance);
 
-    /// @test    Zero time step desorbtion.
+    /// @test    Zero time step desorption.
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
     mArticle->mFlowRate                          = mFlowRate;
-    mArticle->mDesorbtionCycle                   = true;
+    mArticle->mDesorptionCycle                   = true;
     mArticle->updateFluid(0.0, 2.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(mAdsorbedMass,    mArticle->mAdsorbedMass,     mTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mMass,             mTolerance);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorbtionFlowRate, mTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0,              mArticle->mSorptionFlowRate, mTolerance);
 
-    /// @test    Too low flow desorbtion.
+    /// @test    Too low flow desorption.
     mConfigData->mEfficiencyBias                 = -1.0;
     mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
     mArticle->mFlowRate                          = -DBL_EPSILON;
-    mInputData->mDesorbtionCycle                 = true;
+    mInputData->mDesorptionCycle                 = true;
     mArticle->updateFluid(mTimeStep, 3.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed, mArticle->mAdsorbedMass,     mTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,     mArticle->mMass,             mTolerance);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,     mArticle->mSorbtionFlowRate, mTolerance);
-    mInputData->mDesorbtionCycle                 = false;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,     mArticle->mSorptionFlowRate, mTolerance);
+    mInputData->mDesorptionCycle                 = false;
     mConfigData->mEfficiencyBias                 = 1.0;
 
     UT_PASS;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @details  Tests for GUNNS Fluid Hot Adsorber link model update fluid in desorbtion cycle.
+/// @details  Tests for GUNNS Fluid Hot Adsorber link model update fluid in desorption cycle.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void UtGunnsFluidHotAdsorber::testUpdateFluidDesorbtion()
+void UtGunnsFluidHotAdsorber::testUpdateFluidDesorption()
 {
     UT_RESULT;
 
     {
         /// @test    Nominal.
         mConfigData->mEfficiencyBias  = -1.0;
-        const double expectedMass     = -mDesorbtionRate * mTimeStep;
-        const double expectedAdsorbed =  mAdsorbedMass - mDesorbtionRate * mTimeStep;
+        const double expectedMass     = -mDesorptionRate * mTimeStep;
+        const double expectedAdsorbed =  mAdsorbedMass - mDesorptionRate * mTimeStep;
         const double expectedRate     =  -expectedMass / mTimeStep;
-        mInputData->mDesorbtionCycle  = true;
+        mInputData->mDesorptionCycle  = true;
         mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
         mArticle->mFlowRate           =  mFlowRate;
         mArticle->updateFluid(mTimeStep, 0.0);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed, mArticle->mAdsorbedMass,     mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,     mArticle->mMass,             mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,     mArticle->mSorbtionFlowRate, mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,     mArticle->mSorptionFlowRate, mTolerance);
     } {
-        /// @test    desorbtion temperature dependence.
+        /// @test    desorption temperature dependence.
         mConfigData->mEfficiencyBias        = -0.25;
         mConfigData->mEfficiencyScaleFactor = -1.0 / (4.0 * 283.0);
-        const double expectedMass           = -mDesorbtionRate * mTimeStep * 0.5;
-        const double expectedAdsorbed       =  mAdsorbedMass - mDesorbtionRate * mTimeStep * 0.5;
+        const double expectedMass           = -mDesorptionRate * mTimeStep * 0.5;
+        const double expectedAdsorbed       =  mAdsorbedMass - mDesorptionRate * mTimeStep * 0.5;
         const double expectedRate           =  -expectedMass / mTimeStep;
-        mInputData->mDesorbtionCycle        = true;
+        mInputData->mDesorptionCycle        = true;
         mArticle->initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1);
         mArticle->mFlowRate                 =  mFlowRate;
         mArticle->updateFluid(mTimeStep, 0.0);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed, mArticle->mAdsorbedMass,     mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,     mArticle->mMass,             mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,     mArticle->mSorbtionFlowRate, mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,     mArticle->mSorptionFlowRate, mTolerance);
         mConfigData->mEfficiencyBias        = -1.0;
         mConfigData->mEfficiencyScaleFactor =  0.0;
     } {
@@ -664,7 +664,7 @@ void UtGunnsFluidHotAdsorber::testUpdateFluidDesorbtion()
         mArticle->updateFluid(mTimeStep, 0.0);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedAdsorbed, mArticle->mAdsorbedMass,     mTolerance);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedMass,     mArticle->mMass,             mTolerance);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,     mArticle->mSorbtionFlowRate, mTolerance);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedRate,     mArticle->mSorptionFlowRate, mTolerance);
         mConfigData->mEfficiencyBias  = 1.0;
     }
 
@@ -741,10 +741,10 @@ void UtGunnsFluidHotAdsorber::testInitializationExceptions()
     mConfigData->mEfficiency = mEfficiency;
 
     /// @test    Initialization exception on invalid config data: maximum adsorbed mass < 0.0.
-    mConfigData->mMaxAdsorbtionRate = -FLT_EPSILON;
+    mConfigData->mMaxAdsorptionRate = -FLT_EPSILON;
     CPPUNIT_ASSERT_THROW(article.initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1),
                          TsInitializationException);
-    mConfigData->mMaxAdsorbtionRate = mMaxAdsorbtionRate;
+    mConfigData->mMaxAdsorptionRate = mMaxAdsorptionRate;
 
     /// @test    Initialization exception on invalid config data: maximum adsorption rate < 0.0.
     mConfigData->mMaxAdsorbedMass = -FLT_EPSILON;
@@ -752,11 +752,11 @@ void UtGunnsFluidHotAdsorber::testInitializationExceptions()
                          TsInitializationException);
     mConfigData->mMaxAdsorbedMass = mMaxAdsorbedMass;
 
-    /// @test    Initialization exception on invalid config data: desorbtion rate < 0.0.
-    mConfigData->mDesorbtionRate = -FLT_EPSILON;
+    /// @test    Initialization exception on invalid config data: desorption rate < 0.0.
+    mConfigData->mDesorptionRate = -FLT_EPSILON;
     CPPUNIT_ASSERT_THROW(article.initialize(*mConfigData, *mInputData, mLinks, mPort0, mPort1),
                          TsInitializationException);
-    mConfigData->mDesorbtionRate = mDesorbtionRate;
+    mConfigData->mDesorptionRate = mDesorptionRate;
 
     /// @test    Initialization exception on invalid input data: blockage malfunction value < 0.
     mInputData->mMalfBlockageValue = -FLT_EPSILON;

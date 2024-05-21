@@ -51,9 +51,9 @@ class GunnsFluidHotAdsorberConfigData : public GunnsFluidAdsorberConfigData
                                         const double                     expansionScaleFactor  = 0.0,
                                         const FluidProperties::FluidType gasType               = FluidProperties::NO_FLUID,
                                         const double                     efficiency            = 0.0,
-                                        const double                     maxAdsorbtionRate     = 0.0,
+                                        const double                     maxAdsorptionRate     = 0.0,
                                         const double                     maxAdsorbedMass       = 0.0,
-                                        const double                     desorbtionRate        = 0.0,
+                                        const double                     desorptionRate        = 0.0,
                                         const double                     thermalLength         = 0.0,
                                         const double                     thermalDiameter       = 0.0,
                                         const double                     surfaceRoughness      = 0.0,
@@ -82,7 +82,7 @@ class GunnsFluidHotAdsorberInputData : public GunnsFluidAdsorberInputData
         /// @brief    Default constructs this Hot Adsorber input data with arguments.
         GunnsFluidHotAdsorberInputData(const bool                         malfBlockageFlag    = false,
                                        const double                       malfBlockageValue   = 0.0,
-                                       const bool                         desorbtionCycle     = false,
+                                       const bool                         desorptionCycle     = false,
                                        const double                       adsorbedMass        = 0,
                                        const double                       wallTemperature     = 0.0,
                                        GunnsFluidTraceCompoundsInputData* tcEfficiency        = 0,
@@ -106,8 +106,8 @@ class GunnsFluidHotAdsorberInputData : public GunnsFluidAdsorberInputData
 ///
 /// @details  Class for modeling a GUNNS Hot Fluid Adsorber link model. An adsorber is a
 ///           conductive link masquerading as a source link that modifies the input fluid
-///           constituents by consuming (adsorbtion) or producing (desorbtion) a compound in the
-///           atmosphere. This adsorber may be heated and the sorbtion efficiency is temperature
+///           constituents by consuming (adsorption) or producing (desorption) a compound in the
+///           atmosphere. This adsorber may be heated and the sorption efficiency is temperature
 ///           dependent.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class GunnsFluidHotAdsorber : public GunnsFluidAdsorber
@@ -132,7 +132,7 @@ class GunnsFluidHotAdsorber : public GunnsFluidAdsorber
                       const GunnsFluidHotAdsorberInputData&  inputData);
         /// @brief Virtual method for derived links to perform their restart functions.
         virtual void restartModel();
-        /// @brief    Computes the sorbtion efficiency.
+        /// @brief    Computes the sorption efficiency.
         virtual double computeEfficiency();
     private:
         ////////////////////////////////////////////////////////////////////////////////////////////

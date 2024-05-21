@@ -78,7 +78,7 @@ UtGunnsFluidMultiAdsorber::UtGunnsFluidMultiAdsorber()
     tFluidTemperature(0.0),
     tWallHeatFlux(0.0),
     tMass(0.0),
-    tSorbtionFlowRate(0.0),
+    tSorptionFlowRate(0.0),
     tArticle(0),
     tFlowRate(0.0),
     tTimeStep(0.0)
@@ -220,7 +220,7 @@ void UtGunnsFluidMultiAdsorber::setUp()
     tFluidTemperature     = 0.5 * (tWallTemperature + tFluidInput0->mTemperature);
     tWallHeatFlux         = 0.0;
     tMass                 = 0.0;
-    tSorbtionFlowRate     = 0.0;
+    tSorptionFlowRate     = 0.0;
     tArticle              = new FriendlyGunnsFluidMultiAdsorber;
 
     /// - Define the nominal flow rate and time step.
@@ -550,7 +550,7 @@ void UtGunnsFluidMultiAdsorber::testUpdateFluidNominal()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(tNodes[tPort0].getOutflow()->getMassFraction(2),
                                  tArticle->mInternalFluid->getMassFraction(2), DBL_EPSILON);
 
-    /// @test    Zero sorbtion and flows at zero bulk flow rate.
+    /// @test    Zero sorption and flows at zero bulk flow rate.
     tArticle->mFlowRate           = 0.0;
     tArticle->mFlux               = 0.0;
     tArticle->mPotentialVector[1] = tArticle->mPotentialVector[0];
@@ -723,7 +723,7 @@ void UtGunnsFluidMultiAdsorber::testInitializationExceptions()
     config.addCompound(tCompound1Type, tCompound1MaxAdsorbedMass, tCompound1EfficiencyCoeff0);
     CPPUNIT_ASSERT_THROW(article.initialize(config, *tInputData, tLinks, tPort0, tPort1),
                          TsInitializationException);
-    
+
     /// @test    Initialization exception on invalid config data: exception from compound init.
     config.mCompounds.clear();
     config.addCompound(tCompound1Type, -DBL_EPSILON, tCompound1EfficiencyCoeff0);

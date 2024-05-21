@@ -44,7 +44,7 @@ UtGunnsFluidSimpleH2Redox::UtGunnsFluidSimpleH2Redox()
 //    mFluidTemperature(0.0),
 //    mWallHeatFlux(0.0),
 //    mMass(0.0),
-//    mSorbtionFlowRate(0.0),
+//    mSorptionFlowRate(0.0),
     tArticle(0),
 //    mFlowRate(0.0),
     tTimeStep(0.0)

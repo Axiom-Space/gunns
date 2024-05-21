@@ -65,8 +65,8 @@ class UtGunnsFluidHotAdsorber: public CppUnit::TestFixture
         void testUpdateFluidNominal();
         /// @brief    Tests update fluid method (no/reverse flow).
         void testUpdateFluidOffNominal();
-        /// @brief    Tests update fluid method (desorbtionCycle).
-        void testUpdateFluidDesorbtion();
+        /// @brief    Tests update fluid method (desorptionCycle).
+        void testUpdateFluidDesorption();
         /// @brief    Tests specific port mapping rules.
         void testPortMapping();
         /// @brief    Tests initialize method exceptions.
@@ -80,7 +80,7 @@ class UtGunnsFluidHotAdsorber: public CppUnit::TestFixture
         CPPUNIT_TEST(testModifiers);
         CPPUNIT_TEST(testUpdateFluidNominal);
         CPPUNIT_TEST(testUpdateFluidOffNominal);
-        CPPUNIT_TEST(testUpdateFluidDesorbtion);
+        CPPUNIT_TEST(testUpdateFluidDesorption);
         CPPUNIT_TEST(testPortMapping);
         CPPUNIT_TEST(testInitializationExceptions);
         CPPUNIT_TEST_SUITE_END();
@@ -102,10 +102,10 @@ class UtGunnsFluidHotAdsorber: public CppUnit::TestFixture
         double                            mExpansionScaleFactor;  /**< (--)    Nominal scale factor for isentropic gas cooling. */
         FluidProperties::FluidType        mGasType;               /**< (--)    Fluid type of constituent gas being sorbed. */
         int                               mGasIndex;              /**< (--)    Index of constituent gas being sorbed. */
-        double                            mEfficiency;            /**< (--)    Efficiency of gas adsorbtion from atmosphere. */
-        double                            mMaxAdsorbtionRate;     /**< (kg/s)  Maximum mass rate at which gas can be adsorbed from atmosphere. */
+        double                            mEfficiency;            /**< (--)    Efficiency of gas adsorption from atmosphere. */
+        double                            mMaxAdsorptionRate;     /**< (kg/s)  Maximum mass rate at which gas can be adsorbed from atmosphere. */
         double                            mMaxAdsorbedMass;       /**< (kg)    Maximum amount of adsorbed mass. */
-        double                            mDesorbtionRate;        /**< (kg/s)  Mass rate at which adsorbed gas is desorbed. */
+        double                            mDesorptionRate;        /**< (kg/s)  Mass rate at which adsorbed gas is desorbed. */
         double                            mThermalLength;         /**< (m)     Tube length for thermal convection. */
         double                            mThermalDiameter;       /**< (m)     Tube inner diameter for thermal convection. */
         double                            mSurfaceRoughness;      /**< (m)     Tube wall surface roughness for thermal convection. */
@@ -118,14 +118,14 @@ class UtGunnsFluidHotAdsorber: public CppUnit::TestFixture
         double                            mMalfBlockageValue;     /**< (--)    Blockage malfunction value. */
         bool                              mMalfEfficiencyFlag;    /**< (--)    Efficiency malfunction flag. */
         bool                              mMalfEfficiencyValue;   /**< (--)    Efficiency malfunction value. */
-        bool                              mDesorbtionCycle;       /**< (--)    Desorbtion cycle flag (simbus input from signal aspect). */
+        bool                              mDesorptionCycle;       /**< (--)    Desorption cycle flag (simbus input from signal aspect). */
         double                            mAdsorbedMass;          /**< (kg)    Adsorbed mass in the adsorber. */
         double                            mWallTemperature;       /**< (K)     Tube wall temperature for thermal convection. */
         GunnsFluidHotAdsorberInputData*   mInputData;             /**< (--)    Pointer to nominal input data. */
         double                            mFluidTemperature;      /**< (K)     Temperature of the fluid in the reactor. */
         double                            mWallHeatFlux;          /**< (W)     Convection heat flow from the fluid to the tube wall (simbus output to thermal aspect). */
         double                            mMass;                  /**< (kg)    Adsorbed mass this cycle. */
-        double                            mSorbtionFlowRate;      /**< (kg/s)  Sorbtion mass flow rate. */
+        double                            mSorptionFlowRate;      /**< (kg/s)  Sorption mass flow rate. */
         FriendlyGunnsFluidHotAdsorber*    mArticle;               /**< (--)    Pointer to the friendly adsorber under test. */
         double                            mFlowRate;              /**< (kg/s)  Nominal mass flow rate. */
         double                            mTimeStep;              /**< (s)     Nominal time step. */
