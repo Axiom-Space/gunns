@@ -2,7 +2,7 @@
 @file
 @brief    GUNNS Orchestrator implementation
 
-@copyright Copyright 2019 United States Government as represented by the Administrator of the
+@copyright Copyright 2024 United States Government as represented by the Administrator of the
            National Aeronautics and Space Administration.  All Rights Reserved.
 
 PURPOSE:
@@ -21,6 +21,7 @@ LIBRARY DEPENDENCY:
    (
     (core/GunnsBasicLink.o)
     (core/GunnsFluidNode.o)
+    (core/GunnsInfraFunctions.o)
     (core/GunnsFluidFlowOrchestrator.o)
     (core/GunnsMinorStepLog.o)
     (math/linear_algebra/Sor.o)
@@ -49,7 +50,7 @@ LIBRARY DEPENDENCY:
 #include "core/Gunns.hh"
 #include "core/GunnsBasicLink.hh"
 #include "core/GunnsFluidNode.hh"
-#include "core/GunnsInfraMacros.hh"
+#include "core/GunnsInfraFunctions.hh"
 #include "core/GunnsFluidFlowOrchestrator.hh"
 #include "math/linear_algebra/Sor.hh"
 #include "math/linear_algebra/CholeskyLdu.hh"
@@ -160,6 +161,7 @@ Gunns::Gunns()
     mLinkOverrideVectors   (0),
     mLinkNodeMaps          (0),
     mLinkNumPorts          (0),
+    mLinkAdmittanceMaps    (0),
     mMajorStepCount        (0),
     mConvergenceFailCount  (0),
     mLinkResetStepFailCount(0),
@@ -235,6 +237,9 @@ void Gunns::cleanup()
     {
         delete [] mLinkNumPorts;
         mLinkNumPorts = 0;
+    } {
+        delete [] mLinkAdmittanceMaps;
+        mLinkAdmittanceMaps = 0;
     } {
         delete [] mLinkNodeMaps;
         mLinkNodeMaps = 0;
@@ -421,6 +426,7 @@ void Gunns::initialize(const GunnsConfigData& configData, std::vector<GunnsBasic
     mLinkSourceVectors      = new double*[mNumLinks];
     mLinkOverrideVectors    = new bool*  [mNumLinks];
     mLinkNodeMaps           = new int*   [mNumLinks];
+    mLinkAdmittanceMaps     = new GunnsBasicLinkAdmittanceMap*[mNumLinks];
     mLinkNumPorts           = new int    [mNumLinks];
 
     /// - Prepare nodes for startup, and load in their initial potentials for distribution to all
@@ -438,6 +444,7 @@ void Gunns::initialize(const GunnsConfigData& configData, std::vector<GunnsBasic
         mLinkSourceVectors[link]      = mLinks[link]->getSourceVector();
         mLinkOverrideVectors[link]    = mLinks[link]->getOverrideVector();
         mLinkNodeMaps[link]           = mLinks[link]->getNodeMap();
+        mLinkAdmittanceMaps[link]     = mLinks[link]->getAdmittanceMap();
         mLinkNumPorts[link]           = mLinks[link]->getNumberPorts();
     }
 
@@ -447,7 +454,8 @@ void Gunns::initialize(const GunnsConfigData& configData, std::vector<GunnsBasic
     }
 
     verifyNodeInitialization();
-    mFlowOrchestrator->initialize(mName + ".mFlowOrchestrator", mLinks, mNodes);
+    mFlowOrchestrator->initialize(mName + ".mFlowOrchestrator", mLinks, mNodes,
+                                  mLinkNodeMaps, mLinkNumPorts);
 
     /// - Zero the potential and reset the state of the vacuum/ground boundary node.  This node is
     ///   always the last node in the list.
@@ -727,7 +735,7 @@ inline void Gunns::initializeRestartCommonFunctions()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void Gunns::step(const double timeStep)
 {
-    double startTime = CLOCK_TIME;
+    double startTime = GunnsInfraFunctions::clockTime();
 
     /// - Check for proper initialization and run-time mode settings.
     checkStepInputs();
@@ -765,7 +773,6 @@ void Gunns::step(const double timeStep)
 
     if (isConverged) {
         /// - Compute & transport flows.
-        mFlowOrchestrator->setVerbose(mVerbose);
         mFlowOrchestrator->update(timeStep);
 
         /// - Once the nodes have been updated, call the links to process final outputs.
@@ -793,7 +800,7 @@ void Gunns::step(const double timeStep)
     mStepLog.endMajorStep();
 
     mSolveTime = mSolveTimeWorking;
-    mStepTime  = CLOCK_TIME - startTime;
+    mStepTime  = GunnsInfraFunctions::clockTime() - startTime;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1029,11 +1036,6 @@ int Gunns::buildAndSolveSystem(const int minorStep, const double timeStep)
                     } else {
                         decompose(mAdmittanceMatrix, mNetworkSize);
                     }
-
-                    /// - Initial node network capacitance calculations immediately following the
-                    ///   matrix decomposition.
-                    perturbNetworkCapacitances();
-
                 } else {
                     throw TsOutOfBoundsException("Iteration Limit Exceeded", "Gunns",
                                                  "decomposition limit exceeded.");
@@ -1043,8 +1045,9 @@ int Gunns::buildAndSolveSystem(const int minorStep, const double timeStep)
         /// - Solve the system of equations.  The result of this is a new potential vector.  This is
         ///   only needed in NORMAL mode.  In DUMMY mode, the links are responsible for their own
         ///   potential.  In SLAVE mode, an external potential vector is received from the caller.
-        /// - Final node network capacitance calculations following the network solution.
+        /// - Node network capacitance calculations before and after the network solution.
         if (NORMAL == mSolverMode) {
+            perturbNetworkCapacitances();
             solveCholesky();
             cleanPotentialVector();
             computeNetworkCapacitances(timeStep);
@@ -1067,7 +1070,7 @@ int Gunns::buildAndSolveSystem(const int minorStep, const double timeStep)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void Gunns::decompose(double *A, const int size, const int island)
 {
-    double startTime = CLOCK_TIME;
+    double startTime = GunnsInfraFunctions::clockTime();
     if ( (size >= mGpuSizeThreshold) and (GPU_DENSE == mGpuMode) ) {
         handleDecompose(mSolverGpuDense, A, size, island);
         /// - Since mSolverGpuDense only populates the upper triangle U of the decomposed A = LDU
@@ -1082,7 +1085,7 @@ void Gunns::decompose(double *A, const int size, const int island)
     } else if ( (GPU_SPARSE != mGpuMode) or (size < mGpuSizeThreshold) ) {
         handleDecompose(mSolverCpu, A, size, island);
     }
-    mSolveTimeWorking += CLOCK_TIME - startTime;
+    mSolveTimeWorking += GunnsInfraFunctions::clockTime() - startTime;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1216,28 +1219,25 @@ GunnsBasicLink::SolutionResult Gunns::confirmSolutionAcceptance(const int conver
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @details  This method assembles the system admittance matrix from the individual link's
-///           contributions.  Looping through the links, we use the link's node mapping to know
-///           where to add its contribution terms into the main matrix.
+///           contributions.  Looping through the links, we use the link's admittance map to know
+///           where to add its contribution terms into the main matrix.  Any out-of-bounds number in
+///           the link's map denote that location doesn't map to anywhere in the network system of
+///           equations, and we omit including the link's contribution at that location.  This will
+///           usually be the Ground node, but might occur for spare terms in a link's compressed
+///           matrix, or for bad link code that we must protect against, etc.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void Gunns::buildAdmittanceMatrix()
 {
-    for (int i = 0; i < mNetworkSize*mNetworkSize; ++i) {
+    const int admittanceMatrixSize = mNetworkSize * mNetworkSize;
+    for (int i = 0; i < admittanceMatrixSize; ++i) {
         mAdmittanceMatrix[i] = 0.0;
     }
 
     for (int link = 0; link < mNumLinks; ++link) {
-        const int numPorts = mLinkNumPorts[link];
-
-        for (int port1 = 0; port1 < numPorts; ++port1) {
-            const int node1 = mLinkNodeMaps[link][port1];
-
-            for (int port2 = 0, a = port1*numPorts; port2 < numPorts; ++port2, ++a) {
-                const int node2 = mLinkNodeMaps[link][port2];
-
-                // The vacuum/ground node is not actually in the system, so we leave it off.
-                if (node1 < mNetworkSize && node2 < mNetworkSize) {
-                    mAdmittanceMatrix[node1*mNetworkSize + node2] += mLinkAdmittanceMatrices[link][a];
-                }
+        for (unsigned int linkMap = 0; linkMap < mLinkAdmittanceMaps[link]->mSize; ++linkMap) {
+            const int networkMap = mLinkAdmittanceMaps[link]->mMap[linkMap];
+            if (networkMap > -1 and networkMap < admittanceMatrixSize) {
+                mAdmittanceMatrix[networkMap] += mLinkAdmittanceMatrices[link][linkMap];
             }
         }
     }
@@ -1395,7 +1395,7 @@ void Gunns::solveCholesky()
                                 mAdmittanceMatrix[in + mIslandVectors[island][j]];
                     }
                 }
-                double startTime = CLOCK_TIME;
+                double startTime = GunnsInfraFunctions::clockTime();
                 if (n >= mGpuSizeThreshold) {
                     handleDecompose(mSolverGpuSparse, mAdmittanceMatrixIsland, n, island);
                     handleSolve(mSolverGpuSparse, mAdmittanceMatrixIsland, mSourceVectorIsland,
@@ -1404,7 +1404,7 @@ void Gunns::solveCholesky()
                     handleSolve(mSolverCpu, mAdmittanceMatrixIsland, mSourceVectorIsland,
                                 mPotentialVectorIsland, n, island);
                 }
-                mSolveTimeWorking += CLOCK_TIME - startTime;
+                mSolveTimeWorking += GunnsInfraFunctions::clockTime() - startTime;
                 /// - Copy solved potential vector back into main potential vector.
                 for (int i=0; i<n; ++i) {
                     mPotentialVector[mIslandVectors[island][i]] = mPotentialVectorIsland[i];
@@ -1413,16 +1413,16 @@ void Gunns::solveCholesky()
         } else {
             /// - For no islands, the entire system is solved by mSolverGpuSparse. Same as above,
             ///   the difference is GpuSparse must ->decompose, then -> solve.
-            double startTime = CLOCK_TIME;
+            double startTime = GunnsInfraFunctions::clockTime();
             handleDecompose(mSolverGpuSparse, mAdmittanceMatrix, mNetworkSize);
             handleSolve(mSolverGpuSparse, mAdmittanceMatrix, mSourceVector,
                         mPotentialVector, mNetworkSize);
-            mSolveTimeWorking += CLOCK_TIME - startTime;
+            mSolveTimeWorking += GunnsInfraFunctions::clockTime() - startTime;
         }
     } else {
-        double startTime = CLOCK_TIME;
+        double startTime = GunnsInfraFunctions::clockTime();
         handleSolve(mSolverCpu, mAdmittanceMatrix, mSourceVector, mPotentialVector, mNetworkSize);
-        mSolveTimeWorking += CLOCK_TIME - startTime;
+        mSolveTimeWorking += GunnsInfraFunctions::clockTime() - startTime;
     }
 }
 
@@ -1497,8 +1497,8 @@ inline void Gunns::cleanPotentialVector()
 /// @throws   TsNumericalException
 ///
 /// @details  This method is the first half of the network capacitance computations.  For each node
-///           that requests its network capacitance, a unit flux is added to the node's source
-///           vector and the system of equations solved using the recent matrix decomposition.  The
+///           that requests its network capacitance, requested flux is added to the node's source
+///           vector and the system of equations solved using the last matrix decomposition.  The
 ///           computeNetworkCapacitances() method is called later to finish the computations.  Nodes
 ///           that do not request their value have it reset here.
 ////////////////////////////////////////////////////////////////////////////////////////////////////

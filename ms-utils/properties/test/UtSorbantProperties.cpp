@@ -2,7 +2,7 @@
 @file   UtSorbantProperties.cpp
 @brief  Unit tests for SorbantProperties
 
-@copyright Copyright 2022 United States Government as represented by the Administrator of the
+@copyright Copyright 2023 United States Government as represented by the Administrator of the
            National Aeronautics and Space Administration.  All Rights Reserved.
 */
 
@@ -254,8 +254,12 @@ void UtSorbantProperties::testCustomSorbant()
     SorbantProperties sorbant(SorbantProperties::CUSTOM, density, porosity, specificHeat);
     sorbant.addSorbate(ChemicalCompound::H2O, 0, 0,
             h2oTothA, h2oTothB, h2oTothE, h2oTothT0, h2oTothC0, h2oDh, h2oKm);
-    sorbant.addSorbate(ChemicalCompound::CO2, &blockingCompounds, &offgasCompounds,
+    SorbateProperties* sorbateCo2 = sorbant.addSorbate(ChemicalCompound::CO2, &blockingCompounds, &offgasCompounds,
             h2oTothA, h2oTothB, h2oTothE, h2oTothT0, h2oTothC0, h2oDh, h2oKm);
+
+    /// - Add more blocking and offgas compounds.
+    sorbateCo2->addBlockingCompound(ChemicalCompound::O2, -1.0);
+    sorbateCo2->addOffgasCompound(ChemicalCompound::CH4, 1.0e-4);
 
     /// @test sorbant computeVolume and computeThermalCapacity.
     const double expectedV  = enclosureVol * (1.0 - porosity);
@@ -296,12 +300,16 @@ void UtSorbantProperties::testCustomSorbant()
     /// @test sorbate blocking and offgas compounds.
     CPPUNIT_ASSERT(0                     == sorbates->at(0).getBlockingCompounds()->size());
     CPPUNIT_ASSERT(0                     == sorbates->at(0).getOffgasCompounds()->size());
-    CPPUNIT_ASSERT(1                     == sorbates->at(1).getBlockingCompounds()->size());
-    CPPUNIT_ASSERT(1                     == sorbates->at(1).getOffgasCompounds()->size());
+    CPPUNIT_ASSERT(2                     == sorbates->at(1).getBlockingCompounds()->size());
+    CPPUNIT_ASSERT(2                     == sorbates->at(1).getOffgasCompounds()->size());
     CPPUNIT_ASSERT(ChemicalCompound::H2O == sorbates->at(1).getBlockingCompounds()->at(0).mCompound);
     CPPUNIT_ASSERT(1.0                   == sorbates->at(1).getBlockingCompounds()->at(0).mInteraction);
+    CPPUNIT_ASSERT(ChemicalCompound::O2  == sorbates->at(1).getBlockingCompounds()->at(1).mCompound);
+    CPPUNIT_ASSERT(-1.0                  == sorbates->at(1).getBlockingCompounds()->at(1).mInteraction);
     CPPUNIT_ASSERT(ChemicalCompound::NH3 == sorbates->at(1).getOffgasCompounds()->at(0).mCompound);
     CPPUNIT_ASSERT(1.0e-6                == sorbates->at(1).getOffgasCompounds()->at(0).mInteraction);
+    CPPUNIT_ASSERT(ChemicalCompound::CH4 == sorbates->at(1).getOffgasCompounds()->at(1).mCompound);
+    CPPUNIT_ASSERT(1.0e-4                == sorbates->at(1).getOffgasCompounds()->at(1).mInteraction);
 
     /// @test sorbant copy constructor.
     SorbantProperties* sorbant2 = new SorbantProperties(sorbant);
@@ -352,13 +360,6 @@ void UtSorbantProperties::testConstructionExceptions()
     blocking.mInteraction = 1.0;
     std::vector<SorbateInteractingCompounds> blockingCompounds;
     blockingCompounds.push_back(blocking);
-    CPPUNIT_ASSERT_THROW(sorbant.addSorbate(ChemicalCompound::H2O, &blockingCompounds, 0, 1.767e+2, 2.787e-5, 1.093e+3, -1.190e-3, 2.213e+1, -50.2, 1.0), TsInitializationException);
-
-    /// @test exception from blocking interaction < 0 and > 1.
-    blockingCompounds.at(0).mCompound    = ChemicalCompound::CO2;
-    blockingCompounds.at(0).mInteraction = -0.001;
-    CPPUNIT_ASSERT_THROW(sorbant.addSorbate(ChemicalCompound::H2O, &blockingCompounds, 0, 1.767e+2, 2.787e-5, 1.093e+3, -1.190e-3, 2.213e+1, -50.2, 1.0), TsInitializationException);
-    blockingCompounds.at(0).mInteraction = 1.001;
     CPPUNIT_ASSERT_THROW(sorbant.addSorbate(ChemicalCompound::H2O, &blockingCompounds, 0, 1.767e+2, 2.787e-5, 1.093e+3, -1.190e-3, 2.213e+1, -50.2, 1.0), TsInitializationException);
 
     /// @test exception from offgas compound = sorbate compound.

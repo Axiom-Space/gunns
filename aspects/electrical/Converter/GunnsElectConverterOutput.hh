@@ -8,7 +8,7 @@
 @defgroup  TSM_GUNNS_ELECTRICAL_CONVERTER_OUTPUT_LINK    GUNNS Electrical Converter Output Link
 @ingroup   TSM_GUNNS_ELECTRICAL_CONVERTER
 
-@copyright Copyright 2022 United States Government as represented by the Administrator of the
+@copyright Copyright 2023 United States Government as represented by the Administrator of the
            National Aeronautics and Space Administration.  All Rights Reserved.
 
 @details
@@ -70,8 +70,10 @@ class GunnsElectConverterOutputInputData;
 ///
 ///           This contains optional trip logic for output over-volt, under-volt, and over-current
 ///           trips.  For voltage regulation modes (VOLTAGE and TRANSFORMER), this can optionally do
-///           output current limiting instead of over-current tripping.  These features can be fed
-///           by optional sensors in the network, or use 'truth' values.
+///           output current limiting instead of over-current tripping.  For current regulation
+///           modes (CURRENT and POWER), this can optionally do output voltage limiting instead of
+///           over-voltage or under-voltage tripping.  These features can be fed by optional sensors
+///           in the network, or use 'truth' values.
 ///
 ///           This has an optional pointer to a paired GunnsElectConverterInput link.  This should
 ///           be used when and only when both links are in the same network.  This causes the two
@@ -89,6 +91,13 @@ class GunnsElectConverterOutput : public GunnsBasicLink
             TRANSFORMER = 1, ///< Controls output to input voltage ratio setpoint as a voltage source.
             CURRENT     = 2, ///< Controls output current to setpoint as a current source.
             POWER       = 3  ///< Controls output power to setpoint as a current source.
+        };
+        /// @brief  Enumeration of the limit states.
+        enum LimitStates {
+            NO_LIMIT    = 0, ///< Not in a limiting state.
+            LIMIT_OC    = 1, ///< The voltage-controlling regulator is limiting over-current.
+            LIMIT_OV    = 2, ///< The current-controlling regulator is limiting over-voltage.
+            LIMIT_UV    = 3  ///< The current-controlling regulator is limiting under-voltage.
         };
         /// @brief  Default Constructor.
         GunnsElectConverterOutput();
@@ -110,6 +119,8 @@ class GunnsElectConverterOutput : public GunnsBasicLink
         /// @brief  Returns the link's assessment of the network solution.
         virtual SolutionResult confirmSolutionAcceptable(const int convergedStep,
                                                          const int absoluteStep);
+        /// @brief  Resets the link back to the previous minor step iteration.
+        virtual bool resetLastMinorStep(const int convergedStep, const int absoluteStep);
         /// @brief  Computes and returns the input channel power and validity.
         bool computeInputPower(double& inputPower);
         /// @brief  Returns if the link is non-linear.
@@ -123,7 +134,7 @@ class GunnsElectConverterOutput : public GunnsBasicLink
         /// @brief  Sets the commanded setpoint.
         void setSetpoint(const double setpoint);
         /// @brief  Sets the current/voltage limiting state.
-        void setLimitingState(const bool state);
+        void setLimitingState(const LimitStates state);
         /// @brief  Sets the output conductance.
         void setOutputConductance(const double conductance);
         /// @brief  Returns the commanded setpoint.
@@ -132,8 +143,12 @@ class GunnsElectConverterOutput : public GunnsBasicLink
         double getInputPower() const;
         /// @brief  Returns the input power valid flag.
         bool getInputPowerValid() const;
-        /// @brief  Returns the current/voltage limiting state.
+        /// @brief  Returns whether the controller is in a current/voltage limiting state.
         bool getLimitingState() const;
+        /// @brief  Returns the enabled flag.
+        bool getEnabled() const;
+        /// @brief  Returns the controlled voltage.
+        double getControlVoltage() const;
         /// @brief  Returns the output over-voltage trip logic.
         GunnsTripLogic* getOutputOverVoltageTrip();
         /// @brief  Returns the output under-voltage trip logic.
@@ -149,6 +164,7 @@ class GunnsElectConverterOutput : public GunnsBasicLink
         SensorAnalog*                            mOutputCurrentSensor;    /**<    (1)     trick_chkpnt_io(**) Pointer to the output current sensor. */
         GunnsElectConverterInput*                mInputLink;              /**< *o (1)     trick_chkpnt_io(**) Pointer to the converter input side link. */
         bool                                     mEnableLimiting;         /**<    (1)     trick_chkpnt_io(**) Limits output current or voltage instead of tripping. */
+        unsigned int                             mStateFlipsLimit;        /**<    (1)     trick_chkpnt_io(**) Number of times a reverse bias or limit state can be entered per major step. */
         bool                                     mEnabled;                /**<    (1)                         Operation is enabled. */
         double                                   mInputVoltage;           /**<    (V)                         Input channel voltage received from the input side. */
         bool                                     mInputVoltageValid;      /**<    (1)     trick_chkpnt_io(**) The input channel voltage value is valid. */
@@ -165,9 +181,9 @@ class GunnsElectConverterOutput : public GunnsBasicLink
         GunnsTripGreaterThan                     mOutputOverCurrentTrip;  /**<    (1)                         Output over-current trip function. */
         bool                                     mLeadsInterface;         /**< *o (1)     trick_chkpnt_io(**) This precedes the mInputLink in the network. */
         bool                                     mReverseBiasState;       /**<    (1)     trick_chkpnt_io(**) Converter is dioded off due to reverse voltage bias. */
-        bool                                     mBiasFlippedReverse;     /**<    (1)     trick_chkpnt_io(**) Voltage bias has flipped reverse during this major step. */
-        bool                                     mLimitState;             /**<    (1)                         Converter is currently in the current/voltage limiting state. */
-        bool                                     mLimitStateFlipped;      /**<    (1)     trick_chkpnt_io(**) Converter has flipped to current/voltage limiting this major step.. */
+        unsigned int                             mReverseBiasFlips;       /**<    (1)     trick_chkpnt_io(**) Number of times voltage bias has flipped reverse during this major step. */
+        LimitStates                              mLimitState;             /**<    (1)                         The limiting state the controller is currently in. */
+        unsigned int                             mLimitStateFlips;        /**<    (1)     trick_chkpnt_io(**) Number of times converter has flipped to current/voltage limiting this major step. */
         double                                   mSourceVoltage;          /**<    (V)     trick_chkpnt_io(**) Active voltage source value when acting in a voltage source mode. */
         /// @brief  Validates the configuration and input data.
         void validate(const GunnsElectConverterOutputConfigData& configData,
@@ -179,11 +195,27 @@ class GunnsElectConverterOutput : public GunnsBasicLink
         /// @brief  Updates the output current of this link.
         void computeFlux();
         /// @brief  Updates the forward/reverse bias state of the converter.
-        bool updateBias();
+        void updateBias(GunnsBasicLink::SolutionResult& result, const int convergedStep,
+                        const bool noReverseBias);
         /// @brief  Updates the current/voltage limiting state.
-        void updateLimitState(GunnsBasicLink::SolutionResult& result,
+        bool updateLimitState(GunnsBasicLink::SolutionResult& result,
                               const float                     voltage,
                               const float                     current);
+        /// @brief  Updates the current limiting state for voltage regulators.
+        void updateCurrentLimitState(GunnsBasicLink::SolutionResult& result,
+                                     const float                     voltage,
+                                     const float                     current);
+        /// @brief  Updates the voltage limiting state for current regulators.
+        bool updateVoltageLimitState(GunnsBasicLink::SolutionResult& result,
+                                     const float                     voltage,
+                                     const float                     current);
+        /// @brief  Computes the effective output voltage control setpoint.
+        float computeVoltageControlSetpoint();
+        /// @brief  Computes the effective output current control setpoint.
+        float computeCurrentControlSetpoint();
+        /// @brief  Rejects the solution and sets the lmiting state to the given value.
+        void rejectWithLimitState(GunnsBasicLink::SolutionResult& result,
+                                  const LimitStates               state);
         /// @brief  Updates the estimate of downstream load resistance.
         void estimateLoad();
         /// @brief  Applies the blockage malfunction to the given scalar.
@@ -224,6 +256,7 @@ class GunnsElectConverterOutputConfigData: public GunnsBasicLinkConfigData
         float                                    mOutputUnderVoltageTripLimit; /**< (V)     trick_chkpnt_io(**) Output under-voltage trip limit. */
         float                                    mOutputOverCurrentTripLimit;  /**< (amp)   trick_chkpnt_io(**) Output over-current trip limit. */
         GunnsElectConverterInput*                mInputLink;                   /**< (1)     trick_chkpnt_io(**) Pointer to the converter input side link. */
+        unsigned int                             mStateFlipsLimit;             /**< (1)     trick_chkpnt_io(**) Number of times a reverse bias or limit state can be entered per major step. */
         /// @brief  Default constructs this Electrical Converter Output configuration data.
         GunnsElectConverterOutputConfigData(
                 const std::string&                             name                        = "",
@@ -344,11 +377,11 @@ inline void GunnsElectConverterOutput::setSetpoint(const double setpoint)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @param[in]  state  (--)  True puts the converter in the limiting state, false removes it.
+/// @param[in]  state  (--)  The limit state to put the controller into.
 ///
 /// @details  Sets mLimitState to the given value.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline void GunnsElectConverterOutput::setLimitingState(const bool state)
+inline void GunnsElectConverterOutput::setLimitingState(const LimitStates state)
 {
     mLimitState = state;
 }
@@ -394,13 +427,23 @@ inline bool GunnsElectConverterOutput::getInputPowerValid() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @returns  bool  (--)  True if the converter is in the current/voltage limiting state.
+/// @returns  bool  (--)  True if the converter is in a current/voltage limiting state.
 ///
-/// @details  Returns the value of mLimitState.
+/// @details  Returns true if the value of mLimitState is other than NO_LIMIT.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 inline bool GunnsElectConverterOutput::getLimitingState() const
 {
-    return mLimitState;
+    return (NO_LIMIT != mLimitState);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @returns  bool  (--)  True if the converter is enabled.
+///
+/// @details  Returns the value of mEnabled.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline bool GunnsElectConverterOutput::getEnabled() const
+{
+    return mEnabled;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -480,6 +523,25 @@ inline bool GunnsElectConverterOutput::isAnyTrips() const
 inline bool GunnsElectConverterOutput::isVoltageRegulator() const
 {
     return (VOLTAGE == mRegulatorType) or (TRANSFORMER == mRegulatorType);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @param[in] convergedStep (--) Unused.
+/// @param[in] absoluteStep  (--) Unused.
+///
+/// @returns  bool (--) Always returns true.
+///
+/// @details  After a network reset to the last minor step, any input power calculation will be
+///           invalid until we've confirmed the next minor step solution.  The solver resets the
+///           potential vector to the previous value, and this becomes out of sync with our inputs
+///           to the system of equations, so any calculation of flux and power based on those values
+///           may be incorrect.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+inline bool GunnsElectConverterOutput::resetLastMinorStep(const int convergedStep, __attribute__((unused))
+                                                          const int absoluteStep __attribute__((unused)))
+{
+    mInputPowerValid = false;
+    return true;
 }
 
 #endif
