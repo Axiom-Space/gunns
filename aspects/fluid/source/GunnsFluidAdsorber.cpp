@@ -20,10 +20,10 @@ LIBRARY DEPENDENCY:
 /// @param[in]      maxConductivity       (m2)    Maximum conductivity.
 /// @param[in]      expansionScaleFactor  (--)    Scale factor for isentropic gas cooling.
 /// @param[in]      gasType               (--)    Fluid type of constituent gas being sorbed.
-/// @param[in]      efficiency            (--)    Efficiency of gas adsorbtion from atmosphere.
-/// @param[in]      maxAdsorbtionRate     (kg/s)  Maximum mass rate at which gas can be adsorbed from atmosphere.
+/// @param[in]      efficiency            (--)    Efficiency of gas adsorption from atmosphere.
+/// @param[in]      maxAdsorptionRate     (kg/s)  Maximum mass rate at which gas can be adsorbed from atmosphere.
 /// @param[in]      maxAdsorbedMass       (kg)    Maximum amount of adsorbed mass.
-/// @param[in]      desorbtionRate        (kg/s)  Mass rate at which gas can be desorbed to atmosphere.
+/// @param[in]      desorptionRate        (kg/s)  Mass rate at which gas can be desorbed to atmosphere.
 /// @param[in]      thermalLength         (m)     Tube length for thermal convection.
 /// @param[in]      thermalDiameter       (m)     Tube inner diameter for thermal convection.
 /// @param[in]      surfaceRoughness      (m)     Tube wall surface roughness for thermal convection.
@@ -38,9 +38,9 @@ GunnsFluidAdsorberConfigData::GunnsFluidAdsorberConfigData(
                                                  const double                     expansionScaleFactor,
                                                  const FluidProperties::FluidType gasType,
                                                  const double                     efficiency,
-                                                 const double                     maxAdsorbtionRate,
+                                                 const double                     maxAdsorptionRate,
                                                  const double                     maxAdsorbedMass,
-                                                 const double                     desorbtionRate,
+                                                 const double                     desorptionRate,
                                                  const double                     thermalLength,
                                                  const double                     thermalDiameter,
                                                  const double                     surfaceRoughness)
@@ -48,9 +48,9 @@ GunnsFluidAdsorberConfigData::GunnsFluidAdsorberConfigData(
     GunnsFluidConductorConfigData(name, nodes, maxConductivity, expansionScaleFactor),
     mGasType(gasType),
     mEfficiency(efficiency),
-    mMaxAdsorbtionRate(maxAdsorbtionRate),
+    mMaxAdsorptionRate(maxAdsorptionRate),
     mMaxAdsorbedMass(maxAdsorbedMass),
-    mDesorbtionRate(desorbtionRate),
+    mDesorptionRate(desorptionRate),
     mThermalLength(thermalLength),
     mThermalDiameter(thermalDiameter),
     mSurfaceRoughness(surfaceRoughness)
@@ -68,9 +68,9 @@ GunnsFluidAdsorberConfigData::GunnsFluidAdsorberConfigData(const GunnsFluidAdsor
     GunnsFluidConductorConfigData(that),
     mGasType(that.mGasType),
     mEfficiency(that.mEfficiency),
-    mMaxAdsorbtionRate(that.mMaxAdsorbtionRate),
+    mMaxAdsorptionRate(that.mMaxAdsorptionRate),
     mMaxAdsorbedMass(that.mMaxAdsorbedMass),
-    mDesorbtionRate(that.mDesorbtionRate),
+    mDesorptionRate(that.mDesorptionRate),
     mThermalLength(that.mThermalLength),
     mThermalDiameter(that.mThermalDiameter),
     mSurfaceRoughness(that.mSurfaceRoughness)
@@ -89,7 +89,7 @@ GunnsFluidAdsorberConfigData::~GunnsFluidAdsorberConfigData()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @param[in]  malfBlockageFlag     (--)  Blockage malfunction flag.
 /// @param[in]  malfBlockageValue    (--)  Blockage malfunction fractional value (0-1).
-/// @param[in]  desorbtionCycle      (--)  Desorbtion cycle flag.
+/// @param[in]  desorptionCycle      (--)  Desorption cycle flag.
 /// @param[in]  adsorbedMass         (kg)  Adsorbed mass in the adsorber.
 /// @param[in]  wallTemperature      (K)   Tube wall temperature for thermal convection.
 /// @param[in]  tcEfficiency         (--)  Adsorption/desorption efficiency for trace compounds.
@@ -104,7 +104,7 @@ GunnsFluidAdsorberConfigData::~GunnsFluidAdsorberConfigData()
 GunnsFluidAdsorberInputData::GunnsFluidAdsorberInputData(
         const bool                         malfBlockageFlag,
         const double                       malfBlockageValue,
-        const bool                         desorbtionCycle,
+        const bool                         desorptionCycle,
         const double                       adsorbedMass,
         const double                       wallTemperature,
         GunnsFluidTraceCompoundsInputData* tcEfficiency,
@@ -114,7 +114,7 @@ GunnsFluidAdsorberInputData::GunnsFluidAdsorberInputData(
         const double                       malfEfficiencyValue)
     :
     GunnsFluidConductorInputData(malfBlockageFlag, malfBlockageValue),
-    mDesorbtionCycle(desorbtionCycle),
+    mDesorptionCycle(desorptionCycle),
     mAdsorbedMass(adsorbedMass),
     mWallTemperature(wallTemperature),
     mTcEfficiency(tcEfficiency),
@@ -135,7 +135,7 @@ GunnsFluidAdsorberInputData::GunnsFluidAdsorberInputData(
 GunnsFluidAdsorberInputData::GunnsFluidAdsorberInputData(const GunnsFluidAdsorberInputData& that)
     :
     GunnsFluidConductorInputData(that),
-    mDesorbtionCycle(that.mDesorbtionCycle),
+    mDesorptionCycle(that.mDesorptionCycle),
     mAdsorbedMass(that.mAdsorbedMass),
     mWallTemperature(that.mWallTemperature),
     mTcEfficiency(that.mTcEfficiency),
@@ -168,20 +168,20 @@ GunnsFluidAdsorber::GunnsFluidAdsorber()
     mMalfEfficiencyValue(0.0),
     mGasType(FluidProperties::NO_FLUID),
     mEfficiency(0.0),
-    mMaxAdsorbtionRate(0.0),
+    mMaxAdsorptionRate(0.0),
     mMaxAdsorbedMass(0.0),
-    mDesorbtionRate(0.0),
+    mDesorptionRate(0.0),
     mThermalDiameter(0.0),
     mThermalSurfaceArea(0.0),
     mThermalROverD(0.0),
-    mDesorbtionCycle(false),
+    mDesorptionCycle(false),
     mAdsorbedMass(0.0),
     mWallTemperature(0.0),
     mFluidTemperature(0.0),
     mWallHeatFlux(0.0),
     mMass(0.0),
-    mSorbtionFlowRate(0.0),
-    mSorbtionFluid(0),
+    mSorptionFlowRate(0.0),
+    mSorptionFluid(0),
     mGasIndex(0),
     mTcEfficiency(0),
     mTcMaxAdsorbedMass(0),
@@ -200,8 +200,8 @@ GunnsFluidAdsorber::~GunnsFluidAdsorber()
     TS_DELETE_ARRAY(mTcMaxAdsorbedMass);
     TS_DELETE_ARRAY(mTcEfficiency);
 
-    /// - Delete the sorbtion fluid.
-    TS_DELETE_OBJECT(mSorbtionFluid);
+    /// - Delete the sorption fluid.
+    TS_DELETE_OBJECT(mSorptionFluid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,14 +229,14 @@ void GunnsFluidAdsorber::initialize(const GunnsFluidAdsorberConfigData& configDa
     /// - Reset the initialization complete flag.
     mInitFlag           = false;
 
-    /// - Create the internal fluid and sorbtion fluids.
+    /// - Create the internal fluid and sorption fluids.
     createInternalFluid();
-    TS_DELETE_OBJECT(mSorbtionFluid);
-    TS_NEW_PRIM_OBJECT_EXT(mSorbtionFluid, PolyFluid,
-                           (*mInternalFluid, std::string(mName) + ".mSorbtionFluid"),
-                           std::string(mName) + ".mSorbtionFluid");
-    mSorbtionFluid->setFlowRate(0.0);
-    mSorbtionFlowRate = 0.0;
+    TS_DELETE_OBJECT(mSorptionFluid);
+    TS_NEW_PRIM_OBJECT_EXT(mSorptionFluid, PolyFluid,
+                           (*mInternalFluid, std::string(mName) + ".mSorptionFluid"),
+                           std::string(mName) + ".mSorptionFluid");
+    mSorptionFluid->setFlowRate(0.0);
+    mSorptionFlowRate = 0.0;
 
     /// - Validate the configuration and input data.
     validate(configData, inputData);
@@ -244,9 +244,9 @@ void GunnsFluidAdsorber::initialize(const GunnsFluidAdsorberConfigData& configDa
     /// - Initialize attributes from the validated configuration data.
     mGasType            = configData.mGasType;
     mEfficiency         = configData.mEfficiency;
-    mMaxAdsorbtionRate  = configData.mMaxAdsorbtionRate;
+    mMaxAdsorptionRate  = configData.mMaxAdsorptionRate;
     mMaxAdsorbedMass    = configData.mMaxAdsorbedMass;
-    mDesorbtionRate     = configData.mDesorbtionRate;
+    mDesorptionRate     = configData.mDesorptionRate;
     mThermalDiameter    = configData.mThermalDiameter;
     mThermalSurfaceArea = UnitConversion::PI_UTIL * configData.mThermalLength * configData.mThermalDiameter;
     if (mThermalSurfaceArea > DBL_EPSILON) {
@@ -256,7 +256,7 @@ void GunnsFluidAdsorber::initialize(const GunnsFluidAdsorberConfigData& configDa
     }
 
     /// - Initialize attributes from the validated input data.
-    mDesorbtionCycle     = inputData.mDesorbtionCycle;
+    mDesorptionCycle     = inputData.mDesorptionCycle;
     mAdsorbedMass        = inputData.mAdsorbedMass;
     mWallTemperature     = inputData.mWallTemperature;
     mFluidTemperature    = 0.5 * (mInternalFluid->getTemperature() + inputData.mWallTemperature);
@@ -322,9 +322,9 @@ void GunnsFluidAdsorber::validate(const GunnsFluidAdsorberConfigData& configData
         GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Adsorption efficiency outside valid range (0.0 to 1.0).");
     }
 
-    /// - Throw an exception on maximum adsorbtion rate < 0.0.
-    if (configData.mMaxAdsorbtionRate < 0.0) {
-        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Maximum adsorbtion rate < 0.0.");
+    /// - Throw an exception on maximum adsorption rate < 0.0.
+    if (configData.mMaxAdsorptionRate < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Maximum adsorption rate < 0.0.");
     }
 
     /// - Throw an exception on maximum adsorbed mass < 0.0.
@@ -332,9 +332,9 @@ void GunnsFluidAdsorber::validate(const GunnsFluidAdsorberConfigData& configData
         GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Maximum adsorbed mass < 0.0.");
     }
 
-    /// - Throw an exception on desorbtion rate < 0.0.
-    if (configData.mDesorbtionRate < 0.0) {
-        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Desorbtion rate < 0.0.");
+    /// - Throw an exception on desorption rate < 0.0.
+    if (configData.mDesorptionRate < 0.0) {
+        GUNNS_ERROR(TsInitializationException, "Invalid Configuration Data", "Desorption rate < 0.0.");
     }
 
     /// - Throw an exception on mass in adsorber < 0.0.
@@ -359,7 +359,7 @@ void GunnsFluidAdsorber::restartModel()
     /// - Reset non-config & non-checkpointed attributes.
     mFluidTemperature = 0.0;
     mMass             = 0.0;
-    mSorbtionFlowRate = 0.0;
+    mSorptionFlowRate = 0.0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,47 +368,47 @@ void GunnsFluidAdsorber::restartModel()
 ///
 /// @return      void
 ///
-/// @details     Update the internal fluids for constituent mass removed by adsorbtion or added by desorbtion.
+/// @details     Update the internal fluids for constituent mass removed by adsorption or added by desorption.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void GunnsFluidAdsorber::updateFluid(const double dt, const double flowRate __attribute__((unused)))
 {
-    /// - Zero the sorbtion flow rate and reset the sorbtion fluid.
-    mSorbtionFluid->resetState();
-    mSorbtionFlowRate = 0.0;
+    /// - Zero the sorption flow rate and reset the sorption fluid.
+    mSorptionFluid->resetState();
+    mSorptionFlowRate = 0.0;
     mMass             = 0.0;
 
-    /// - Skip sorbtion when the time step is negligible.
+    /// - Skip sorption when the time step is negligible.
     if (dt > DBL_EPSILON) {
 
-        /// - Skip sorbtion with the atmosphere when the mass flow rate is negligible.
+        /// - Skip sorption with the atmosphere when the mass flow rate is negligible.
         updateTemperature(dt);
         const double efficiency = computeEfficiency();
         const double rate       = fabs(mFlowRate);
-        if (mDesorbtionCycle) {
+        if (mDesorptionCycle) {
             desorb(dt, rate, efficiency);
         } else {
             adsorb(dt, rate, efficiency);
         }
 
-        if (fabs(mSorbtionFlowRate) > m100EpsilonLimit) {
-            /// - Update sorbtion fluid mass and temperature.
-            mSorbtionFluid->setMass(mGasIndex, fabs(mMass));
-            mSorbtionFluid->updateMass();
-            mSorbtionFluid->setTemperature(mFluidTemperature);
+        if (fabs(mSorptionFlowRate) > m100EpsilonLimit) {
+            /// - Update sorption fluid mass and temperature.
+            mSorptionFluid->setMass(mGasIndex, fabs(mMass));
+            mSorptionFluid->updateMass();
+            mSorptionFluid->setTemperature(mFluidTemperature);
 
-            /// - Shove sorbtion fluid into outlet node.
-            /// - Add sorbtion fluid to outlet node and update source vector for flow between
+            /// - Shove sorption fluid into outlet node.
+            /// - Add sorption fluid to outlet node and update source vector for flow between
             ///   downstream node and ground.  The source vector will be used next cycle so there
             ///   will be a small error in pressure, but mass will be conserved and GUNNS washes out
             ///   pressure errors. The alternative is to compute reaction in update state using
             ///   previous cycle flowrate, which could result in mass errors, which GUNNS can't fix.
             if (mFlowRate >= 0.0) {
-                mNodes[1]->collectInflux(mSorbtionFlowRate, mSorbtionFluid);
+                mNodes[1]->collectInflux(mSorptionFlowRate, mSorptionFluid);
                 mSourceVector[0] = 0.0;
-                mSourceVector[1] = mSorbtionFlowRate / mSorbtionFluid->getMWeight();
+                mSourceVector[1] = mSorptionFlowRate / mSorptionFluid->getMWeight();
             } else {
-                mNodes[0]->collectInflux(mSorbtionFlowRate, mSorbtionFluid);
-                mSourceVector[0] = mSorbtionFlowRate / mSorbtionFluid->getMWeight();
+                mNodes[0]->collectInflux(mSorptionFlowRate, mSorptionFluid);
+                mSourceVector[0] = mSorptionFlowRate / mSorptionFluid->getMWeight();
                 mSourceVector[1] = 0.0;
             }
         }
@@ -418,22 +418,22 @@ void GunnsFluidAdsorber::updateFluid(const double dt, const double flowRate __at
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @param[in]   dt          (s)     Time step.
 /// @param[in]   rate        (kg/s)  Mass flow rate magnitude.
-/// @param[in]   efficiency  (--)    Adsorbtion efficiency (0 to 1).
+/// @param[in]   efficiency  (--)    Adsorption efficiency (0 to 1).
 ///
 /// @return      void
 ///
-/// @details     Update for adsorbtion.
+/// @details     Update for adsorption.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GunnsFluidAdsorber::adsorb(const double dt, const double rate, const double efficiency)
+void GunnsFluidAdsorber::adsorb(const double dt, const double rate, const double availability_efficiency)
 {
-    /// - Compute the mass available for adsorbtion this cycle.
+    /// - Compute the mass available for adsorption this cycle.
     const double availableMass  =  mInternalFluid->getMassFraction(mInternalFluid->getType(mGasIndex)) * rate * dt;
     /// - Compute the mass adsorbed this cycle subject to availability, capacity, availability efficiency and rate limit.
-    mMass                       =  fmax(fmin(availableMass * efficiency, fmin(mMaxAdsorbtionRate * dt, mMaxAdsorbedMass - mAdsorbedMass)), 0.0);
+    mMass                       =  std::fmax(std::fmin(availableMass * availability_efficiency, std::fmin(mMaxAdsorptionRate * dt, mMaxAdsorbedMass - mAdsorbedMass)), 0.0);
     /// - Update the mass in the adsorber.
     mAdsorbedMass              +=  mMass;
-    /// - Compute the adsorbtion mass flow rate.
-    mSorbtionFlowRate           = -mMass / dt;
+    /// - Compute the adsorption mass flow rate.
+    mSorptionFlowRate           = -mMass / dt;
 
     /// - Adsorb trace compounds from the internal fluid.  Trace compounds adsorption efficiency is
     ///   reduced as the accumulated adsorbed mass approaches the maximum the adsorber can hold.
@@ -441,17 +441,17 @@ void GunnsFluidAdsorber::adsorb(const double dt, const double rate, const double
         mInternalFluid->setMole(mFlux);
         tc->updateMasses();
         for (int i = 0; i < tc->getConfig()->mNTypes; ++i) {
-            double efficiency = mTcEfficiency[i];
+            double adsorption_efficiency = mTcEfficiency[i];
             if (mTcMaxAdsorbedMass[i] > DBL_EPSILON) {
-                efficiency *= fmax(0.0, (mTcMaxAdsorbedMass[i] - mTcAdsorbedMass[i]) / mTcMaxAdsorbedMass[i]);
+                adsorption_efficiency *= std::fmax(0.0, (mTcMaxAdsorbedMass[i] - mTcAdsorbedMass[i]) / mTcMaxAdsorbedMass[i]);
             }
-            if (efficiency > DBL_EPSILON) {
+            if (adsorption_efficiency > DBL_EPSILON) {
                 /// - We don't bother limiting the adsorption rate to what would exceed the max
                 ///   adsorbed mass because a reasonably tuned adsorber should never actually reach
                 ///   the max since efficiency drops as adsorbed mass approaches the max and thus
                 ///   the approach should be asymptotic.  The risk of not conserving mass is low.
                 const double inletRate      = tc->getMasses()[i];
-                const double adsorptionRate = inletRate * efficiency;
+                const double adsorptionRate = inletRate * adsorption_efficiency;
                 mTcAdsorbedMass[i]         += adsorptionRate * dt;
                 tc->setMass(i, inletRate - adsorptionRate);
             }
@@ -463,20 +463,20 @@ void GunnsFluidAdsorber::adsorb(const double dt, const double rate, const double
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @param[in]   dt          (s)     Time step.
 /// @param[in]   rate        (kg/s)  Mass flow rate magnitude (not used).
-/// @param[in]   efficiency  (--)    Desorbtion rate efficiency (-1 to 0).
+/// @param[in]   efficiency  (--)    Desorption rate efficiency (-1 to 0).
 ///
 /// @return      void
 ///
-/// @details     Update for desorbtion.
+/// @details     Update for desorption.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void GunnsFluidAdsorber::desorb(const double dt, const double rate __attribute__((unused)), const double efficiency)
 {
     /// - Compute the mass desorbed this cycle subject to rate, rate efficiency and availability.
-    mMass              = -fmax(fmin(mAdsorbedMass, -efficiency * mDesorbtionRate * dt), 0.0);
+    mMass              = -fmax(fmin(mAdsorbedMass, -efficiency * mDesorptionRate * dt), 0.0);
     /// - Update the mass in the adsorber.
     mAdsorbedMass     +=  mMass;
-    /// - Compute the desorbtion mass flow rate.
-    mSorbtionFlowRate  = -mMass / dt;
+    /// - Compute the desorption mass flow rate.
+    mSorptionFlowRate  = -mMass / dt;
 
     /// - Desorb trace compounds to the internal fluid.
     //TODO
@@ -487,7 +487,7 @@ void GunnsFluidAdsorber::desorb(const double dt, const double rate __attribute__
 ///
 /// @note     Derived classes may override, e.g., to model a heater.
 ///
-/// @details  Updates the sorbtion fluid temperature.
+/// @details  Updates the sorption fluid temperature.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void GunnsFluidAdsorber::updateTemperature(const double dt __attribute__((unused)))
 {
@@ -507,14 +507,14 @@ void GunnsFluidAdsorber::updateTemperature(const double dt __attribute__((unused
 ///
 /// @note     Derived classes may override, e.g., to model temperature dependence.
 ///
-/// @details  Computes and returns the efficiency of the sorbtion.
+/// @details  Computes and returns the efficiency of the sorption.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 double GunnsFluidAdsorber::computeEfficiency()
 {
-    /// - Default is to return the nominal constant efficiency for the adsorbtion or full efficiency
-    ///   for desorbtion.
+    /// - Default is to return the nominal constant efficiency for the adsorption or full efficiency
+    ///   for desorption.
     double efficiency;
-    if (mDesorbtionCycle) {
+    if (mDesorptionCycle) {
         efficiency = -1.0;
     } else {
         efficiency = mEfficiency;

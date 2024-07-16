@@ -25,7 +25,7 @@ ASSUMPTIONS AND LIMITATIONS:
 - ((GunnsFluidAdsorber.o))
 
  PROGRAMMERS:
-- ((Kenneth McMurtrie) (Tietronix Software) (Change to conductor with sorbtion fluid) (2012-08))
+- ((Kenneth McMurtrie) (Tietronix Software) (Change to conductor with sorption fluid) (2012-08))
 
 @{
 */
@@ -43,10 +43,10 @@ class GunnsFluidAdsorberConfigData : public GunnsFluidConductorConfigData
 {
     public:
         FluidProperties::FluidType  mGasType;           /**< (--)    trick_chkpnt_io(**) Fluid type of constituent gas being sorbed. */
-        double                      mEfficiency;        /**< (--)    trick_chkpnt_io(**) Efficiency of gas adsorbtion from atmosphere. */
-        double                      mMaxAdsorbtionRate; /**< (kg/s)  trick_chkpnt_io(**) Maximum mass rate at which gas can be adsorbed from atmosphere. */
+        double                      mEfficiency;        /**< (--)    trick_chkpnt_io(**) Efficiency of gas adsorption from atmosphere. */
+        double                      mMaxAdsorptionRate; /**< (kg/s)  trick_chkpnt_io(**) Maximum mass rate at which gas can be adsorbed from atmosphere. */
         double                      mMaxAdsorbedMass;   /**< (kg)    trick_chkpnt_io(**) Maximum amount of adsorbed mass. */
-        double                      mDesorbtionRate;    /**< (kg/s)  trick_chkpnt_io(**) Mass flow rate at which gas can be desorbed to atmosphere. */
+        double                      mDesorptionRate;    /**< (kg/s)  trick_chkpnt_io(**) Mass flow rate at which gas can be desorbed to atmosphere. */
         double                      mThermalLength;     /**< (m)     trick_chkpnt_io(**) Tube length for thermal convection. */
         double                      mThermalDiameter;   /**< (m)     trick_chkpnt_io(**) Tube inner diameter for thermal convection. */
         double                      mSurfaceRoughness;  /**< (m)     trick_chkpnt_io(**) Tube wall surface roughness for thermal convection. */
@@ -57,9 +57,9 @@ class GunnsFluidAdsorberConfigData : public GunnsFluidConductorConfigData
                                      const double                     expansionScaleFactor = 0.0,
                                      const FluidProperties::FluidType gasType              = FluidProperties::NO_FLUID,
                                      const double                     efficiency           = 0.0,
-                                     const double                     maxAdsorbtionRate    = 0.0,
+                                     const double                     maxAdsorptionRate    = 0.0,
                                      const double                     maxAdsorbedMass      = 0.0,
-                                     const double                     desorbtionRate       = 0.0,
+                                     const double                     desorptionRate       = 0.0,
                                      const double                     thermalLength        = 0.0,
                                      const double                     thermalDiameter      = 0.0,
                                      const double                     surfaceRoughness     = 0.0);
@@ -86,7 +86,7 @@ class GunnsFluidTraceCompoundsInputData;
 class GunnsFluidAdsorberInputData : public GunnsFluidConductorInputData
 {
     public:
-        bool                               mDesorbtionCycle;     /**< (--) trick_chkpnt_io(**) Desorbtion cycle flag (simbus input from signal aspect). */
+        bool                               mDesorptionCycle;     /**< (--) trick_chkpnt_io(**) Desorption cycle flag (simbus input from signal aspect). */
         double                             mAdsorbedMass;        /**< (kg) trick_chkpnt_io(**) Adsorbed mass in the adsorber. */
         double                             mWallTemperature;     /**< (K)  trick_chkpnt_io(**) Tube wall temperature for thermal convection. */
         GunnsFluidTraceCompoundsInputData* mTcEfficiency;        /**< (--) trick_chkpnt_io(**) Adsorption/desorption efficiency for trace compounds. */
@@ -97,7 +97,7 @@ class GunnsFluidAdsorberInputData : public GunnsFluidConductorInputData
         /// @brief    Default constructs this Adsorber input data with arguments.
         GunnsFluidAdsorberInputData(const bool                         malfBlockageFlag    = false,
                                     const double                       malfBlockageValue   = 0.0,
-                                    const bool                         desorbtionCycle     = false,
+                                    const bool                         desorptionCycle     = false,
                                     const double                       adsorbedMass        = 0,
                                     const double                       wallTemperature     = 0.0,
                                     GunnsFluidTraceCompoundsInputData* tcEfficiency        = 0,
@@ -131,8 +131,8 @@ class GunnsFluidAdsorber : public GunnsFluidConductor
         /// @name    Malfunction terms.
         /// @{
         /// @details Malfunction targets are public to allow access from the Trick events processor.
-        bool                       mMalfEfficiencyFlag;  /**< (--) Malfunction flag for overriding the efficiency of gas adsorbtion from atmosphere. */
-        double                     mMalfEfficiencyValue; /**< (--) Malfunction value for overriding the efficiency of gas adsorbtion from atmosphere. */
+        bool                       mMalfEfficiencyFlag;  /**< (--) Malfunction flag for overriding the efficiency of gas adsorption from atmosphere. */
+        double                     mMalfEfficiencyValue; /**< (--) Malfunction value for overriding the efficiency of gas adsorption from atmosphere. */
         /// @}
         /// @brief    Default constructs this Adsorber.
         GunnsFluidAdsorber();
@@ -157,21 +157,21 @@ class GunnsFluidAdsorber : public GunnsFluidConductor
 
     protected:
         FluidProperties::FluidType mGasType;            /**< *o (--)   trick_chkpnt_io(**) Fluid type of constituent gas being sorbed. */
-        double                     mEfficiency;         /**<    (--)   trick_chkpnt_io(**) Efficiency of gas adsorbtion from atmosphere. */
-        double                     mMaxAdsorbtionRate;  /**<    (kg/s) trick_chkpnt_io(**) Maximum mass rate at which gas can be adsorbed from atmosphere. */
+        double                     mEfficiency;         /**<    (--)   trick_chkpnt_io(**) Efficiency of gas adsorption from atmosphere. */
+        double                     mMaxAdsorptionRate;  /**<    (kg/s) trick_chkpnt_io(**) Maximum mass rate at which gas can be adsorbed from atmosphere. */
         double                     mMaxAdsorbedMass;    /**<    (kg)   trick_chkpnt_io(**) Maximum amount of adsorbed mass. */
-        double                     mDesorbtionRate;     /**<    (kg/s) trick_chkpnt_io(**) Mass rate at which gas can be desorbed to atmosphere. */
+        double                     mDesorptionRate;     /**<    (kg/s) trick_chkpnt_io(**) Mass rate at which gas can be desorbed to atmosphere. */
         double                     mThermalDiameter;    /**<    (m)    trick_chkpnt_io(**) Tube inner diameter for thermal convection. */
         double                     mThermalSurfaceArea; /**<    (m2)   trick_chkpnt_io(**) Tube inner surface area for thermal convection. */
         double                     mThermalROverD;      /**<    (--)   trick_chkpnt_io(**) Tube surface roughness over diameter for thermal convection. */
-        bool                       mDesorbtionCycle;    /**<    (--)                       Desorbtion cycle flag (simbus input from signal aspect). */
+        bool                       mDesorptionCycle;    /**<    (--)                       Desorption cycle flag (simbus input from signal aspect). */
         double                     mAdsorbedMass;       /**<    (kg)                       Adsorbed mass in the adsorber. */
         double                     mWallTemperature;    /**<    (K)                        Tube wall temperature for thermal convection  (simbus input from thermal aspect). */
         double                     mFluidTemperature;   /**<    (K)    trick_chkpnt_io(**) Temperature of the fluid in the reactor. */
         double                     mWallHeatFlux;       /**<    (W)                        Convection heat flow from the fluid to the tube wall (simbus output to thermal aspect). */
         double                     mMass;               /**<    (kg)   trick_chkpnt_io(**) Adsorbed mass this cycle. */
-        double                     mSorbtionFlowRate;   /**<    (kg/s) trick_chkpnt_io(**) Sorbtion mass flow rate. */
-        PolyFluid*                 mSorbtionFluid;      /**<    (--)   trick_chkpnt_io(**) Pointer to another internal fluid for the result of sorbtion. */
+        double                     mSorptionFlowRate;   /**<    (kg/s) trick_chkpnt_io(**) Sorption mass flow rate. */
+        PolyFluid*                 mSorptionFluid;      /**<    (--)   trick_chkpnt_io(**) Pointer to another internal fluid for the result of sorption. */
         int                        mGasIndex;           /**< *o (--)   trick_chkpnt_io(**) Index of constituent gas being sorbed. */
         double*                    mTcEfficiency;       /**<    (--)   trick_chkpnt_io(**) Adsorption/desorption efficiency for trace compounds. */
         double*                    mTcMaxAdsorbedMass;  /**<    (kg)   trick_chkpnt_io(**) Maximum amount of adsorbed mass of trace compounds. */
@@ -181,9 +181,9 @@ class GunnsFluidAdsorber : public GunnsFluidConductor
                       const GunnsFluidAdsorberInputData&  inputData) const;
         /// @brief Virtual method for derived links to perform their restart functions.
         virtual void restartModel();
-        /// @brief    Update for adsorbtion.
-        virtual void adsorb(const double dt, const double rate, const double efficiency);
-        /// @brief    Update for desorbtion.
+        /// @brief    Update for adsorption.
+        virtual void adsorb(const double dt, const double rate, const double availability_efficiency);
+        /// @brief    Update for desorption.
         virtual void desorb(const double dt, const double rate, const double efficiency);
         /// @brief    Updates the fluid temperature.
         virtual void updateTemperature(const double dt);

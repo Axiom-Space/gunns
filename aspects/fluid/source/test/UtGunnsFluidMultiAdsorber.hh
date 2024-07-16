@@ -143,7 +143,7 @@ class UtGunnsFluidMultiAdsorber: public CppUnit::TestFixture
         double                              tFluidTemperature;               /**< (K)        Temperature of the fluid in the reactor. */
         double                              tWallHeatFlux;                   /**< (W)        Convection heat flow from the fluid to the tube wall (simbus output to thermal aspect). */
         double                              tMass;                           /**< (kg)       Adsorbed mass this cycle. */
-        double                              tSorbtionFlowRate;               /**< (kg/s)     Sorbtion mass flow rate. */
+        double                              tSorptionFlowRate;               /**< (kg/s)     Sorption mass flow rate. */
         FriendlyGunnsFluidMultiAdsorber*    tArticle;                        /**< (--)       Pointer to the friendly adsorber under test. */
         double                              tFlowRate;                       /**< (kg/s)     Nominal mass flow rate. */
         double                              tTimeStep;                       /**< (s)        Nominal time step. */

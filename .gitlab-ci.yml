@@ -1,0 +1,24 @@
+# Pre actions
+before_script:
+  - echo "Running gunns build"
+
+# Delete artifacts after 5 days
+default:
+  artifacts:
+    expire_in: 5 days
+
+# Stages
+stages:
+  - Run Unit Tests
+
+Run Unit Tests:
+  stage: Run Unit Tests
+  tags:
+    - axsim-runner
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop" || $CI_MERGE_REQUEST_ID'
+  script:
+    - source ./bin/environment.sh
+    - ./bin/ci/run_unit_tests.sh
+  interruptible: true
+  timeout: 2h

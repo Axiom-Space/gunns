@@ -52,6 +52,9 @@ class CudaSparseSolve : public CholeskyLdu, public CudaIfUtils
         virtual ~CudaSparseSolve();
         /// @brief Changes matrix [A] into sparse form on the GPU but does not decompose it.
         virtual void Decompose(double* A, int n);
+        /// @brief Decomposes only the rows of the admittance matrix [A] given by the vector
+        ///        argument r.
+        void Decompose(double *A, int n, std::vector<int>& r) override { CholeskyLdu::Decompose(A, n, r); }
         /// @brief Decomposes the sparse [A] and solves [A]{x} = {b} for {x} on the GPU.
         virtual void Solve(double* LDU, double B[], double x[], int n);
 

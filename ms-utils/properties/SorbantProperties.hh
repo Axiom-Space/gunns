@@ -105,7 +105,7 @@ class SorbateProperties
         const double                             mTothC0;            /**<    (K)             trick_chkpnt_io(**) Toth isotherm parameter c0. */
         const double                             mDh;                /**<    (kJ/mol)        trick_chkpnt_io(**) Heat of adsorption of this sorbate in the sorbant. */
         const double                             mKm;                /**<    (1/s)           trick_chkpnt_io(**) Sorption time constant. */
-        std::vector<SorbateInteractingCompounds> mBlockingCompounds; /**< ** (1)             trick_chkpnt_io(**) List of chemical compounds that inhibit sorbtion of this sorbate. */
+        std::vector<SorbateInteractingCompounds> mBlockingCompounds; /**< ** (1)             trick_chkpnt_io(**) List of chemical compounds that inhibit sorption of this sorbate. */
         std::vector<SorbateInteractingCompounds> mOffgasCompounds;   /**< ** (1)             trick_chkpnt_io(**) List of chemical compounds that are offgassed during desorption of this sorbate. */
 };
 
