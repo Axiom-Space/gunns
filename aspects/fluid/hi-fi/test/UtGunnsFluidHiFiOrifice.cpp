@@ -701,7 +701,7 @@ void UtGunnsFluidHiFiOrifice::testComputeFlows()
 
         /// - Confirm correct null port allocation with postive potential vector (computeFlows)
     CPPUNIT_ASSERT(GunnsBasicLink::NONE == tArticle->mPortDirections[0]);
-    
+
     /// - Confirm correct null port allocation with postive potential vector (computeFlows)
     CPPUNIT_ASSERT(GunnsBasicLink::NONE == tArticle->mPortDirections[1]);
 
@@ -718,15 +718,15 @@ void UtGunnsFluidHiFiOrifice::testComputeFlows()
 
     /// - Confirm correct source port allocation with postive potential vector (computeFlows)
     CPPUNIT_ASSERT(GunnsBasicLink::SOURCE == tArticle->mPortDirections[0]);
-    
+
     /// - Confirm correct sink port allocation with postive potential vector (computeFlows)
     CPPUNIT_ASSERT(GunnsBasicLink::SINK == tArticle->mPortDirections[1]);
 
     /// - Nodal outflux scheduling should be equal to step molar flux for source node
     CPPUNIT_ASSERT_DOUBLES_EQUAL(tNodes[0].getScheduledOutflux(),tArticle->mFlux,DBL_EPSILON);
 
-    tArticle->transportFlows(tTimeStep);  
-        
+    tArticle->transportFlows(tTimeStep);
+
     /// - Confirm correct source port selection with Postive potential Vector (TransportFlows)
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0, tArticle->determineSourcePort(tArticle->mFlux, 0, 1), DBL_EPSILON);
 
@@ -739,22 +739,22 @@ void UtGunnsFluidHiFiOrifice::testComputeFlows()
     tArticle->mPotentialVector[0] = -0.6;
     tArticle->computeFlows(tTimeStep);
 
-     /// - Molar flux should be less than zero because the port 0 potential vector is negative   
+     /// - Molar flux should be less than zero because the port 0 potential vector is negative
     CPPUNIT_ASSERT( tArticle->mFlux < 0.0);
 
     /// - Confirm correct sink port allocation with negative potential vector (computeFlows)
     CPPUNIT_ASSERT(GunnsBasicLink::SINK == tArticle->mPortDirections[0]);
-    
+
     /// - Confirm correct source port allocation with negative potential vector (computeFlows)
     CPPUNIT_ASSERT(GunnsBasicLink::SOURCE == tArticle->mPortDirections[1]);
 
     /// - Nodal outflux scheduling should be equal to step molar flux for source node
     CPPUNIT_ASSERT_DOUBLES_EQUAL(tNodes[1].getScheduledOutflux(),- tArticle->mFlux,DBL_EPSILON);
-    
+
     tArticle->transportFlows(tTimeStep);
 
     /// - Confirm correct source port selection with negative potential Vector (TrasportFlows)
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1, tArticle->determineSourcePort(tArticle->mFlux, 0, 1), 
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1, tArticle->determineSourcePort(tArticle->mFlux, 0, 1),
                                                             DBL_EPSILON);
 
     /// @test negative flow rate because the port 0 potential vector is negative
@@ -793,7 +793,7 @@ void UtGunnsFluidHiFiOrifice::testComputeFlows()
     tNodes[1].resetFlows();
     tArticle->computeFlows(tTimeStep);
     tArticle->transportFlows(tTimeStep);
-    
+
     CPPUNIT_ASSERT(0.0 == tArticle->mVolFlowRate);
 
     std::cout << "... Pass";

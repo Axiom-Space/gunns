@@ -708,7 +708,7 @@ inline void Gunns::initializeRestartCommonFunctions()
     mLastDecomposition      = 0;
 
     /// - Reset the worst-case timing mode flag.
-    mWorstCaseTiming        = false;   
+    mWorstCaseTiming        = false;
 
     /// - Reset last-pass mode stats.
     mLastSolverMode         = mSolverMode;
