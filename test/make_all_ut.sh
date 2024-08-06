@@ -38,10 +38,10 @@ foreach test_folder ($test_folders)
     # If not excluded, execute the commands
     if ($is_excluded == 0) then
         echo "Executing commands in: $test_folder"
-        
+
         # Set the FOLDER variable to the path of the current test folder
         setenv FOLDER "$test_folder"
-        
+
         # Run
         echo "Running commands in: $FOLDER"
         cd $GUNNS_HOME/$FOLDER; make clean; make;
